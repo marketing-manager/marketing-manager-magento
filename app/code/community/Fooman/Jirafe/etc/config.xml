@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Fooman_Jirafe>
+            <version>0.0.3</version>
+        </Fooman_Jirafe>
+    </modules>
+
+    <global>
+        <models>
+            <foomanjirafe>
+                <class>Fooman_Jirafe_Model</class>
+            </foomanjirafe>
+        </models>
+        <helpers>
+            <foomanjirafe>
+                <class>Fooman_Jirafe_Helper</class>
+            </foomanjirafe>
+        </helpers>
+        <blocks>
+            <foomanjirafe>
+                <class>Fooman_Jirafe_Block</class>
+            </foomanjirafe>
+        </blocks>
+    </global>
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <foomanjirafe before="Mage_Adminhtml">Fooman_Jirafe_Adminhtml</foomanjirafe>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
+    <adminhtml>
+        <menu>
+            <jirafestats translate="title" module="foomanjirafe">
+                <title>Stats</title>
+                <sort_order>11</sort_order>
+                <action>adminhtml/stats</action>
+            </jirafestats>
+        </menu>
+        <acl>
+            <resources>
+                <admin>
+                    <children>
+                        <jirafestats translate="title">
+                            <title>Jirafe Dashboard</title>
+                            <sort_order>0</sort_order>
+                        </jirafestats>
+                        <system>
+                            <children>
+                                <config>
+                                    <children>
+                                        <foomanjirafe translate="title" module="foomanjirafe">
+                                            <title>Fooman Jirafe Section</title>
+                                        </foomanjirafe>
+                                    </children>
+                                </config>
+                            </children>
+                        </system>
+                    </children>
+                </admin>
+            </resources>
+        </acl>
+    </adminhtml>
+</config>
+
