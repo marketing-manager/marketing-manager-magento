@@ -36,6 +36,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
             $today = date('Y-m-d');
             $data = array(
                 'website_id' => $websiteId,
+                'email' => $this->_helper->getStoreConfig('emails'),
                 'time_zone'=> Mage::getStoreConfig('general/locale/timezone'),
                 'currency'=> Mage::getStoreConfig('currency/options/base'),
                 'dt'=>$today
