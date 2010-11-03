@@ -1,0 +1,21 @@
+<?php $_isConfigured = Mage::helper('foomanjirafe')->isConfigured() ?>
+
+<?php if ($_isConfigured) :?>
+    <?php $_siteId = $this->getSiteId() ?>
+    <?php $_pkBaseURL = $this->getPkBaseURL() ?>
+    <?php $_pkBaseURLSecure = $this->getPkBaseURLSecure() ?>
+
+    <!-- Piwik -->
+    <script type="text/javascript">
+    var pkBaseURL = (("https:" == document.location.protocol) ? "<?php echo $_pkBaseURLSecure ?>" : "<?php echo $_pkBaseURL ?>");
+    document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+    </script><script type="text/javascript">
+    try {
+    var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", <?php echo $_siteId ?>);
+    <?php echo $this->getTrackingInfo() ?>
+    piwikTracker.enableLinkTracking();
+    <?php echo $this->getAdditionalTrackingInfo() ?>
+    } catch( err ) {}
+    </script><noscript><p><img src="<?php echo $_pkBaseURL ?>piwik.php?idsite=<?php echo $_siteId ?>" style="border:0" alt="" /></p></noscript>
+    <!-- End Piwik Tag -->
+<?php endif;?>

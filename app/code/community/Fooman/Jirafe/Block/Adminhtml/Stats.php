@@ -4,7 +4,7 @@ class Fooman_Jirafe_Block_Adminhtml_Stats extends Mage_Adminhtml_Block_Widget_Co
 {
 
     protected function _construct() {
-        $this->setTemplate('fooman/jirafe/preview.phtml');
+        $this->setTemplate('fooman/jirafe/stats.phtml');
     }
 
     public function __construct()
@@ -14,7 +14,7 @@ class Fooman_Jirafe_Block_Adminhtml_Stats extends Mage_Adminhtml_Block_Widget_Co
         $this->_headerText = Mage::helper('foomanjirafe')->__('Jirafe');
 
         parent::__construct();
-        //$this->_removeButton('add');
+        $this->_removeButton('add');
     }
 
 }

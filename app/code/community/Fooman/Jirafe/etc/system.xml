@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<config>
+    <tabs>
+        <fooman translate="label" module="foomanjirafe">
+            <label>Fooman Extensions</label>
+            <sort_order>500</sort_order>
+        </fooman>
+    </tabs>
+    <sections>
+        <foomanjirafe>
+            <label>Jirafe Analytics</label>
+            <tab>fooman</tab>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            <sort_order>100</sort_order>
+            <groups>
+                <settings translate="label">
+                    <label>Jirafe Settings</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>11</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <isActive translate="label">
+                            <label>Active</label>
+                            <comment></comment>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <frontend_type>select</frontend_type>
+                            <sort_order>5</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </isActive>
+                        <emails translate="label">
+                            <label>Emails</label>
+                            <comment>Email addresses you want Jirafe to send the reports to (separate multiple emails with a comma ,)</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>25</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </emails>
+                    </fields>
+                </settings>
+            </groups>
+        </foomanjirafe>
+    </sections>
+</config>

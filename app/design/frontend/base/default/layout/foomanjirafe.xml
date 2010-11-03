@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <default>
+        <reference name="before_body_end">
+            <block type="foomanjirafe/js" name="foomanjirafe_js" as="foomanjirafe_js" >
+                <action method="setIsCheckoutSuccess">><value>0</value></action>
+            </block>
+        </reference>
+    </default>
+    <checkout_onepage_success>
+        <reference name="foomanjirafe_js">
+	    <action method="setIsCheckoutSuccess">><value>1</value></action>
+        </reference>
+    </checkout_onepage_success>
+    <checkout_multishipping_success>
+        <reference name="foomanjirafe_js">
+	    <action method="setIsCheckoutSuccess">><value>1</value></action>
+        </reference>
+    </checkout_multishipping_success>
+</layout>

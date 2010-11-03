@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Fooman_Jirafe>
-            <version>0.0.3</version>
+            <version>0.1.0</version>
         </Fooman_Jirafe>
     </modules>
 
@@ -10,8 +10,34 @@
         <models>
             <foomanjirafe>
                 <class>Fooman_Jirafe_Model</class>
+                <resourceModel>foomanjirafe_mysql4</resourceModel>
             </foomanjirafe>
+            <foomanjirafe_mysql4>
+                <class>Fooman_Jirafe_Model_Mysql4</class>
+                <resourceModel>foomanjirafe_mysql4</resourceModel>
+                <entities>
+                    <report><table>foomanjirafe_report</table></report>
+                </entities>
+            </foomanjirafe_mysql4>
         </models>
+        <resources>
+            <foomanjirafe_setup>
+                <setup>
+                    <module>Fooman_Jirafe</module>
+                    <class>Fooman_Jirafe_Model_Mysql4_Setup</class>
+                </setup>
+            </foomanjirafe_setup>
+            <foomanjirafe_write>
+                <connection>
+                    <use>core_write</use>
+                </connection>
+            </foomanjirafe_write>
+            <foomanjirafe_read>
+                <connection>
+                    <use>core_read</use>
+                </connection>
+            </foomanjirafe_read>
+        </resources>
         <helpers>
             <foomanjirafe>
                 <class>Fooman_Jirafe_Helper</class>
@@ -23,6 +49,15 @@
             </foomanjirafe>
         </blocks>
     </global>
+    <!--<frontend>
+        <layout>
+            <updates>
+                <foomanjirafe>
+                    <file>foomanjirafe.xml</file>
+                </foomanjirafe>
+            </updates>
+        </layout>
+    </frontend>-->
     <admin>
         <routers>
             <adminhtml>
@@ -34,6 +69,18 @@
             </adminhtml>
         </routers>
     </admin>
+    <default>
+        <fooman>
+            <jirafe>
+                <websiteId>0</websiteId>
+                <lastUpdatedDt></lastUpdatedDt>
+                <isActive>1</isActive>
+                <pkBaseURL>0</pkBaseURL>
+                <pkBaseURLSecure>0</pkBaseURLSecure>
+                <emails/>
+            </jirafe>
+        </fooman>
+    </default>
     <adminhtml>
         <menu>
             <jirafestats translate="title" module="foomanjirafe">
@@ -66,5 +113,17 @@
             </resources>
         </acl>
     </adminhtml>
+    <crontab>
+        <jobs>
+            <foomanjirafe_report>
+                <schedule><cron_expr>*/5 * * * *</cron_expr></schedule>
+                <run><model>foomanjirafe/report::cron</model></run>
+            </foomanjirafe_report>
+            <foomanjirafe_transmit>
+                <schedule><cron_expr>15 * * * *</cron_expr></schedule>
+                <run><model>foomanjirafe/transmit::cron</model></run>
+            </foomanjirafe_transmit>
+        </jobs>
+    </crontab>
 </config>
 
