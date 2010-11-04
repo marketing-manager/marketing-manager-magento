@@ -1,6 +1,8 @@
 <?php
 class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
 {
+    const DAYS_TO_COVER = 1;
+
     protected $_helper = '';
 
 
@@ -91,7 +93,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
     {
 
         $format = 'Y-m-d H:i:s';
-        $from = date($format, strtotime($today)-60*60*24*100);
+        $from = date($format, strtotime($today)-60*60*24*self::DAYS_TO_COVER);
         $to = date($format, strtotime($today));
         $counts = Mage::getResourceModel('log/aggregation')->getCounts($from, $to, $store->getId());
 
