@@ -49,7 +49,7 @@ class Fooman_Jirafe_Helper_Data extends Mage_Core_Helper_Abstract
     public function debug($mesg)
     {
         if (self::DEBUG) {
-            Mage::log($mesg);
+            Mage::log($mesg,null,'jirafe.log');
         }
     }
 }
