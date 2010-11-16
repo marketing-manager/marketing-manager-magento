@@ -1,8 +1,6 @@
 <?php
 class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
 {
-    const DAYS_TO_COVER = 1;
-
     protected $_helper = '';
 
 
@@ -35,31 +33,38 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         if($websiteId) {
             //we have a valid website id
             //global data
-            $today = date('Y-m-d');
+            $currentGmtTimestamp = Mage::getSingleton('core/date')->gmtTimestamp();
             $data = array(
                 'website_id' => $websiteId,
                 'email' => $this->_helper->getStoreConfig('emails'),
-                'time_zone'=> Mage::getStoreConfig('general/locale/timezone'),
-                'currency'=> Mage::getStoreConfig('currency/options/base'),
-                'dt'=>$today
+                'currency'=> Mage::getStoreConfig('currency/options/base')
             );
             
-            //loop over stores to create reports
-            $storeData = array();
+            //loop over stores to create reports            
             $storeCollection = Mage::getModel('core/store')->getCollection();
             foreach ($storeCollection as $store) {
                 if ($this->_helper->getStoreConfig('isActive', $store->getId())) {
-                    $storeData[$store->getId()] = $this->_gatherReportData($store, $today);
+                    $storeData = array();
+                    $combinedData = $data;
+                    $storeData[$store->getId()] = $this->_gatherReportData($store, $currentGmtTimestamp);
+
+                    //new report created
+                    if ($storeData[$store->getId()]){
+                        //combine global and store wide data
+                        $combinedData['stores'] = $storeData;
+
+                        //save report for transmmission
+                        $jirafeVersion = Mage::getResourceModel('core/resource')->getDbVersion('foomanjirafe_setup');
+                        $this->_helper->debug($combinedData);
+                        Mage::getModel('foomanjirafe/report')
+                            ->setStoreId($store->getId())
+                            ->setGeneratedByJirafeVersion($jirafeVersion)
+                            ->setStoreReportDate($storeData[$store->getId()]['dt'])
+                            ->setReportData(json_encode($combinedData))
+                            ->save();
+                    }
                 }
             }
-
-            //combine global and store wide data
-            $data['stores'] = $storeData;
-
-            //save report for transmmission
-            $jirafeVersion = Mage::getResourceModel('core/resource')->getDbVersion('foomanjirafe_setup');
-            $this->_helper->debug($data);
-            Mage::getModel('foomanjirafe/report')->setGeneratedByJirafeVersion($jirafeVersion)->setReportData(json_encode($data))->save();
         }
         
         $this->_helper->debug('finished jirafe report cron');
@@ -89,18 +94,39 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         return $this->_helper->getStoreConfig('websiteId');
     }
 
-    private function _gatherReportData($store, $today)
+    private function _gatherReportData($store, $currentGmtTimestamp)
     {
 
+        $storeTimeZone = $store->getConfig('general/locale/timezone');
+        $offset = Mage::getSingleton('core/date')->calculateOffset($storeTimeZone);
+        $this->_helper->debug('$offset '. $offset);
         $format = 'Y-m-d H:i:s';
-        $from = date($format, strtotime($today)-60*60*24*self::DAYS_TO_COVER);
-        $to = date($format, strtotime($today));
+
+        $currentTimeAtStore = Mage::helper('core')->formatDate(date($format,($currentGmtTimestamp+$offset)), 'short', true);
+        $yesterdayAtStore = date("Y-m-d", strtotime("-1 day", strtotime($currentTimeAtStore)));        
+        $yesterdayAtStoreFormatted = date($format, strtotime($yesterdayAtStore));
+
+        $this->_helper->debug('$offset '. $offset);
+        $this->_helper->debug('$currentTimeAtStore '. $currentTimeAtStore);
+
+        if($this->_checkIfReportExists ($store->getId(), $yesterdayAtStoreFormatted)) {
+            return false;
+        }
+
+        //db data is stored in GMT so run reports with adjusted times
+        $from = date($format, strtotime($yesterdayAtStore) - $offset);
+        $to = date($format, strtotime("+1 day",strtotime($yesterdayAtStore)) - $offset);
         $counts = Mage::getResourceModel('log/aggregation')->getCounts($from, $to, $store->getId());
+
+        $this->_helper->debug('Report $from '. $from);
+        $this->_helper->debug('Report $to '. $to);
 
         $abandonedCarts = $this->_gatherStoreAbandonedCarts($store->getId(), $from, $to);
         return array(
             'store_id' => $store->getId(),
             'description' => $store->getName(),
+            'time_zone'=> $storeTimeZone,
+            'dt'=> $yesterdayAtStoreFormatted,
             'base_url' => $store->getConfig('web/unsecure/base_url'),
             'num_orders' => $this->_gatherStoreOrders($store->getId(), $from, $to),
             'revenue' => $this->_gatherStoreRevenue($store->getId(), $from, $to),
@@ -134,5 +160,9 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         return Mage::getResourceModel('foomanjirafe/report')->getStoreAbandonedCarts($storeId, $from, $to);
     }
 
+    private function _checkIfReportExists ($storeId, $day)
+    {
+        return Mage::getResourceModel('foomanjirafe/report')->checkIfReportExists($storeId, $day);
+    }
 
 }

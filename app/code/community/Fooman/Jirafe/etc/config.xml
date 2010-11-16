@@ -2,11 +2,44 @@
 <config>
     <modules>
         <Fooman_Jirafe>
-            <version>0.1.0</version>
+            <version>0.1.1</version>
         </Fooman_Jirafe>
     </modules>
 
     <global>
+        <ignore_user_agents>
+            <aschroder1>AppEngine-Google; (+http://code.google.com/appengine; appid: aschroder-monitor)</aschroder1>
+            <bing1>Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)</bing1>
+            <pingdom1>Pingdom.com_bot_version_1.4_(http://www.pingdom.com/)</pingdom1>
+            <hosttracker1>Mozilla/4.0 (compatible; HostTracker.com/1.0;+http://host-tracker.com/)</hosttracker1>
+            <yahoo1>Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)</yahoo1>
+            <baidu1>Baiduspider+(+http://www.baidu.com/search/spider.htm)</baidu1>
+            <yandex1>Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)</yandex1>
+            <socialmedia1>Mozilla/5.1 (compatible; SocialMedia Bot/1.5;)</socialmedia1>
+            <exabot1>Mozilla/5.0 (compatible; Exabot/3.0; +http://www.exabot.com/go/robot)</exabot1>
+            <soso1>Sosospider+(+http://help.soso.com/webspider.htm)</soso1>
+            <tweetmeme1>Mozilla/5.0 (compatible; MSIE 6.0b; Windows NT 5.0) Gecko/2009011913 Firefox/3.0.6 TweetmemeBot</tweetmeme1>
+            <comodo1>Comodo-Certificates-Spider</comodo1>
+            <comodo2>Comodo SSL Checker</comodo2>
+            <speedy1>Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) Speedy Spider (http://www.entireweb.com/about/search_tech/speedy_spider/)</speedy1>
+            <twitter1>Twitterbot/0.1</twitter1>
+            <sitespeed1>SiteSpeedBot</sitespeed1>
+            <zooka1>Zookabot/2.1;++http://zookabot.com</zooka1>
+            <njuice1>Mozilla/5.0 (compatible; Windows NT 6.0) Gecko/20090624 Firefox/3.5 NjuiceBot</njuice1>
+            <friendfeed1>Mozilla/5.0 (compatible; FriendFeedBot/0.1; +Http://friendfeed.com/about/bot)</friendfeed1>
+            <huawei1>Huaweisymantecspider (compatible; MSIE 8.0; DSE-support@huaweisymantec.com)</huawei1>
+            <docomo1>DoCoMo/2.0 P900i(c100;TB;W24H11)(compatible; ichiro/mobile goo;+http://help.goo.ne.jp/door/crawler.html)</docomo1>
+            <msn1>msnbot/2.0b (+http://search.msn.com/msnbot.htm)._</msn1>
+            <worio1>Mozilla/5.0 (compatible; woriobot support [at] worio [dot] com +http://worio.com)</worio1>
+            <google4>Googlebot-Image/1.0</google4>
+            <archiver1>ia_archiver-web.archive.org</archiver1>
+            <passwordthumbs1>1PasswordThumbs/1 CFNetwork/454.11.5 Darwin/10.5.0 (i386) (MacBookPro3%2C1)</passwordthumbs1>
+            <twingly1>Twingly Recon</twingly1>
+            <tlsprober1>TLSProber/0.1</tlsprober1>
+            <postrank1>PostRank/2.0 (postrank.com)</postrank1>
+            <jskit1>JS-Kit URL Resolver, http://js-kit.com/</jskit1>
+        </ignore_user_agents>
+
         <models>
             <foomanjirafe>
                 <class>Fooman_Jirafe_Model</class>
@@ -116,7 +149,7 @@
     <crontab>
         <jobs>
             <foomanjirafe_report>
-                <schedule><cron_expr>*/5 * * * *</cron_expr></schedule>
+                <schedule><cron_expr>5 * * * *</cron_expr></schedule>
                 <run><model>foomanjirafe/report::cron</model></run>
             </foomanjirafe_report>
             <foomanjirafe_transmit>

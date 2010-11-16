@@ -61,7 +61,15 @@ class Fooman_Jirafe_Model_Mysql4_Report extends Mage_Core_Model_Mysql4_Abstract
 
         return $res;
     }
-
+    public function checkIfReportExists ($storeId, $day)
+    {
+        $select = $this->_getReadAdapter()->select();
+        $select->from($this->getTable('foomanjirafe/report'), 'COUNT(report_id)')
+            ->where('store_id = ?', $storeId)
+            ->where('store_report_date = ?', $day);
+        $res =  $this->_getReadAdapter()->fetchOne($select);
+        return $res ? $res : 0;
+    }
 
 
 }
