@@ -14,6 +14,7 @@
             <hosttracker1>Mozilla/4.0 (compatible; HostTracker.com/1.0;+http://host-tracker.com/)</hosttracker1>
             <yahoo1>Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)</yahoo1>
             <baidu1>Baiduspider+(+http://www.baidu.com/search/spider.htm)</baidu1>
+            <baidu2>Baiduspider+(+http://www.baidu.jp/spider/)</baidu2>
             <yandex1>Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)</yandex1>
             <socialmedia1>Mozilla/5.1 (compatible; SocialMedia Bot/1.5;)</socialmedia1>
             <exabot1>Mozilla/5.0 (compatible; Exabot/3.0; +http://www.exabot.com/go/robot)</exabot1>
@@ -28,16 +29,28 @@
             <njuice1>Mozilla/5.0 (compatible; Windows NT 6.0) Gecko/20090624 Firefox/3.5 NjuiceBot</njuice1>
             <friendfeed1>Mozilla/5.0 (compatible; FriendFeedBot/0.1; +Http://friendfeed.com/about/bot)</friendfeed1>
             <huawei1>Huaweisymantecspider (compatible; MSIE 8.0; DSE-support@huaweisymantec.com)</huawei1>
+            <huawei2>HuaweiSymantecSpider/1.0+DSE-support@huaweisymantec.com+(compatible; MSIE 7.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 3.0.4506.2152; .NET CLR ; http://www.huaweisymantec.com/en/IRL/spider)</huawei2>
             <docomo1>DoCoMo/2.0 P900i(c100;TB;W24H11)(compatible; ichiro/mobile goo;+http://help.goo.ne.jp/door/crawler.html)</docomo1>
             <msn1>msnbot/2.0b (+http://search.msn.com/msnbot.htm)._</msn1>
             <worio1>Mozilla/5.0 (compatible; woriobot support [at] worio [dot] com +http://worio.com)</worio1>
             <google4>Googlebot-Image/1.0</google4>
             <archiver1>ia_archiver-web.archive.org</archiver1>
+            <archiver2>ia_archiver (+http://www.alexa.com/site/help/webmasters; crawler@alexa.com)</archiver2>
             <passwordthumbs1>1PasswordThumbs/1 CFNetwork/454.11.5 Darwin/10.5.0 (i386) (MacBookPro3%2C1)</passwordthumbs1>
             <twingly1>Twingly Recon</twingly1>
             <tlsprober1>TLSProber/0.1</tlsprober1>
             <postrank1>PostRank/2.0 (postrank.com)</postrank1>
             <jskit1>JS-Kit URL Resolver, http://js-kit.com/</jskit1>
+            <dotnetcom1>Mozilla/5.0 (compatible; DotBot/1.1; http://www.dotnetdotcom.org/, crawler@dotnetdotcom.org)</dotnetcom1>
+            <google4>Mozilla/5.0 (compatible; Googlebot/2.1;  http://www.google.com/bot.html)</google4>
+            <gigabot1>Gigabot/3.0 (http://www.gigablast.com/spider.html)</gigabot1>
+            <search171>Mozilla/5.0 (compatible; Search17Bot/1.1; http://www.search17.com/bot.php)</search171>
+            <mj121>Mozilla/5.0 (compatible; MJ12bot/v1.3.3; http://www.majestic12.co.uk/bot.php?+)</mj121>
+            <archiveorg1>Mozilla/5.0 (compatible; archive.org_bot +http://www.archive.org/details/archive.org_bot)</archiveorg1>
+            <wire1>WIRE/1.0 (Linux;i686;Bot,Robot,Spider,Crawler)</wire1>
+            <discobot1>Mozilla/5.0 (compatible; discobot/1.1; +http://discoveryengine.com/discobot.html</discobot1>
+            <legs801>Mozilla/5.0 (compatible; 008/0.83; http://www.80legs.com/webcrawler.html;) Gecko/2008032620</legs801>
+            <legs802>Mozilla/5.0 (compatible; 008/0.83; http://www.80legs.com/webcrawler.html) Gecko/2008032620</legs802>
         </ignore_user_agents>
 
         <models>
