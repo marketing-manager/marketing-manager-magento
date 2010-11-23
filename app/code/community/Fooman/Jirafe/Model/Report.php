@@ -99,15 +99,15 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
 
         $storeTimeZone = $store->getConfig('general/locale/timezone');
         $offset = Mage::getSingleton('core/date')->calculateOffset($storeTimeZone);
-        $this->_helper->debug('$offset '. $offset);
         $format = 'Y-m-d H:i:s';
 
         $currentTimeAtStore = Mage::helper('core')->formatDate(date($format,($currentGmtTimestamp+$offset)), 'short', true);
-        $yesterdayAtStore = date("Y-m-d", strtotime("-1 day", strtotime($currentTimeAtStore)));        
+        $yesterdayAtStore = date("Y-m-d", strtotime("yesterday", $currentGmtTimestamp+$offset));
         $yesterdayAtStoreFormatted = date($format, strtotime($yesterdayAtStore));
 
         $this->_helper->debug('$offset '. $offset);
         $this->_helper->debug('$currentTimeAtStore '. $currentTimeAtStore);
+        $this->_helper->debug('$yesterdayAtStore '. $yesterdayAtStore);
 
         if($this->_checkIfReportExists ($store->getId(), $yesterdayAtStoreFormatted)) {
             return false;
@@ -115,7 +115,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
 
         //db data is stored in GMT so run reports with adjusted times
         $from = date($format, strtotime($yesterdayAtStore) - $offset);
-        $to = date($format, strtotime("+1 day",strtotime($yesterdayAtStore)) - $offset);
+        $to = date($format, strtotime("tomorrow",strtotime($yesterdayAtStore)) - $offset);
         $counts = Mage::getResourceModel('log/aggregation')->getCounts($from, $to, $store->getId());
 
         $this->_helper->debug('Report $from '. $from);
