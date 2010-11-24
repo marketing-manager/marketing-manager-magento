@@ -97,17 +97,19 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
     private function _gatherReportData($store, $currentGmtTimestamp)
     {
 
+        Mage::app()->setCurrentStore($store);
         $storeTimeZone = $store->getConfig('general/locale/timezone');
-        $offset = Mage::getSingleton('core/date')->calculateOffset($storeTimeZone);
+        $currentStoreTimestamp = Mage::getSingleton('core/date')->timestamp($currentGmtTimestamp);
+        $offset = $currentStoreTimestamp - $currentGmtTimestamp;
         $format = 'Y-m-d H:i:s';
 
-        $currentTimeAtStore = Mage::helper('core')->formatDate(date($format,($currentGmtTimestamp+$offset)), 'short', true);
-        $yesterdayAtStore = date("Y-m-d", strtotime("yesterday", $currentGmtTimestamp+$offset));
+        $currentTimeAtStore = date($format, $currentStoreTimestamp);
+        $yesterdayAtStore = date("Y-m-d", strtotime("yesterday", $currentStoreTimestamp));
         $yesterdayAtStoreFormatted = date($format, strtotime($yesterdayAtStore));
 
-        $this->_helper->debug('$offset '. $offset);
-        $this->_helper->debug('$currentTimeAtStore '. $currentTimeAtStore);
-        $this->_helper->debug('$yesterdayAtStore '. $yesterdayAtStore);
+        $this->_helper->debug('store '.$store->getName().' $offset '. $offset);
+        $this->_helper->debug('store '.$store->getName().' $currentTimeAtStore '. $currentTimeAtStore);
+        $this->_helper->debug('store '.$store->getName().' $yesterdayAtStore '. $yesterdayAtStore);
 
         if($this->_checkIfReportExists ($store->getId(), $yesterdayAtStoreFormatted)) {
             return false;
@@ -118,8 +120,8 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         $to = date($format, strtotime("tomorrow",strtotime($yesterdayAtStore)) - $offset);
         $counts = Mage::getResourceModel('log/aggregation')->getCounts($from, $to, $store->getId());
 
-        $this->_helper->debug('Report $from '. $from);
-        $this->_helper->debug('Report $to '. $to);
+        $this->_helper->debug('store '.$store->getName().' Report $from '. $from);
+        $this->_helper->debug('store '.$store->getName().' Report $to '. $to);
 
         $abandonedCarts = $this->_gatherStoreAbandonedCarts($store->getId(), $from, $to);
         return array(
