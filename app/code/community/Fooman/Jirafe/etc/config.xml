@@ -8,6 +8,9 @@
 
     <global>
         <ignore_user_agents>
+            <!--
+            SELECT count(*) as count, `http_user_agent` FROM `log_visitor_info` WHERE `visitor_id`>'335522' GROUP BY `http_user_agent` ORDER BY count DESC
+            -->
             <aschroder1>AppEngine-Google; (+http://code.google.com/appengine; appid: aschroder-monitor)</aschroder1>
             <bing1>Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)</bing1>
             <pingdom1>Pingdom.com_bot_version_1.4_(http://www.pingdom.com/)</pingdom1>
@@ -51,6 +54,8 @@
             <discobot1>Mozilla/5.0 (compatible; discobot/1.1; +http://discoveryengine.com/discobot.html</discobot1>
             <legs801>Mozilla/5.0 (compatible; 008/0.83; http://www.80legs.com/webcrawler.html;) Gecko/2008032620</legs801>
             <legs802>Mozilla/5.0 (compatible; 008/0.83; http://www.80legs.com/webcrawler.html) Gecko/2008032620</legs802>
+            <kiwistatus1>KiwiStatus/0.3 (NZS.com New Zealand Search; http://www.nzs.com/kiwi-status/)</kiwistatus1>
+            <dps>PXHOST</dps>
         </ignore_user_agents>
 
         <models>
@@ -65,6 +70,11 @@
                     <report><table>foomanjirafe_report</table></report>
                 </entities>
             </foomanjirafe_mysql4>
+            <log>
+                <rewrite>
+                    <visitor>Fooman_Jirafe_Model_Log_Visitor</visitor>
+                </rewrite>
+            </log>
         </models>
         <resources>
             <foomanjirafe_setup>
