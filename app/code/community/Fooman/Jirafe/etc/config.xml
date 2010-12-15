@@ -104,6 +104,15 @@
                 <class>Fooman_Jirafe_Block</class>
             </foomanjirafe>
         </blocks>
+        <template>
+            <email>
+               <foomanjirafe_report_template translate="label" module="foomanjirafe">
+                   <label>New Report</label>
+                   <file>jirafe/report.html</file>
+                   <type>html</type>
+               </foomanjirafe_report_template>
+           </email>
+        </template>
     </global>
     <!--<frontend>
         <layout>
@@ -126,6 +135,12 @@
         </routers>
     </admin>
     <default>
+        <trans_email>
+            <ident_jirafe>
+                    <name>Jirafe Analytics</name>
+                    <email>reports@jirafe.com</email>
+            </ident_jirafe>
+        </trans_email>
         <fooman>
             <jirafe>
                 <websiteId>0</websiteId>
@@ -134,6 +149,8 @@
                 <pkBaseURL>0</pkBaseURL>
                 <pkBaseURLSecure>0</pkBaseURLSecure>
                 <emails/>
+                <report_email_template>foomanjirafe_report_template</report_email_template>
+                <report_email_identity>jirafe</report_email_identity>
             </jirafe>
         </fooman>
     </default>

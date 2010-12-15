@@ -1,6 +1,10 @@
 <?php
 class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
 {
+
+    const XML_PATH_EMAIL_TEMPLATE   = 'fooman/jirafe/report_email_template';
+    const XML_PATH_EMAIL_IDENTITY   = 'fooman/jirafe/report_email_identity';
+
     protected $_helper = '';
 
 
@@ -46,14 +50,14 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
                 if ($this->_helper->getStoreConfig('isActive', $store->getId())) {
                     $storeData = array();
                     $combinedData = $data;
-                    $storeData[$store->getId()] = $this->_gatherReportData($store, $currentGmtTimestamp);
+                    $storeData[$store->getId()] = $this->_gatherReportData($store, $currentGmtTimestamp, $data['currency']);
 
                     //new report created
                     if ($storeData[$store->getId()]){
                         //combine global and store wide data
                         $combinedData['stores'] = $storeData;
 
-                        //save report for transmmission
+                        //save report for transmission
                         $jirafeVersion = Mage::getResourceModel('core/resource')->getDbVersion('foomanjirafe_setup');
                         $this->_helper->debug($combinedData);
                         Mage::getModel('foomanjirafe/report')
@@ -62,6 +66,10 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
                             ->setStoreReportDate($storeData[$store->getId()]['dt'])
                             ->setReportData(json_encode($combinedData))
                             ->save();
+                        //send email
+                        $this->sendJirafeEmail($storeData[$store->getId()], $store->getId());
+                        //notify Jirafe
+                        $this->sendJirafeHeartbeat($storeData[$store->getId()], $store->getId());
                     }
                 }
             }
@@ -85,20 +93,52 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         return false;
     }
 
+    public function sendJirafeEmail($storeData, $storeId)
+    {
+        $emails = explode(",", $this->_helper->getStoreConfig('emails', $storeId));
+        $translate = Mage::getSingleton('core/translate');
+        /* @var $translate Mage_Core_Model_Translate */
+        $translate->setTranslateInline(false);
+
+        $emailTemplate = Mage::getModel('core/email_template');
+        /* @var $emailTemplate Mage_Core_Model_Email_Template */
+        foreach ($emails as $email){
+            $emailTemplate->setDesignConfig(array('area' => 'backend'))
+                ->sendTransactional(
+                    Mage::getStoreConfig(self::XML_PATH_EMAIL_TEMPLATE),
+                    Mage::getStoreConfig(self::XML_PATH_EMAIL_IDENTITY),
+                    trim($email),
+                    null,
+                    $storeData,
+                    $storeId
+
+                );
+        }
+        $translate->setTranslateInline(true);
+    }
+
+    public function sendJirafeHeartbeat($storeData, $storeId)
+    {
+        $data = $storeData;
+        $data['admin_emails'] = $this->_helper->getStoreConfig('emails', $storeId);        
+        return Mage::getModel('foomanjirafe/api')->sendHeartbeat($data);
+    }
+
+
     public function _requestWebsiteId ($email)
     {
         //functionality to retrieve new website_id
         $id = md5($email);
         $this->_helper->debug("New Jirafe website_id ". $id);
         $this->_helper->setStoreConfig('websiteId', $id);
+        //return Mage::getModel('foomanjirafe/api')->createAccount(array('email'=>$email));
         return $this->_helper->getStoreConfig('websiteId');
     }
 
-    private function _gatherReportData($store, $currentGmtTimestamp)
+    private function _gatherReportData($store, $currentGmtTimestamp, $currency)
     {
 
         Mage::app()->setCurrentStore($store);
-        $storeTimeZone = $store->getConfig('general/locale/timezone');
         $currentStoreTimestamp = Mage::getSingleton('core/date')->timestamp($currentGmtTimestamp);
         $offset = $currentStoreTimestamp - $currentGmtTimestamp;
         $format = 'Y-m-d H:i:s';
@@ -124,18 +164,22 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         $this->_helper->debug('store '.$store->getName().' Report $to '. $to);
 
         $abandonedCarts = $this->_gatherStoreAbandonedCarts($store->getId(), $from, $to);
-        return array(
+        $reportData = array(
             'store_id' => $store->getId(),
-            'description' => $store->getName(),
-            'time_zone'=> $storeTimeZone,
+            'description' => $store->getFrontendName().' ('.$store->getName().')',
+            'time_zone'=> $store->getConfig('general/locale/timezone'),
             'dt'=> $yesterdayAtStoreFormatted,
+            'dt_nice'=> Mage::helper('core')->formatDate($yesterdayAtStore, 'long'),
             'base_url' => $store->getConfig('web/unsecure/base_url'),
             'num_orders' => $this->_gatherStoreOrders($store->getId(), $from, $to),
             'revenue' => $this->_gatherStoreRevenue($store->getId(), $from, $to),
             'num_visitors' => $counts['customers'] + $counts['visitors'],
             'num_abandoned_carts'=> $abandonedCarts['num'],
-            'revenue_abandoned_carts'=> $abandonedCarts['revenue']
+            'revenue_abandoned_carts'=> $abandonedCarts['revenue'],
+            'currency' => $currency
         );
+        $reportData['revenue_nice'] = Mage::getModel('directory/currency')->load($currency)->formatTxt($reportData['revenue']);
+        return $reportData;
     }
 
     private function _gatherStoreRevenue ($storeId, $from, $to)
