@@ -10,7 +10,7 @@ class Fooman_Jirafe_Model_Log_Visitor extends Mage_Log_Model_Visitor
             if (empty ($userAgent)){
                 $this->_skipRequestLogging = true;
             }
-            if(preg_match("/bot|spider|crawler/", $userAgent)) {
+            if(preg_match("/bot|spider|crawler|wordpress|tracker|monitor/i", $userAgent)) {
                 $this->_skipRequestLogging = true;
             }
         }
