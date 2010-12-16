@@ -130,26 +130,6 @@
            </email>
         </template>
     </global>
-    <!--<frontend>
-        <layout>
-            <updates>
-                <foomanjirafe>
-                    <file>foomanjirafe.xml</file>
-                </foomanjirafe>
-            </updates>
-        </layout>
-    </frontend>-->
-    <admin>
-        <routers>
-            <adminhtml>
-                <args>
-                    <modules>
-                        <foomanjirafe before="Mage_Adminhtml">Fooman_Jirafe_Adminhtml</foomanjirafe>
-                    </modules>
-                </args>
-            </adminhtml>
-        </routers>
-    </admin>
     <default>
         <trans_email>
             <ident_jirafe>
@@ -159,11 +139,6 @@
         </trans_email>
         <fooman>
             <jirafe>
-                <websiteId>0</websiteId>
-                <lastUpdatedDt></lastUpdatedDt>
-                <isActive>1</isActive>
-                <pkBaseURL>0</pkBaseURL>
-                <pkBaseURLSecure>0</pkBaseURLSecure>
                 <emails/>
                 <report_email_template>foomanjirafe_report_template</report_email_template>
                 <report_email_identity>jirafe</report_email_identity>
@@ -171,21 +146,10 @@
         </fooman>
     </default>
     <adminhtml>
-        <menu>
-            <jirafestats translate="title" module="foomanjirafe">
-                <title>Stats</title>
-                <sort_order>11</sort_order>
-                <action>adminhtml/stats</action>
-            </jirafestats>
-        </menu>
         <acl>
             <resources>
                 <admin>
                     <children>
-                        <jirafestats translate="title">
-                            <title>Jirafe Dashboard</title>
-                            <sort_order>0</sort_order>
-                        </jirafestats>
                         <system>
                             <children>
                                 <config>
@@ -208,10 +172,6 @@
                 <schedule><cron_expr>5 * * * *</cron_expr></schedule>
                 <run><model>foomanjirafe/report::cron</model></run>
             </foomanjirafe_report>
-            <foomanjirafe_transmit>
-                <schedule><cron_expr>15 * * * *</cron_expr></schedule>
-                <run><model>foomanjirafe/transmit::cron</model></run>
-            </foomanjirafe_transmit>
         </jobs>
     </crontab>
 </config>

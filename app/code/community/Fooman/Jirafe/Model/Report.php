@@ -47,14 +47,12 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
     public function cron ()
     {
         $this->_helper->debug('starting jirafe report cron');
-        $websiteId = $this->checkWebsiteId();
-        if($websiteId) {
-            //we have a valid website id
+        $email = $this->_helper->getStoreConfig('emails');
+        if($email) {
             //global data
             $currentGmtTimestamp = Mage::getSingleton('core/date')->gmtTimestamp();
             $data = array(
-                'website_id' => $websiteId,
-                'email' => $this->_helper->getStoreConfig('emails'),
+                'email' => $email,
                 'currency'=> Mage::getStoreConfig('currency/options/base')
             );
             
@@ -92,21 +90,6 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         $this->_helper->debug('finished jirafe report cron');
     }
 
-    public function checkWebsiteId ()
-    {
-        $websiteId = $this->_helper->getStoreConfig('websiteId');
-        if ($websiteId) {
-            return $websiteId;
-        } else {
-            $email = $this->_helper->getStoreConfig('emails');
-            if($email) {
-                return $this->_requestWebsiteId($email);
-            }
-        }
-        //we don't have a valid website id
-        return false;
-    }
-
     public function sendJirafeEmail($storeData, $storeId)
     {
         $emails = explode(",", $this->_helper->getStoreConfig('emails', $storeId));
@@ -136,17 +119,6 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         $data = $storeData;
         $data['admin_emails'] = $this->_helper->getStoreConfig('emails', $storeId);        
         return Mage::getModel('foomanjirafe/api')->sendHeartbeat($data);
-    }
-
-
-    public function _requestWebsiteId ($email)
-    {
-        //functionality to retrieve new website_id
-        $id = md5($email);
-        $this->_helper->debug("New Jirafe website_id ". $id);
-        $this->_helper->setStoreConfig('websiteId', $id);
-        //return Mage::getModel('foomanjirafe/api')->createAccount(array('email'=>$email));
-        return $this->_helper->getStoreConfig('websiteId');
     }
 
     private function _gatherReportData($store, $currentGmtTimestamp, $currency)
