@@ -145,7 +145,6 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         //db data is stored in GMT so run reports with adjusted times
         $from = date($format, strtotime($yesterdayAtStore) - $offset);
         $to = date($format, strtotime("tomorrow",strtotime($yesterdayAtStore)) - $offset);
-        $counts = Mage::getResourceModel('log/aggregation')->getCounts($from, $to, $store->getId());
 
         $this->_helper->debug('store '.$store->getName().' Report $from '. $from);
         $this->_helper->debug('store '.$store->getName().' Report $to '. $to);
@@ -163,7 +162,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
             'num_orders' => $this->_gatherStoreOrders($store->getId(), $from, $to),
             'num_customers'=>$this->_gatherStoreUniqueCustomers($store->getId(), $from, $to),
             'revenue' => $this->_gatherStoreRevenue($store->getId(), $from, $to),
-            'num_visitors' => $counts['customers'] + $counts['visitors'],
+            'num_visitors' => $this->_gatherStoreVisitors($store->getId(), $from, $to),
             'num_abandoned_carts'=> $abandonedCarts['num'],
             'revenue_abandoned_carts'=> $abandonedCarts['revenue'],
             'currency' => $currency,
@@ -217,6 +216,11 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
     private function _gatherMaxMinOrders ($storeId, $from, $to)
     {
         return Mage::getResourceModel('foomanjirafe/report')->getMaxMinOrders($storeId, $from, $to);
+    }
+
+    private function _gatherStoreVisitors ($storeId, $from, $to)
+    {
+        return Mage::getResourceModel('foomanjirafe/report')->getStoreVisitors($storeId, $from, $to);
     }
 
     /**

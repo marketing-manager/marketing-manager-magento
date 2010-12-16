@@ -72,6 +72,8 @@
             <legs802>Mozilla/5.0 (compatible; 008/0.83; http://www.80legs.com/webcrawler.html) Gecko/2008032620</legs802>
             <kiwistatus1>KiwiStatus/0.3 (NZS.com New Zealand Search; http://www.nzs.com/kiwi-status/)</kiwistatus1>
             <dps>PXHOST</dps>
+            <pycurl1>PycURL/7.18.2</pycurl1>
+            <voyager1>Voyager/1.0</voyager1>
         </ignore_user_agents>
 
         <models>
