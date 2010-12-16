@@ -6,208 +6,64 @@
 "var dt":"Date of Report",
 "var dt_nice":"Date of Report formatted with store locale",
 "var base_url":"URL of store",
+"var jirafe_settings_url":"URL to Jirafe settings",
 "var num_orders":"Number of Orders",
 "var revenue":"Revenue",
 "var revenue_nice":"Revenue formatted with store locale",
 "var num_visitors":"Number of visitors",
+"var num_customers":"Number of customers",
 "var num_abandoned_carts":"Number of abandoned carts",
 "var revenue_abandoned_carts":"Potential revenue in abandoned carts",
+"var revenue_abandoned_carts_nice":"Potential revenue in abandoned carts (formatted)",
+"var revenue_per_customer":"Revenue per customer",
+"var revenue_per_customer_nice":"Revenue per customer (formatted)",
+"var revenue_per_order":"Average order value",
+"var revenue_per_order_nice":"Average order value (formatted)",
+"var revenue_per_visitor":"Revenue per visitor",
+"var revenue_per_visitor_nice":"Revenue per visitor (formatted)",
+"var max_order":"Biggest Order",
+"var max_order_nice":"Biggest Order (formatted)",
+"var min_order":"Smallest Order",
+"var min_order_nice":"Smallest Order (formatted)",
+"var conversion_rate":"Unique visitors that bought",
 "var currency":"Base currency code"}
 @-->
 
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-
-<style type="text/css">
-		body,.backgroundTable{
-			background-color:#eeeeee;
-		}
-		#contentTable{
-			border:0px none #000000;
-			margin-top:10px;
-		}
-		.headerTop{
-			background-color:#eeeeee;
-			border-top:0px none #000000;
-			border-bottom:0px none #FFFFFF;
-			text-align:center;
-			padding:0px;
-		}
-		.adminText{
-			font-size:10px;
-			color:#333333;
-			line-height:200%;
-			font-family:Helvetica;
-			text-decoration:none;
-		}
-		.headerBar{
-			background-color:#FFFFFF;
-			border-top:0px none #333333;
-			border-bottom:0px none #FFFFFF;
-			padding:0px;
-		}
-		.headerBarText{
-			color:#333333;
-			font-size:30px;
-			font-family:Helvetica;
-			font-weight:normal;
-			text-align:left;
-		}
-		.title{
-			font-size:24px;
-			font-weight:bold;
-			color:#000000;
-			font-family:Helvetica;
-			line-height:110%;
-		}
-		.subTitle{
-			font-size:14px;
-			font-weight:bold;
-			color:#000000;
-			font-style:normal;
-			font-family:Helvetica;
-		}
-		.defaultText{
-			font-size:12px;
-			color:#000000;
-			line-height:150%;
-			font-family:Helvetica;
-			width:400px;
-			background-color:#FFFFFF;
-			padding:20px;
-		}
-		.sideColumn{
-			background-color:#FFFFFF;
-			border-left:1px solid #DDDDDD;
-			text-align:left;
-			width:200px;
-			padding:20px;
-			margin:0px;
-		}
-		.sideColumnText{
-			font-size:11px;
-			font-weight:normal;
-			color:#666666;
-			font-family:Helvetica;
-			line-height:150%;
-		}
-		.sideColumnTitle{
-			font-size:15px;
-			font-weight:bold;
-			color:#333333;
-			font-family:Helvetica;
-			line-height:150%;
-		}
-		.footerRow{
-			background-color:#FFFFFF;
-			border-top:0px none #FFFFFF;
-			padding:20px;
-		}
-		.footerText{
-			font-size:10px;
-			color:#666666;
-			line-height:100%;
-			font-family:Helvetica;
-		}
-		a,a:link,a:visited{
-			color:#17488a;
-			text-decoration:underline;
-			font-weight:normal;
-		}
-		.headerTop a{
-			color:#17488a;
-			text-decoration:none;
-			font-weight:normal;
-		}
-		.footerRow a{
-			color:#17488a;
-			text-decoration:underline;
-			font-weight:normal;
-		}
-		body,.backgroundTable{
-			background-color:#808080;
-		}
-</style></head>
-<body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0" style="background-color: #808080;">
-
-
-<table width="100%" cellpadding="10" cellspacing="0" class="backgroundTable" style="background-color: #808080;">
+<body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0" style="color:#252525; background-color:#999999;">
+<!-- outer table -->
+<table width="100%" cellpadding="10" cellspacing="0" style="font-family:arial,sans-serif;font-size:14px;">
+<tr><td align="center" style="font-size:11px">Unable to view this email?  Log into your <a style="color:#994400;" href="{{var jirafe_settings_url}}">Magento instance</a> to view these statistics in the dashboard.</td></tr>
 <tr>
-<td valign="top" align="center">
-
-<table id="contentTable" cellspacing="0" cellpadding="0" width="600" style="border: 0px none #000000;margin-top: 10px;"><tr><td>
-
-<table width="600" cellpadding="0" cellspacing="0">
-
-
-<tr>
-<td align="left" valign="middle" class="headerBar" style="background-color: #FFFFFF;border-top: 0px none #333333;border-bottom: 0px none #FFFFFF;padding: 0px;"><div class="headerBarText" style="color: #333333;font-size: 30px;font-family: Helvetica;font-weight: normal;text-align: left;">
-    <img src="http://gallery.mailchimp.com/1cbaca19ade15942cf833a485/images/10549618656_X6jHK.jpg" alt="" border="0" style="margin: 0; padding: 0;">
-</div></td>
-
+  <td valign="top" align="center">
+    <!-- inner table -->
+    <table cellspacing="0" cellpadding="0" width="600" style="background: white; border-left-width:3px; border-left-color:black; border-right-width:3px; border-right-color:black;">
+    <!-- header -->
+    <tr><td colspan="3" align="left" valign="middle" style="background-color:#999999;"><img src="file:///Users/scott/JirafeHeader.png" border="0" width="600" /></td></tr>
+    <!-- date -->
+    <tr><td colspan="3" style="padding-top:10px; padding-left:10px; padding-right:10px; padding-bottom:10px;">Store results for <b>{{var description}}</b> on {{var dt_nice}}</td></tr>
+    <!-- revenue -->
+    <tr><td colspan="3" style="padding-top:20px; padding-left:10px; padding-right:10px; padding-bottom:10px;"><b>Revenue</b></td></tr>
+    <tr><td style="padding-left:10px;">Total revenue</td><td align="right">{{var revenue_nice}}</td><td style="font-size:10px; color:#666666">&nbsp;</td></tr>
+    <tr><td style="padding-left:10px;">Revenue per customer</td><td align="right">{{var revenue_per_customer_nice}}</td><td style="font-size:10px; color:#666666">&nbsp;</td></tr>
+    <tr><td style="padding-left:10px;">Revenue per visitor</td><td align="right">{{var revenue_per_visitor_nice}}</td><td style="font-size:10px; color:#666666">&nbsp;</td></tr>
+    <!-- orders -->
+    <tr><td colspan="3" style="padding-top:20px; padding-left:10px; padding-right:10px; padding-bottom:10px;"><b>Orders</b></td></tr>
+    <tr><td style="padding-left:10px;">Total orders</td><td align="right">{{var num_orders}}</td><td style="font-size:10px; color:#666666">&nbsp;</td></tr>
+    <tr><td style="padding-left:10px;">Average order value</td><td align="right">{{var revenue_per_order_nice}}</td><td style="font-size:10px; color:#666666">&nbsp;</td></tr>
+    <tr><td style="padding-left:10px;">Largest order</td><td align="right">{{var max_order_nice}}</td><td style="font-size:10px; color:#666666">&nbsp;</td></tr>
+    <tr><td style="padding-left:10px;">Smallest order</td><td align="right">{{var min_order_nice}}</td><td style="font-size:10px; color:#666666">&nbsp;</td></tr>
+    <!-- visitors -->
+    <tr><td colspan="3" style="padding-top:20px; padding-left:10px; padding-right:10px; padding-bottom:10px;"><b>Visitors</b></td></tr>
+    <tr><td style="padding-left:10px;">Total visitors</td><td align="right">{{var num_visitors}}</td><td style="font-size:10px; color:#666666">&nbsp;</td></tr>
+    <tr><td style="padding-left:10px;">Visitor conversion rate</td><td align="right">{{var conversion_rate}}%</td><td style="font-size:10px; color:#666666">&nbsp;</td></tr>
+    <tr><td style="padding-left:10px;">Number of abandoned carts</td><td align="right">{{var num_abandoned_carts}}</td><td style="font-size:10px; color:#666666">&nbsp;</td></tr>
+    <tr><td style="padding-left:10px;">Potential lost revenue</td><td align="right">{{var revenue_abandoned_carts_nice}}</td><td style="font-size:10px; color:#666666">&nbsp;</td></tr>
+    <!-- footer -->
+    <tr><td colspan="3" align="left" valign="middle" style="background-color:#999999;"><img src="file:///Users/scott/JirafeFooter.png" border="0" width="600" /></td></tr>
+    </table>
+  </td>
 </tr>
-
-
-</table>
-
-<table width="600" cellpadding="20" cellspacing="0" class="bodyTable">
-<tr>
-
-<td valign="top" class="defaultText" align="left" style="font-size: 12px;color: #000000;line-height: 150%;font-family: Helvetica;width: 400px;background-color: #FFFFFF;padding: 20px;">
-
-<p>Your {{var description}} store performance at a glance</p>
-<p>{{var dt_nice}}</p>
-<table width="360" border="0">
-    <tr>
-        <td width="220" style="font-size: 12px;color: #000000;line-height: 150%;font-family: Helvetica;">Number of Orders</td>
-        <td width="140" align="right" style="font-size: 12px;color: #000000;line-height: 150%;font-family: Helvetica;">{{var num_orders}}</td>
-    </tr>
-    <tr>
-        <td style="font-size: 12px;color: #000000;line-height: 150%;font-family: Helvetica;">Revenue</td>
-        <td align="right" style="font-size: 12px;color: #000000;line-height: 150%;font-family: Helvetica;">{{var revenue_nice}}</td>
-    </tr>
-    <tr>
-        <td style="font-size: 12px;color: #000000;line-height: 150%;font-family: Helvetica;">Visitors</td>
-        <td align="right" style="font-size: 12px;color: #000000;line-height: 150%;font-family: Helvetica;">{{var num_visitors}}</td>
-    </tr>
-    <tr>
-        <td style="font-size: 12px;color: #000000;line-height: 150%;font-family: Helvetica;">Number of abandoned carts</td>
-        <td align="right" style="font-size: 12px;color: #000000;line-height: 150%;font-family: Helvetica;">{{var num_abandoned_carts}}</td>
-    </tr>
-    <tr>
-        <td style="font-size: 12px;color: #000000;line-height: 150%;font-family: Helvetica;">Potential lost revenue</td>
-        <td align="right" style="font-size: 12px;color: #000000;line-height: 150%;font-family: Helvetica;">{{var revenue_abandoned_carts}}</td>
-    </tr>
-</table>
-<br />
-
-</td>
-
-<td valign="top" class="sideColumn" align="left" style="margin: 0px;background-color: #FFFFFF;border-left: 1px solid #DDDDDD;text-align: left;width: 200px;padding: 20px;">
-<div class="sideColumnText" style="font-size: 11px;font-weight: normal;color: #666666;font-family: Helvetica;line-height: 150%;"><span class="sideColumnTitle" style="font-size: 15px;font-weight: bold;color: #333333;font-family: Helvetica;line-height: 150%;">Talk to us</span><br>
-Which analytics matters most?<br>
-Email us at:<br>
-<a href="mailto:hello@jirafe.com" style="color: #17488a;text-decoration: underline;font-weight: normal;">hello@jirafe.com</a><br>
-<br>
-<span class="sideColumnTitle" style="font-size: 15px;font-weight: bold;color: #333333;font-family: Helvetica;line-height: 150%;">Follow us</span><br>
-
-<a href="http://twitter.com/jirafeinc" style="color: #17488a;text-decoration: underline;font-weight: normal;">http://twitter.com/jirafeinc</a><br>
-</div>
-</td>
-
-</tr>
-
-<tr>
-<td class="footerRow" valign="top" colspan="2" align="left" style="background-color: #FFFFFF;border-top: 0px none #FFFFFF;padding: 20px;">
-
-
-</td>
-</tr>
-
-</table>
-
-</td></tr></table>
-
-</td>
-</tr>
+<tr><td align="center" style="font-size:11px">Follow Jirafe on <a style="color:#994400;" href="http://twitter.com/jirafeinc">Twitter</a>.&nbsp;&nbsp;&nbsp;&nbsp;Give Jirafe <a style="color:#994400;" href="http://getsatisfaction.com/jirafe">feedback</a>.&nbsp;&nbsp;&nbsp;&nbsp;Contact Jirafe by <a style="color:#994400;" href="mailto:hello@jirafe.com">email</a>.</td></tr>
+<tr><td align="center" style="font-size:11px">Would you rather not see these emails?  <a style="color:#994400;" href="{{var jirafe_settings_url}}">Unsubscribe</a>.</td></tr>
 </table>
 </body>

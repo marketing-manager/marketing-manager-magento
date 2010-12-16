@@ -64,8 +64,8 @@ class Fooman_Jirafe_Helper_Setup extends Mage_Core_Helper_Abstract
                         }
                     }
                     $tableDetails = implode(",",array_merge($columns,$keys));
-                    $sql = "DROP TABLE IF EXISTS `{$this->getTable($instruction['name'])}`;\n";
-                    $sql .="CREATE TABLE `{$this->getTable($instruction['name'])}` (".$tableDetails.") ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+                    $sql = "DROP TABLE IF EXISTS `{$installer->getTable($instruction['name'])}`;\n";
+                    $sql .="CREATE TABLE `{$installer->getTable($instruction['name'])}` (".$tableDetails.") ENGINE=InnoDB DEFAULT CHARSET=utf8;";
                     $installer->run($sql);
                     break;
                 case 'sql-column':

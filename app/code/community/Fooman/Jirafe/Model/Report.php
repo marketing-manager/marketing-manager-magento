@@ -139,6 +139,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
     {
 
         Mage::app()->setCurrentStore($store);
+        $currencyLocale = Mage::getModel('directory/currency')->load($currency);
         $currentStoreTimestamp = Mage::getSingleton('core/date')->timestamp($currentGmtTimestamp);
         $offset = $currentStoreTimestamp - $currentGmtTimestamp;
         $format = 'Y-m-d H:i:s';
@@ -164,6 +165,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         $this->_helper->debug('store '.$store->getName().' Report $to '. $to);
 
         $abandonedCarts = $this->_gatherStoreAbandonedCarts($store->getId(), $from, $to);
+        $maxMinOrders = $this->_gatherMaxMinOrders($store->getId(), $from, $to);
         $reportData = array(
             'store_id' => $store->getId(),
             'description' => $store->getFrontendName().' ('.$store->getName().')',
@@ -171,14 +173,43 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
             'dt'=> $yesterdayAtStoreFormatted,
             'dt_nice'=> Mage::helper('core')->formatDate($yesterdayAtStore, 'long'),
             'base_url' => $store->getConfig('web/unsecure/base_url'),
+            'jirafe_settings_url'=> Mage::helper('adminhtml')->getUrl('adminhtml/system_config/edit/section/foomanjirafe', array('_nosecret'=>true,'_nosid'=>true)),
             'num_orders' => $this->_gatherStoreOrders($store->getId(), $from, $to),
+            'num_customers'=>$this->_gatherStoreUniqueCustomers($store->getId(), $from, $to),
             'revenue' => $this->_gatherStoreRevenue($store->getId(), $from, $to),
             'num_visitors' => $counts['customers'] + $counts['visitors'],
             'num_abandoned_carts'=> $abandonedCarts['num'],
             'revenue_abandoned_carts'=> $abandonedCarts['revenue'],
-            'currency' => $currency
+            'currency' => $currency,
+            'max_order'=> $maxMinOrders['max_order'],
+            'min_order'=> $maxMinOrders['min_order']
         );
-        $reportData['revenue_nice'] = Mage::getModel('directory/currency')->load($currency)->formatTxt($reportData['revenue']);
+
+        if ($reportData['num_visitors'] > 0) {
+            $reportData['conversion_rate'] = sprintf("%01.2f", ($reportData['num_customers'] / $reportData['num_visitors'])*100);
+            $reportData['revenue_per_visitor'] = sprintf("%01.2f", $reportData['revenue'] / $reportData['num_visitors']);
+        } else {
+            $reportData['conversion_rate'] = '0.00';
+            $reportData['revenue_per_visitor'] = '0.00';
+        }        
+
+        if ($reportData['num_customers'] > 0) {
+            $reportData['revenue_per_customer'] = sprintf("%01.2f", $reportData['revenue'] / $reportData['num_customers']);
+        } else {
+            $reportData['revenue_per_customer'] = '0.00';
+        }
+
+        if ($reportData['num_orders'] > 0) {
+            $reportData['revenue_per_order'] = sprintf("%01.2f", $reportData['revenue'] / $reportData['num_orders']);
+        } else {
+            $reportData['revenue_per_order'] = '0.00';
+        }
+
+        $formatTheseValues = array('revenue','max_order','min_order','revenue_abandoned_carts','revenue_per_visitor','revenue_per_customer','revenue_per_order');
+        foreach ($formatTheseValues as $value){
+            $reportData[$value.'_nice'] = $currencyLocale->formatTxt($reportData[$value]);
+        }
+
         return $reportData;
     }
 
@@ -190,6 +221,16 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
     private function _gatherStoreOrders ($storeId, $from, $to)
     {
         return Mage::getResourceModel('foomanjirafe/report')->getStoreOrders($storeId, $from, $to);
+    }
+
+    private function _gatherStoreUniqueCustomers ($storeId, $from, $to)
+    {
+        return Mage::getResourceModel('foomanjirafe/report')->getStoreUniqueCustomers($storeId, $from, $to);
+    }
+
+    private function _gatherMaxMinOrders ($storeId, $from, $to)
+    {
+        return Mage::getResourceModel('foomanjirafe/report')->getMaxMinOrders($storeId, $from, $to);
     }
 
     /**

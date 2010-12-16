@@ -19,12 +19,6 @@ class Fooman_Jirafe_Model_Api
         # first_name - The first name of the user. Used to address the user when sending emails.
         # last_name - The last name of the user. Used to address the user when sending emails.
         # mobile_phone - The mobile phone number of the user. Used to send SMS alerts to the user.
-
-        $data['username']='testfooman';
-        $data['password']='test123';
-        $data['password_confirm']='test123';
-        Mage::log('createAccount');
-
         return $this->sendData(self::JIRAFE_API_ACCOUNT, $data);
     }
 
@@ -39,16 +33,14 @@ class Fooman_Jirafe_Model_Api
         ));
 
         try {
-
-            Mage::log($data);
             if (is_array($data) && $method == Zend_Http_Client::POST) {
                 foreach($data as $parameter=>$value) {
                     $conn->setParameterPost($parameter,$value);
                 }
             }
             $result = $conn->request($method);
-            Mage::log($result);
-            Mage::log($conn->getLastRequest());
+            //Mage::log($result);
+            //Mage::log($conn->getLastRequest());
 
         } catch (Exception $e) {
             Mage::logException($e);
@@ -70,16 +62,15 @@ class Fooman_Jirafe_Model_Api
         try {
             //connect and send data to Jirafe
             //$result = $conn->setRawData(json_encode($data), 'application/json')->request($method);
-            Mage::log($data);
+            //Mage::log($data);
             if (is_array($data) && $method == Zend_Http_Client::POST) {
                 foreach($data as $parameter=>$value) {
                     $conn->setParameterPost($parameter,$value);
                 }
             }
             $result = $conn->request($method);
-            Mage::log($result);
-            Mage::log($conn->getLastRequest());
-            //if($this->_isDebug()) { $this->sendToFirebug($result);}
+            //Mage::log($result);
+            //Mage::log($conn->getLastRequest());
         } catch (Exception $e) {
             return '<?xml version="1.0" encoding="UTF-8" ?>
                     <response><status>FAILED</status><errormessage>' . $e->getMessage() . '</errormessage></response>';
