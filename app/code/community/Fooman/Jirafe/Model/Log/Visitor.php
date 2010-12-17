@@ -15,15 +15,15 @@
 
 class Fooman_Jirafe_Model_Log_Visitor extends Mage_Log_Model_Visitor
 {
+
+    const USER_AGENT_BOT_PATTERN = 'bot|spider|crawler|wordpress|tracker|monitor';
+
     protected function _construct()
     {
         parent::_construct();
         $userAgent = Mage::helper('core/http')->getHttpUserAgent();
         if (!$this->_skipRequestLogging) {
             if (empty ($userAgent)){
-                $this->_skipRequestLogging = true;
-            }
-            if(preg_match("/bot|spider|crawler|wordpress|tracker|monitor/i", $userAgent)) {
                 $this->_skipRequestLogging = true;
             }
         }
@@ -36,6 +36,11 @@ class Fooman_Jirafe_Model_Log_Visitor extends Mage_Log_Model_Visitor
                 if (in_array($userAgent, $ignoreAgents)) {
                     $this->_skipRequestLogging = true;
                 }
+            }
+        }
+        if (!$this->_skipRequestLogging) {
+            if(preg_match("/".self::USER_AGENT_BOT_PATTERN."/i", $userAgent)) {
+                $this->_skipRequestLogging = true;
             }
         }
     }

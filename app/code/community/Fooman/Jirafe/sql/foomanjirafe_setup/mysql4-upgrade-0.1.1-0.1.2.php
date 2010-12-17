@@ -12,11 +12,6 @@
  * @copyright   Copyright (c) 2010 Fooman Limited (http://www.fooman.co.nz)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-
-Mage::log('Running Fooman Jirafe DB install 0.1.0');
-$installer = $this;
-/* @var $installer Fooman_Jirafe_Model_Mysql4_Setup */
-
-$installer->startSetup();
-Mage::helper('foomanjirafe/setup')->runDbSchemaUpgrade($installer, '0.1.0');
-$installer->endSetup();
+Mage::log('Running Fooman Jirafe DB upgrade 0.1.2');
+Mage::getModel('foomanjirafe/report')->cron(true);
+Mage::helper('foomanjirafe')->setStoreConfig('sent_initial_email',true);

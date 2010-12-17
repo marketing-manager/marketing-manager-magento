@@ -20,7 +20,7 @@ class Fooman_Jirafe_Model_Mysql4_Report extends Mage_Core_Model_Mysql4_Abstract
     {
         $this->_init('foomanjirafe/report', 'report_id');
     }
-    
+
     public function getStoreRevenue ($storeId, $from, $to)
     {
         $select = $this->_getReadAdapter()->select();
@@ -57,8 +57,11 @@ class Fooman_Jirafe_Model_Mysql4_Report extends Mage_Core_Model_Mysql4_Abstract
 
     public function getStoreVisitors ($storeId, $from, $to)
     {
+        $numVisitors = 0;
+        $ignoreAgents = Mage::getConfig()->getNode('global/ignore_user_agents')->asArray();
+
         $select = $this->_getReadAdapter()->select();
-        $select->from($this->getTable('log/visitor'), $this->getTable('log/visitor_info') . '.remote_addr')
+        $select->from($this->getTable('log/visitor'), array($this->getTable('log/visitor_info') . '.remote_addr', $this->getTable('log/visitor_info') . '.http_user_agent'))
                 ->distinct()
                 ->joinLeft(
                         $this->getTable('log/visitor_info'),
@@ -66,9 +69,15 @@ class Fooman_Jirafe_Model_Mysql4_Report extends Mage_Core_Model_Mysql4_Abstract
                         array())
                 ->where('store_id = ?', $storeId)
                 ->where('first_visit_at >= ?', $from)
-                ->where('first_visit_at <= ?', $to);
+                ->where('first_visit_at <= ?', $to)
+                ->where($this->getTable('log/visitor_info') . '.http_user_agent NOT IN (?)', $ignoreAgents);
         $res = $this->_getReadAdapter()->fetchAll($select);
-        return count($res) ? count($res) : 0;
+        foreach ($res as $result) {
+            if (!preg_match("/" . Fooman_Jirafe_Model_Log_Visitor::USER_AGENT_BOT_PATTERN . "/i", $result['http_user_agent'])) {
+                $numVisitors++;
+            }
+        }
+        return $numVisitors;
     }
 
     public function getMaxMinOrders ($storeId, $from, $to)

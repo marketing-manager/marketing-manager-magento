@@ -1,0 +1,68 @@
+<!--@subject Jirafe Report for {{var description}} {{var dt_nice}} @-->
+<!--@vars
+{"var description":"Store Name",
+"var store_id":"Store Id",
+"var time_zone":"Time Zone",
+"var dt":"Date of Report",
+"var dt_nice":"Date of Report formatted with store locale",
+"var base_url":"URL of store",
+"var jirafe_settings_url":"URL to Jirafe settings",
+"var num_orders":"Number of Orders",
+"var revenue":"Revenue",
+"var revenue_nice":"Revenue formatted with store locale",
+"var num_visitors":"Number of visitors",
+"var num_customers":"Number of customers",
+"var num_abandoned_carts":"Number of abandoned carts",
+"var revenue_abandoned_carts":"Potential revenue in abandoned carts",
+"var revenue_abandoned_carts_nice":"Potential revenue in abandoned carts (formatted)",
+"var revenue_per_customer":"Revenue per customer",
+"var revenue_per_customer_nice":"Revenue per customer (formatted)",
+"var revenue_per_order":"Average order value",
+"var revenue_per_order_nice":"Average order value (formatted)",
+"var revenue_per_visitor":"Revenue per visitor",
+"var revenue_per_visitor_nice":"Revenue per visitor (formatted)",
+"var max_order":"Biggest Order",
+"var max_order_nice":"Biggest Order (formatted)",
+"var min_order":"Smallest Order",
+"var min_order_nice":"Smallest Order (formatted)",
+"var conversion_rate":"Unique visitors that bought",
+"var currency":"Base currency code"}
+@-->
+
+<body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0" style="color:#252525; background-color:#999999;">
+<!-- outer table -->
+<table width="100%" cellpadding="10" cellspacing="0" style="font-family:arial,sans-serif;font-size:14px;">
+<tr>
+  <td valign="top" align="center">
+    <!-- inner table -->
+    <table cellspacing="0" cellpadding="0" width="600" style="background: white; border-left-width:3px; border-left-color:black; border-right-width:3px; border-right-color:black;">
+    <!-- header -->
+    <tr><td colspan="3" align="left" valign="middle" style="background-color:#999999;"><img src="file:///Users/scott/JirafeHeader.png" border="0" width="600" /></td></tr>
+    <!-- date -->
+    <tr><td colspan="3" style="padding-top:10px; padding-left:10px; padding-right:10px; padding-bottom:10px;">THIS IS YOUR FIRST EMAIL - to receive this email daily please enter your email address under System > Configuration > Jirafe Analytics. <br/>Store results for <b>{{var description}}</b> on {{var dt_nice}}</td></tr>
+    <!-- revenue -->
+    <tr><td colspan="3" style="padding-top:20px; padding-left:10px; padding-right:10px; padding-bottom:10px;"><b>Revenue</b></td></tr>
+    <tr><td style="padding-left:10px;">Total revenue</td><td align="right">{{var revenue_nice}}</td><td style="font-size:10px; color:#666666">&nbsp;</td></tr>
+    <tr><td style="padding-left:10px;">Revenue per customer</td><td align="right">{{var revenue_per_customer_nice}}</td><td style="font-size:10px; color:#666666">&nbsp;</td></tr>
+    <tr><td style="padding-left:10px;">Revenue per visitor</td><td align="right">{{var revenue_per_visitor_nice}}</td><td style="font-size:10px; color:#666666">&nbsp;</td></tr>
+    <!-- orders -->
+    <tr><td colspan="3" style="padding-top:20px; padding-left:10px; padding-right:10px; padding-bottom:10px;"><b>Orders</b></td></tr>
+    <tr><td style="padding-left:10px;">Total orders</td><td align="right">{{var num_orders}}</td><td style="font-size:10px; color:#666666">&nbsp;</td></tr>
+    <tr><td style="padding-left:10px;">Average order value</td><td align="right">{{var revenue_per_order_nice}}</td><td style="font-size:10px; color:#666666">&nbsp;</td></tr>
+    <tr><td style="padding-left:10px;">Largest order</td><td align="right">{{var max_order_nice}}</td><td style="font-size:10px; color:#666666">&nbsp;</td></tr>
+    <tr><td style="padding-left:10px;">Smallest order</td><td align="right">{{var min_order_nice}}</td><td style="font-size:10px; color:#666666">&nbsp;</td></tr>
+    <!-- visitors -->
+    <tr><td colspan="3" style="padding-top:20px; padding-left:10px; padding-right:10px; padding-bottom:10px;"><b>Visitors</b></td></tr>
+    <tr><td style="padding-left:10px;">Total visitors</td><td align="right">{{var num_visitors}}</td><td style="font-size:10px; color:#666666">&nbsp;</td></tr>
+    <tr><td style="padding-left:10px;">Visitor conversion rate</td><td align="right">{{var conversion_rate}}%</td><td style="font-size:10px; color:#666666">&nbsp;</td></tr>
+    <tr><td style="padding-left:10px;">Number of abandoned carts</td><td align="right">{{var num_abandoned_carts}}</td><td style="font-size:10px; color:#666666">&nbsp;</td></tr>
+    <tr><td style="padding-left:10px;">Potential lost revenue</td><td align="right">{{var revenue_abandoned_carts_nice}}</td><td style="font-size:10px; color:#666666">&nbsp;</td></tr>
+    <!-- footer -->
+    <tr><td colspan="3" align="left" valign="middle" style="background-color:#999999;"><img src="file:///Users/scott/JirafeFooter.png" border="0" width="600" /></td></tr>
+    </table>
+  </td>
+</tr>
+<tr><td align="center" style="font-size:11px">Follow Jirafe on <a style="color:#994400;" href="http://twitter.com/jirafeinc">Twitter</a>.&nbsp;&nbsp;&nbsp;&nbsp;Give Jirafe <a style="color:#994400;" href="http://getsatisfaction.com/jirafe">feedback</a>.&nbsp;&nbsp;&nbsp;&nbsp;Contact Jirafe by <a style="color:#994400;" href="mailto:hello@jirafe.com">email</a>.</td></tr>
+<tr><td align="center" style="font-size:11px">Would you rather not see these emails?  <a style="color:#994400;" href="{{var jirafe_settings_url}}">Unsubscribe</a>.</td></tr>
+</table>
+</body>
