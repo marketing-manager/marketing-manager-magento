@@ -16,9 +16,9 @@
 class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
 {
 
-    const XML_PATH_EMAIL_TEMPLATE   = 'fooman/jirafe/report_email_template';
-    const XML_PATH_EMAIL_TEMPLATE_INITIAL   = 'fooman/jirafe/report_email_template_initial';
-    const XML_PATH_EMAIL_IDENTITY   = 'fooman/jirafe/report_email_identity';
+    const XML_PATH_EMAIL_TEMPLATE   = 'foomanjirafe/report_email_template';
+    const XML_PATH_EMAIL_TEMPLATE_INITIAL   = 'foomanjirafe/report_email_template_initial';
+    const XML_PATH_EMAIL_IDENTITY   = 'foomanjirafe/report_email_identity';
 
     protected $_helper = '';
 
@@ -48,6 +48,9 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
     public function cron ($justInstalledEmail = false)
     {
         $this->_helper->debug('starting jirafe report cron');
+        if($justInstalledEmail) {
+            Mage::app()->getConfig()->reinit();
+        }
         $email = $this->_helper->getStoreConfig('emails');
         if($email || $justInstalledEmail) {
             //global data
@@ -59,10 +62,8 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
 
             //loop over stores to create reports
             $storeCollection = Mage::getModel('core/store')->getCollection();
+            $notified = false;
             foreach ($storeCollection as $store) {
-                if($justInstalledEmail) {
-                    Mage::app()->getConfig()->reinit();
-                }
                 if ($this->_helper->getStoreConfig('isActive', $store->getId()) || $justInstalledEmail) {
                     $storeData = array();
                     $combinedData = $data;
@@ -83,11 +84,37 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
                             ->setReportData(json_encode($combinedData))
                             ->save();
                         //send email
-                        $this->sendJirafeEmail($storeData[$store->getId()], $store->getId(), $justInstalledEmail);
-                        //notify Jirafe
-                        if(!$justInstalledEmail){
-                            $this->sendJirafeHeartbeat($storeData[$store->getId()], $store->getId());
+                        try {
+                            $this->sendJirafeEmail($storeData[$store->getId()], $store->getId(), $justInstalledEmail);
+                            //notify Jirafe
+                            if ($justInstalledEmail && !Mage::helper('foomanjirafe')->getStoreConfig('sent_initial_email')) {
+                                if(!$notified) {
+                                    Mage::helper('foomanjirafe')->setStoreConfig('sent_initial_email',true);
+                                    Mage::getModel('adminnotification/inbox')
+                                        ->setSeverity(Mage_AdminNotification_Model_Inbox::SEVERITY_NOTICE)
+                                        ->setTitle('Jirafe installed')
+                                        ->setDateAdded(gmdate('Y-m-d H:i:s'))
+                                        ->setUrl(Mage::helper('adminhtml')->getUrl('adminhtml/system_config/edit/section/foomanjirafe', array('_nosid'=>true)))
+                                        ->setDescription('We have just installed Jirafe and you have received your first report via email. You can change the settings in the admin area under System > Configuration > General > Jirafe Analytics.')
+                                        ->save();
+                                    $notified = true;
+                                }
+                            }
+                        } catch (Exception $e) {
+                            Mage::logException($e);
+                            if(!$notified) {
+                                Mage::getModel('adminnotification/inbox')
+                                    ->setSeverity(Mage_AdminNotification_Model_Inbox::SEVERITY_NOTICE)
+                                    ->setTitle('Jirafe installed - needs configuration')
+                                    ->setDateAdded(gmdate('Y-m-d H:i:s'))
+                                    ->setUrl(Mage::helper('adminhtml')->getUrl('adminhtml/system_config/edit/section/foomanjirafe', array('_nosid'=>true)))
+                                    ->setDescription('We have just installed Jirafe and but were unable to send you your first report via email. Please change the settings in the admin area under System > Configuration > General > Jirafe Analytics.')
+                                    ->save();
+                                $notified = true;
+                            }
                         }
+                        //notify Jirafe
+                        $this->sendJirafeHeartbeat($storeData[$store->getId()], $store->getId());
                     }
                 }
             }
@@ -98,14 +125,24 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
 
     public function sendJirafeEmail($storeData, $storeId, $justInstalledEmail)
     {
-        if($justInstalledEmail) {
-	    Mage::getSingleton('core/session', array('name' => 'adminhtml'))->start();
-            $emails = array(Mage::getSingleton('admin/session')->getUser()->getEmail());
+        if($justInstalledEmail) {	    
             $template = Mage::getStoreConfig(self::XML_PATH_EMAIL_TEMPLATE_INITIAL, $storeId);
-        } else {
+            Mage::getSingleton('core/session', array('name' => 'adminhtml'))->start();
+            if($adminUser = Mage::getSingleton('admin/session')->getUser()) {
+                $currentAdminEmail = $adminUser->getEmail();
+                if ($currentAdminEmail) {
+                    $emails = array($currentAdminEmail);
+                } else {
+                    throw new Exception ('Couldn\'t send first email - please check your settings under System > Configuration > Jirafe Analytics');
+                }
+                Mage::helper('foomanjirafe')->setStoreConfig('emails',$currentAdminEmail);
+            } else {
+                throw new Exception('Couldn\'t send first email - please check your settings under System > Configuration > Jirafe Analytics');
+            }            
+        } else {            
             $emails = explode(",", $this->_helper->getStoreConfig('emails', $storeId));
             $template = Mage::getStoreConfig(self::XML_PATH_EMAIL_TEMPLATE, $storeId);
-        }
+        }        
         $translate = Mage::getSingleton('core/translate');
         /* @var $translate Mage_Core_Model_Translate */
         $translate->setTranslateInline(false);

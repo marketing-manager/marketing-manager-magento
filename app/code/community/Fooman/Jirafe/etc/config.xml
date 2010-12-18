@@ -144,16 +144,28 @@
                     <email>reports@jirafe.com</email>
             </ident_jirafe>
         </trans_email>
-        <fooman>
-            <jirafe>
+        <foomanjirafe>
+            <settings>
                 <sent_initial_email>0</sent_initial_email>
+                <isActive>1</isActive>
                 <emails/>
-                <report_email_template>foomanjirafe_report_template</report_email_template>
-                <report_email_template_initial>foomanjirafe_report_template_initial</report_email_template_initial>
-                <report_email_identity>jirafe</report_email_identity>
-            </jirafe>
-        </fooman>
+            </settings>
+            <report_email_template>foomanjirafe_report_template</report_email_template>
+            <report_email_template_initial>foomanjirafe_report_template_initial</report_email_template_initial>
+            <report_email_identity>jirafe</report_email_identity>
+        </foomanjirafe>
     </default>
+        <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <foomanjirafe before="Mage_Adminhtml">Fooman_Jirafe_Adminhtml</foomanjirafe>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
     <adminhtml>
         <acl>
             <resources>

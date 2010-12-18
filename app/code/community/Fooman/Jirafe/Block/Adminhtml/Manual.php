@@ -12,5 +12,22 @@
  * @copyright   Copyright (c) 2010 Fooman Limited (http://www.fooman.co.nz)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-Mage::log('Running Fooman Jirafe DB upgrade 0.1.2');
-Mage::getModel('foomanjirafe/report')->cron(true);
+
+class Fooman_Jirafe_Block_Adminhtml_Manual extends Mage_Adminhtml_Block_Widget_Container
+{
+
+    protected function _construct() {
+        $this->setTemplate('fooman/jirafe/manual.phtml');
+    }
+
+    public function __construct()
+    {
+        $this->_controller = 'adminhtml_jirafe';
+        $this->_blockGroup = 'foomanjirafe';
+        $this->_headerText = Mage::helper('foomanjirafe')->__('Jirafe');
+
+        parent::__construct();
+        $this->_removeButton('add');
+    }
+
+}
