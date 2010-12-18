@@ -16,7 +16,7 @@
 class Fooman_Jirafe_Model_Log_Visitor extends Mage_Log_Model_Visitor
 {
 
-    const USER_AGENT_BOT_PATTERN = 'bot|spider|crawler|wordpress|tracker|monitor';
+    const USER_AGENT_BOT_PATTERN = 'bot|spider|crawler|wordpress|tracker|monitor|libwww-perl';
 
     protected function _construct()
     {
