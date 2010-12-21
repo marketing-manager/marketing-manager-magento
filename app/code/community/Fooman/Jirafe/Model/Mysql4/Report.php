@@ -35,7 +35,7 @@ class Fooman_Jirafe_Model_Mysql4_Report extends Mage_Core_Model_Mysql4_Abstract
     public function getStoreOrders ($storeId, $from, $to)
     {
         $select = $this->_getReadAdapter()->select();
-        $select->from($this->getTable('sales/order'), 'COUNT(quote_id)')
+        $select->from($this->getTable('sales/order'), 'COUNT(entity_id)')
             ->where('store_id = ?', $storeId)
             ->where('created_at >= ?', $from)
             ->where('created_at <= ?', $to);
@@ -46,19 +46,31 @@ class Fooman_Jirafe_Model_Mysql4_Report extends Mage_Core_Model_Mysql4_Abstract
     public function getStoreUniqueCustomers ($storeId, $from, $to)
     {
         $select = $this->_getReadAdapter()->select();
-        $select->from($this->getTable('sales/order'), 'customer_email')
+        /*$select->from($this->getTable('sales/order'), 'customer_email')
              ->distinct()
             ->where('store_id = ?', $storeId)
             ->where('created_at >= ?', $from)
             ->where('created_at <= ?', $to);
-        $res =  $this->_getReadAdapter()->fetchAll($select);
+        $res =  $this->_getReadAdapter()->fetchAll($select);*/
+        $collection = Mage::getModel('sales/order')->getCollection()
+                ->addAttributeToSelect('customer_email')
+                ->addAttributeToFilter('store_id', $storeId)
+                ->addAttributeToFilter('created_at', array('date'=>true, 'from'=> $from))
+                ->addAttributeToFilter('created_at', array('date'=>true, 'to'=> $to));
+        $collection->getSelect()->distinct(true);
+        $res = $collection->getAllIds();   
+
         return count($res) ? count($res) : 0;
     }
 
-    public function getStoreVisitors ($storeId, $from, $to)
+    public function getStoreVisitors ($storeId, $from, $to, $initialEmail = false)
     {
         $numVisitors = 0;
-        $ignoreAgents = Mage::getConfig()->getNode('global/ignore_user_agents')->asArray();
+        $ignoreAgents = array();
+        $ignoreAgentsConfig = Mage::getConfig()->getNode('global/ignore_user_agents');
+        foreach ($ignoreAgents as $ignoreAgent) {
+           $ignoreAgents[]= (string) $ignoreAgent->innerXml();
+        }
 
         $select = $this->_getReadAdapter()->select();
         $select->from($this->getTable('log/visitor'), array($this->getTable('log/visitor_info') . '.remote_addr', $this->getTable('log/visitor_info') . '.http_user_agent'))
@@ -69,8 +81,10 @@ class Fooman_Jirafe_Model_Mysql4_Report extends Mage_Core_Model_Mysql4_Abstract
                         array())
                 ->where('store_id = ?', $storeId)
                 ->where('first_visit_at >= ?', $from)
-                ->where('first_visit_at <= ?', $to)
-                ->where($this->getTable('log/visitor_info') . '.http_user_agent NOT IN (?)', $ignoreAgents);
+                ->where('first_visit_at <= ?', $to);
+        if ($initialEmail) {
+            $select->where($this->getTable('log/visitor_info') . '.http_user_agent NOT IN (?)', $ignoreAgents);
+        }
         $res = $this->_getReadAdapter()->fetchAll($select);
         foreach ($res as $result) {
             if (!preg_match("/" . Fooman_Jirafe_Model_Log_Visitor::USER_AGENT_BOT_PATTERN . "/i", $result['http_user_agent'])) {
@@ -100,15 +114,18 @@ class Fooman_Jirafe_Model_Mysql4_Report extends Mage_Core_Model_Mysql4_Abstract
 
     public function getStoreAbandonedCarts ($storeId, $from, $to)
     {
-        $res = array('num'=>0, 'revenue'=>0);
-        $select = $this->_getReadAdapter()->select();
-        $select->from($this->getTable('sales/order'), 'quote_id')
-            ->where('store_id = ?', $storeId)
-            ->where('created_at >= ?', $from)
-            ->where('created_at <= ?', $to);
-        $convertedQuoteIds =  $this->_getReadAdapter()->fetchOne($select);
+        $res = array('num'=>0, 'revenue'=>0);        
+        $collection = Mage::getModel('sales/order')->getCollection()
+                ->addAttributeToSelect('quote_id')
+                ->addAttributeToFilter('store_id', $storeId)
+                ->addAttributeToFilter('created_at', array('date'=>true, 'from'=> $from))
+                ->addAttributeToFilter('created_at', array('date'=>true, 'to'=> $to));
+        $convertedQuoteIds = array();
+        foreach ($collection as $item) {
+            $convertedQuoteIds[] = $item->getQuoteId();
+        }
 
-        $select->reset();
+        $select = $this->_getReadAdapter()->select();
         $select->from($this->getTable('sales/quote'), 'COUNT(entity_id)')
             ->where('store_id = ?', $storeId)
             ->where('created_at >= ?', $from)

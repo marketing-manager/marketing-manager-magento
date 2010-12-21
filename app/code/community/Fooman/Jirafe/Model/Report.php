@@ -60,7 +60,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         foreach ($storeCollection as $store) {
             if ($this->_helper->getStoreConfig('isActive', $store->getId()) || $justInstalledEmail) {
                 $storeData = array();
-                $storeData[$store->getId()] = $this->_gatherReportData($store, $currentGmtTimestamp);
+                $storeData[$store->getId()] = $this->_gatherReportData($store, $currentGmtTimestamp, $justInstalledEmail);
 
                 //new report created
                 if ($storeData[$store->getId()]){
@@ -124,7 +124,9 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
                     throw new Exception ('Couldn\'t send first email - please check your settings under System > Configuration > Jirafe Analytics');
                 }
                 Mage::helper('foomanjirafe')->setStoreConfig('emails',$currentAdminEmail);
-                Mage::app()->getConfig()->reinit();
+                if( Mage::app()->useCache('config')) {
+                    Mage::app()->getConfig()->removeCache();
+                }
             } else {
                 throw new Exception('Couldn\'t send first email - please check your settings under System > Configuration > Jirafe Analytics');
             }
@@ -160,7 +162,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         return Mage::getModel('foomanjirafe/api')->sendHeartbeat($data);
     }
 
-    private function _gatherReportData($store, $currentGmtTimestamp)
+    private function _gatherReportData($store, $currentGmtTimestamp, $intialEmail= false)
     {
 
         Mage::app()->setCurrentStore($store);        
@@ -202,7 +204,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
             'num_orders' => $this->_gatherStoreOrders($store->getId(), $from, $to),
             'num_customers'=>$this->_gatherStoreUniqueCustomers($store->getId(), $from, $to),
             'revenue' => $this->_gatherStoreRevenue($store->getId(), $from, $to),
-            'num_visitors' => $this->_gatherStoreVisitors($store->getId(), $from, $to),
+            'num_visitors' => $this->_gatherStoreVisitors($store->getId(), $from, $to, $intialEmail),
             'num_abandoned_carts'=> $abandonedCarts['num'],
             'revenue_abandoned_carts'=> $abandonedCarts['revenue'],
             'currency' => $currency,
@@ -258,9 +260,9 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         return Mage::getResourceModel('foomanjirafe/report')->getMaxMinOrders($storeId, $from, $to);
     }
 
-    private function _gatherStoreVisitors ($storeId, $from, $to)
+    private function _gatherStoreVisitors ($storeId, $from, $to, $intialEmail = false)
     {
-        return Mage::getResourceModel('foomanjirafe/report')->getStoreVisitors($storeId, $from, $to);
+        return Mage::getResourceModel('foomanjirafe/report')->getStoreVisitors($storeId, $from, $to, $intialEmail);
     }
 
     /**
