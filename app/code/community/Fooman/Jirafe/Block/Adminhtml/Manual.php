@@ -30,4 +30,9 @@ class Fooman_Jirafe_Block_Adminhtml_Manual extends Mage_Adminhtml_Block_Widget_C
         $this->_removeButton('add');
     }
 
+    public function getConfigUrl()
+    {
+        return Mage::helper('adminhtml')->getUrl('adminhtml/system_config/edit/section/foomanjirafe');
+    }
+
 }

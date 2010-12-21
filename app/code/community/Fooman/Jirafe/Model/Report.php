@@ -84,7 +84,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
                                     ->setSeverity(Mage_AdminNotification_Model_Inbox::SEVERITY_NOTICE)
                                     ->setTitle('Jirafe plugin for Magento installed successfully.')
                                     ->setDateAdded(gmdate('Y-m-d H:i:s'))
-                                    ->setUrl(Mage::helper('adminhtml')->getUrl('adminhtml/system_config/edit/section/foomanjirafe', array('_nosid'=>true)))
+                                    ->setUrl(Mage::helper('adminhtml')->getUrl('adminhtml/jirafe/manual', array('_nosid'=>true,'_nosecret'=>true)))
                                     ->setDescription('We have just installed Jirafe and you have received your first report via email. You can change the settings in the admin area under System > Configuration > General > Jirafe Analytics.')
                                     ->save();
                                 $notified = true;

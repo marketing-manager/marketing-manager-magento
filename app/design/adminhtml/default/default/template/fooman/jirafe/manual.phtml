@@ -13,4 +13,13 @@
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 ?>
-<h1>Jirafe Manual</h1>
+<h1>Welcome to Jirafe analytics reporting for Magento!</h1>
+<ol style="list-style-type: decimal; padding: 5px;">
+    <li><p>You will receive a daily email, with results of yesterday's revenue, orders, and visitors.</p>
+        <p>To modify who receives this email, please go to <a href="<?php echo $this->getConfigUrl()?>">System > Configuration > Jirafe Analytics</a>.</p>
+        <p><a href="<?php echo $this->getConfigUrl()?>"><img src="<?php echo $this->getSkinUrl('images/jirafe/Jirafe_Configuration_75.png'); ?>"></a></p>
+    </li>
+    <li>Jirafe Analytics also requires Magento's cron to be configured and running. Please see the
+        <a href="http://www.magentocommerce.com/wiki/1_-_installation_and_configuration/how_to_setup_a_cron_job" target="_blank">Magento Wiki</a> on how to set it up.
+    </li>
+</ol>

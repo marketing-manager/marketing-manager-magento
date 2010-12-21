@@ -23,14 +23,6 @@ class Fooman_Jirafe_Adminhtml_JirafeController extends Mage_Adminhtml_Controller
 
     public function manualAction()
     {
-        $session = Mage::getSingleton('adminhtml/session');
-        if($session->getUser()) {
-            $session->addNotice(
-                    Mage::helper('foomanjirafe')->__('You can configure Jirafe here System > Configuration > <a href="%s">Jirafe Analytics</a> to enter your details.',
-                            Mage::helper('adminhtml')->getUrl('adminhtml/system_config/edit/section/foomanjirafe')
-                            )
-                    );
-        }
         $this->loadLayout();
 
         $this->_addContent(
