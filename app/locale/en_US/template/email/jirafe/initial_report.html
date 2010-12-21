@@ -1,4 +1,4 @@
-<!--@subject Jirafe Report for {{var description}} {{var dt_nice}} @-->
+<!--@subject {{var description}} results on {{var dt_nice}} from Jirafe @-->
 <!--@vars
 {"var description":"Store Name",
 "var store_id":"Store Id",
@@ -35,11 +35,11 @@
 <tr>
   <td valign="top" align="center">
     <!-- inner table -->
-    <table cellspacing="0" cellpadding="0" width="600" style="background: white; border-left-width:3px; border-left-color:black; border-right-width:3px; border-right-color:black;">
+    <table border="1" cellspacing="0" cellpadding="0" width="600" style="background: white; border-left-width:3px; border-left-color:black; border-right-width:3px; border-right-color:black;">
     <!-- header -->
-    <tr><td colspan="3" align="left" valign="middle" style="background-color:#999999;"><img alt="Daily stats for {{var description}} from Jirafe'" src=" http://jirafe.com/i/JirafeHeader.png" border="0" width="600" /></td></tr>
+    <tr><td colspan="3" align="left" valign="middle" style="background-color:#999999;"><img src="http://jirafe.com/img/JirafeHeader.png" border="0" width="600" /></td></tr>
     <!-- date -->
-    <tr><td colspan="3" style="padding-top:10px; padding-left:10px; padding-right:10px; padding-bottom:10px;">THIS IS YOUR FIRST EMAIL - to receive this email daily please enter your email address under System > Configuration > Jirafe Analytics. <br/>Store results for <b>{{var description}}</b> on {{var dt_nice}}</td></tr>
+    <tr><td colspan="3" style="padding-top:10px; padding-left:10px; padding-right:10px; padding-bottom:10px;">Welcome to Jirafe analytics reporting for Magento!<br /><br />You will receive this email daily, with results of yesterday's revenue, orders, and visitors.  To modify who receives this email, please go to your Magento Admin Console, under System > Configuration > Jirafe Analytics.<br /><br />Store results for <b>{{var description}}</b> on {{var dt_nice}}</td></tr>
     <!-- revenue -->
     <tr><td colspan="3" style="padding-top:20px; padding-left:10px; padding-right:10px; padding-bottom:10px;"><b>Revenue</b></td></tr>
     <tr><td style="padding-left:10px;">Total revenue</td><td align="right">{{var revenue_nice}}</td><td style="font-size:10px; color:#666666">&nbsp;</td></tr>
@@ -54,11 +54,10 @@
     <!-- visitors -->
     <tr><td colspan="3" style="padding-top:20px; padding-left:10px; padding-right:10px; padding-bottom:10px;"><b>Visitors</b></td></tr>
     <tr><td style="padding-left:10px;">Total visitors</td><td align="right">{{var num_visitors}}</td><td style="font-size:10px; color:#666666">&nbsp;</td></tr>
-    <tr><td style="padding-left:10px;">Visitor conversion rate</td><td align="right">{{var conversion_rate}}%</td><td style="font-size:10px; color:#666666">&nbsp;</td></tr>
-    <tr><td style="padding-left:10px;">Number of abandoned carts</td><td align="right">{{var num_abandoned_carts}}</td><td style="font-size:10px; color:#666666">&nbsp;</td></tr>
-    <tr><td style="padding-left:10px;">Potential lost revenue</td><td align="right">{{var revenue_abandoned_carts_nice}}</td><td style="font-size:10px; color:#666666">&nbsp;</td></tr>
+    <tr><td style="padding-left:10px;">Conversion rate</td><td align="right">{{var conversion_rate}}%</td><td style="font-size:10px; color:#666666">&nbsp;</td></tr>
+    <tr><td>&nbsp;</td></tr>
     <!-- footer -->
-    <tr><td colspan="3" align="left" valign="middle" style="background-color:#999999;"><img alt="Jirafe footer" src=" http://jirafe.com/i/JirafeFooter.png" border="0" width="600" /></td></tr>
+    <tr><td colspan="3" align="left" valign="middle" style="background-color:#999999;"><img src=" http://jirafe.com/img/JirafeFooter.png" border="0" width="600" /></td></tr>
     </table>
   </td>
 </tr>
