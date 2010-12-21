@@ -19,6 +19,13 @@ class Fooman_Jirafe_Model_Api
 
     public function sendHeartbeat ($data, $method = Zend_Http_Client::POST)
     {
+        //url, admin email, daily visitors, daily sales, currency, time zone,
+        $hbData = array();
+        $hbData['url'] = $data['base_url'];
+        $hbData['visitors'] = $data['num_visitors'];
+        $hbData['sales'] = $data['revenue'];
+        $hbData['currency'] = $data['currency'];
+        $hbData['time_zone'] = $data['time_zone'];
 
         //set up connection
         $conn = new Zend_Http_Client(self::JIRAFE_HB_URL);
@@ -28,8 +35,8 @@ class Fooman_Jirafe_Model_Api
         ));
 
         try {
-            if (is_array($data) && $method == Zend_Http_Client::POST) {
-                foreach($data as $parameter=>$value) {
+            if (is_array($hbData) && $method == Zend_Http_Client::POST) {
+                foreach($hbData as $parameter=>$value) {
                     $conn->setParameterPost($parameter,$value);
                 }
             }
