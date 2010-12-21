@@ -82,7 +82,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
                                 Mage::helper('foomanjirafe')->setStoreConfig('sent_initial_email',true);
                                 Mage::getModel('adminnotification/inbox')
                                     ->setSeverity(Mage_AdminNotification_Model_Inbox::SEVERITY_NOTICE)
-                                    ->setTitle('Jirafe installed')
+                                    ->setTitle('Jirafe plugin for Magento installed successfully.')
                                     ->setDateAdded(gmdate('Y-m-d H:i:s'))
                                     ->setUrl(Mage::helper('adminhtml')->getUrl('adminhtml/system_config/edit/section/foomanjirafe', array('_nosid'=>true)))
                                     ->setDescription('We have just installed Jirafe and you have received your first report via email. You can change the settings in the admin area under System > Configuration > General > Jirafe Analytics.')
@@ -95,7 +95,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
                         if(!$notified) {
                             Mage::getModel('adminnotification/inbox')
                                 ->setSeverity(Mage_AdminNotification_Model_Inbox::SEVERITY_NOTICE)
-                                ->setTitle('Jirafe installed - needs configuration')
+                                ->setTitle('Jirafe plugin for Magento installed - needs configuration')
                                 ->setDateAdded(gmdate('Y-m-d H:i:s'))
                                 ->setUrl(Mage::helper('adminhtml')->getUrl('adminhtml/jirafe/manual', array('_nosid'=>true,'_nosecret'=>true)))
                                 ->setDescription('We have just installed Jirafe and but were unable to send you your first report via email. Please change the settings in the admin area under System > Configuration > General > Jirafe Analytics.')
