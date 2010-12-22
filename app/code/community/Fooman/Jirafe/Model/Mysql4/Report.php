@@ -45,33 +45,20 @@ class Fooman_Jirafe_Model_Mysql4_Report extends Mage_Core_Model_Mysql4_Abstract
 
     public function getStoreUniqueCustomers ($storeId, $from, $to)
     {
-        $select = $this->_getReadAdapter()->select();
-        /*$select->from($this->getTable('sales/order'), 'customer_email')
-             ->distinct()
-            ->where('store_id = ?', $storeId)
-            ->where('created_at >= ?', $from)
-            ->where('created_at <= ?', $to);
-        $res =  $this->_getReadAdapter()->fetchAll($select);*/
+        $res = array();
         $collection = Mage::getModel('sales/order')->getCollection()
-                ->addAttributeToSelect('customer_email')
+		->addAttributeToSelect('customer_email')
                 ->addAttributeToFilter('store_id', $storeId)
-                ->addAttributeToFilter('created_at', array('date'=>true, 'from'=> $from))
-                ->addAttributeToFilter('created_at', array('date'=>true, 'to'=> $to));
-        $collection->getSelect()->distinct(true);
-        $res = $collection->getAllIds();   
-
+                ->addAttributeToFilter('created_at', array('from'=> $from, 'to'=> $to));
+	foreach ($collection as $order){
+		$res[$order->getCustomerEmail()]= true;
+	}
         return count($res) ? count($res) : 0;
     }
 
     public function getStoreVisitors ($storeId, $from, $to, $initialEmail = false)
     {
         $numVisitors = 0;
-        $ignoreAgents = array();
-        $ignoreAgentsConfig = Mage::getConfig()->getNode('global/ignore_user_agents');
-        foreach ($ignoreAgents as $ignoreAgent) {
-           $ignoreAgents[]= (string) $ignoreAgent->innerXml();
-        }
-
         $select = $this->_getReadAdapter()->select();
         $select->from($this->getTable('log/visitor'), array($this->getTable('log/visitor_info') . '.remote_addr', $this->getTable('log/visitor_info') . '.http_user_agent'))
                 ->distinct()
@@ -83,6 +70,15 @@ class Fooman_Jirafe_Model_Mysql4_Report extends Mage_Core_Model_Mysql4_Abstract
                 ->where('first_visit_at >= ?', $from)
                 ->where('first_visit_at <= ?', $to);
         if ($initialEmail) {
+            if(version_compare(Mage::getVersion(), '1.4.0.0') < 0){
+                $ignoreAgents = array();
+                $ignoreAgentsConfig = Mage::getConfig()->getNode('global/ignore_user_agents');
+                foreach ($ignoreAgents as $ignoreAgent) {
+                   $ignoreAgents[]= (string) $ignoreAgent->innerXml();
+                }
+            } else {
+                $ignoreAgents = Mage::getConfig()->getNode('global/ignore_user_agents')->asArray();
+            }
             $select->where($this->getTable('log/visitor_info') . '.http_user_agent NOT IN (?)', $ignoreAgents);
         }
         $res = $this->_getReadAdapter()->fetchAll($select);
@@ -114,12 +110,11 @@ class Fooman_Jirafe_Model_Mysql4_Report extends Mage_Core_Model_Mysql4_Abstract
 
     public function getStoreAbandonedCarts ($storeId, $from, $to)
     {
-        $res = array('num'=>0, 'revenue'=>0);        
+        $res = array('num'=>0, 'revenue'=>0);
         $collection = Mage::getModel('sales/order')->getCollection()
                 ->addAttributeToSelect('quote_id')
                 ->addAttributeToFilter('store_id', $storeId)
-                ->addAttributeToFilter('created_at', array('date'=>true, 'from'=> $from))
-                ->addAttributeToFilter('created_at', array('date'=>true, 'to'=> $to));
+                ->addAttributeToFilter('created_at', array('from'=> $from, 'to'=> $to));;
         $convertedQuoteIds = array();
         foreach ($collection as $item) {
             $convertedQuoteIds[] = $item->getQuoteId();
