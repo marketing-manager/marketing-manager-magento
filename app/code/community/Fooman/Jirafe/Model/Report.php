@@ -48,6 +48,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
     public function cron ($cronSchedule, $justInstalledEmail = false)
     {
         $this->_helper->debug('starting jirafe report cron');
+	
         if($justInstalledEmail) {
             Mage::app()->getConfig()->reinit();
         }
@@ -113,25 +114,9 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
 
     public function sendJirafeEmail($storeData, $storeId, $justInstalledEmail)
     {
-        if($justInstalledEmail) {
-            $template = Mage::getStoreConfig(self::XML_PATH_EMAIL_TEMPLATE_INITIAL, $storeId);
-            Mage::getSingleton('core/session', array('name' => 'adminhtml'))->start();
-            if($adminUser = Mage::getSingleton('admin/session')->getUser()) {
-                $currentAdminEmail = $adminUser->getEmail();
-                if ($currentAdminEmail) {
-                    $emails = array($currentAdminEmail);
-                } else {
-                    throw new Exception ('Couldn\'t send first email - please check your settings under System > Configuration > Jirafe Analytics');
-                }
-                Mage::helper('foomanjirafe')->setStoreConfig('emails',$currentAdminEmail);
-                Mage::app()->getConfig()->reinit();
-            } else {
-                throw new Exception('Couldn\'t send first email - please check your settings under System > Configuration > Jirafe Analytics');
-            }
-        } else {
-            $emails = explode(",", $this->_helper->getStoreConfig('emails', $storeId));
-            $template = Mage::getStoreConfig(self::XML_PATH_EMAIL_TEMPLATE, $storeId);
-        }
+	$t = $justInstalledEmail ? self::XML_PATH_EMAIL_TEMPLATE_INITIAL : self::XML_PATH_EMAIL_TEMPLATE;
+	$template = Mage::getStoreConfig($t, $storeId);
+	$emails = explode(',', $this->_helper->getStoreConfig('emails', $storeId));
         $translate = Mage::getSingleton('core/translate');
         /* @var $translate Mage_Core_Model_Translate */
         $translate->setTranslateInline(false);
@@ -156,13 +141,11 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
     public function sendJirafeHeartbeat($storeData, $storeId)
     {
         $data = $storeData;
-        $data['admin_emails'] = $this->_helper->getStoreConfig('emails', $storeId);
         return Mage::getModel('foomanjirafe/api')->sendHeartbeat($data);
     }
 
     private function _gatherReportData($store, $currentGmtTimestamp)
     {
-
         Mage::app()->setCurrentStore($store);        
         $currentStoreTimestamp = Mage::getSingleton('core/date')->timestamp($currentGmtTimestamp);
         $offset = $currentStoreTimestamp - $currentGmtTimestamp;
@@ -187,28 +170,29 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         $this->_helper->debug('store '.$store->getName().' Report $from '. $from);
         $this->_helper->debug('store '.$store->getName().' Report $to '. $to);
 
-        $currency =  Mage::getStoreConfig('currency/options/base', $store->getId());
-        $currencyLocale = Mage::getModel('directory/currency')->load($currency);
         $abandonedCarts = $this->_gatherStoreAbandonedCarts($store->getId(), $from, $to);
         $maxMinOrders = $this->_gatherMaxMinOrders($store->getId(), $from, $to);
-        $reportData = array(
-            'store_id' => $store->getId(),
-            'description' => $store->getFrontendName().' ('.$store->getName().')',
-            'time_zone'=> $store->getConfig('general/locale/timezone'),
-            'dt'=> $yesterdayAtStoreFormatted,
-            'dt_nice'=> Mage::helper('core')->formatDate($yesterdayAtStore, 'long'),
-            'base_url' => $store->getConfig('web/unsecure/base_url'),
-            'jirafe_settings_url'=> Mage::helper('adminhtml')->getUrl('adminhtml/system_config/edit/section/foomanjirafe', array('_nosecret'=>true,'_nosid'=>true)),
-            'num_orders' => $this->_gatherStoreOrders($store->getId(), $from, $to),
-            'num_customers'=>$this->_gatherStoreUniqueCustomers($store->getId(), $from, $to),
-            'revenue' => $this->_gatherStoreRevenue($store->getId(), $from, $to),
-            'num_visitors' => $this->_gatherStoreVisitors($store->getId(), $from, $to),
-            'num_abandoned_carts'=> $abandonedCarts['num'],
-            'revenue_abandoned_carts'=> $abandonedCarts['revenue'],
-            'currency' => $currency,
-            'max_order'=> $maxMinOrders['max_order'],
-            'min_order'=> $maxMinOrders['min_order']
-        );
+	
+	$reportData = array();
+	$reportData['store_id'] = $store->getId();
+	$reportData['jirafe_version'] = Mage::getResourceModel('core/resource')->getDbVersion('foomanjirafe_setup');
+	$reportData['magento_version'] = Mage::getVersion();
+        $reportData['admin_emails'] = $this->_helper->getStoreConfig('emails', $store->getId());
+	$reportData['description'] = $store->getFrontendName().' ('.$store->getName().')';
+	$reportData['time_zone'] = $store->getConfig('general/locale/timezone');
+	$reportData['dt'] = $yesterdayAtStoreFormatted;
+	$reportData['dt_nice'] = Mage::helper('core')->formatDate($yesterdayAtStore, 'long');
+	$reportData['base_url'] = $store->getConfig('web/unsecure/base_url');
+	$reportData['jirafe_settings_url'] = Mage::helper('adminhtml')->getUrl('adminhtml/system_config/edit/section/foomanjirafe', array('_nosecret'=>true,'_nosid'=>true));
+	$reportData['num_orders'] = $this->_gatherStoreOrders($store->getId(), $from, $to);
+	$reportData['num_customers'] = $this->_gatherStoreUniqueCustomers($store->getId(), $from, $to);
+	$reportData['revenue'] = $this->_gatherStoreRevenue($store->getId(), $from, $to);
+	$reportData['num_visitors'] = $this->_gatherStoreVisitors($store->getId(), $from, $to);
+	$reportData['num_abandoned_carts'] = $abandonedCarts['num'];
+	$reportData['revenue_abandoned_carts'] = $abandonedCarts['revenue'];
+	$reportData['currency'] = Mage::getStoreConfig('currency/options/base', $store->getId());
+	$reportData['max_order'] = $maxMinOrders['max_order'];
+	$reportData['min_order'] = $maxMinOrders['min_order'];
 
         if ($reportData['num_visitors'] > 0) {
             $reportData['conversion_rate'] = sprintf("%01.2f", ($reportData['num_customers'] / $reportData['num_visitors'])*100);
@@ -231,6 +215,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         }
 
         $formatTheseValues = array('revenue','max_order','min_order','revenue_abandoned_carts','revenue_per_visitor','revenue_per_customer','revenue_per_order');
+        $currencyLocale = Mage::getModel('directory/currency')->load($reportData['currency']);
         foreach ($formatTheseValues as $value){
             $reportData[$value.'_nice'] = $currencyLocale->formatTxt($reportData[$value]);
         }
