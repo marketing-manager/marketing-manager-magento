@@ -15,7 +15,7 @@
 
 class Fooman_Jirafe_Model_Api
 {
-    const JIRAFE_HB_URL =  'https://jirafe.com/hb';
+    const JIRAFE_HB_URL =  'https://api.jirafe.com/hb';
 
     public function sendHeartbeat ($data, $method = Zend_Http_Client::POST)
     {
