@@ -48,6 +48,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
     public function cron ($cronSchedule, $justInstalledEmail = false)
     {
         $this->_helper->debug('starting jirafe report cron');
+	
         if($justInstalledEmail) {
             Mage::app()->getConfig()->reinit();
         }
@@ -113,27 +114,9 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
 
     public function sendJirafeEmail($storeData, $storeId, $justInstalledEmail)
     {
-        if($justInstalledEmail) {
-            $template = Mage::getStoreConfig(self::XML_PATH_EMAIL_TEMPLATE_INITIAL, $storeId);
-            Mage::getSingleton('core/session', array('name' => 'adminhtml'))->start();
-            if($adminUser = Mage::getSingleton('admin/session')->getUser()) {
-                $currentAdminEmail = $adminUser->getEmail();
-                if ($currentAdminEmail) {
-                    $emails = array($currentAdminEmail);
-                } else {
-                    throw new Exception ('Couldn\'t send first email - please check your settings under System > Configuration > Jirafe Analytics');
-                }
-                Mage::helper('foomanjirafe')->setStoreConfig('emails',$currentAdminEmail);
-                if( Mage::app()->useCache('config')) {
-                    Mage::app()->getConfig()->removeCache();
-                }
-            } else {
-                throw new Exception('Couldn\'t send first email - please check your settings under System > Configuration > Jirafe Analytics');
-            }
-        } else {
-            $emails = explode(",", $this->_helper->getStoreConfig('emails', $storeId));
-            $template = Mage::getStoreConfig(self::XML_PATH_EMAIL_TEMPLATE, $storeId);
-        }
+        $t = $justInstalledEmail ? self::XML_PATH_EMAIL_TEMPLATE_INITIAL : self::XML_PATH_EMAIL_TEMPLATE;
+        $template = Mage::getStoreConfig($t, $storeId);
+        $emails = explode(',', $this->_helper->getStoreConfig('emails', $storeId));
         $translate = Mage::getSingleton('core/translate');
         /* @var $translate Mage_Core_Model_Translate */
         $translate->setTranslateInline(false);
@@ -158,7 +141,6 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
     public function sendJirafeHeartbeat($storeData, $storeId)
     {
         $data = $storeData;
-        $data['admin_emails'] = $this->_helper->getStoreConfig('emails', $storeId);
         return Mage::getModel('foomanjirafe/api')->sendHeartbeat($data);
     }
 
@@ -195,6 +177,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         $maxMinOrders = $this->_gatherMaxMinOrders($store->getId(), $from, $to);
         $reportData = array(
             'store_id' => $store->getId(),
+            'admin_emails'=> $this->_helper->getStoreConfig('emails', $store->getId()),
             'description' => $store->getFrontendName().' ('.$store->getName().')',
             'time_zone'=> $store->getConfig('general/locale/timezone'),
             'dt'=> $yesterdayAtStoreFormatted,
