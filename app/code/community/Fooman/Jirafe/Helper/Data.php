@@ -16,7 +16,7 @@
 class Fooman_Jirafe_Helper_Data extends Mage_Core_Helper_Abstract
 {
     const XML_PATH_FOOMANJIRAFE_SETTINGS = 'foomanjirafe/settings/';
-    const DEBUG = false;
+    const DEBUG = true;
 
     /**
      * Return store config value for key

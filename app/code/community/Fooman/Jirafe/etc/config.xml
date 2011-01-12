@@ -100,6 +100,9 @@
                     <module>Fooman_Jirafe</module>
                     <class>Fooman_Jirafe_Model_Mysql4_Setup</class>
                 </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
             </foomanjirafe_setup>
             <foomanjirafe_write>
                 <connection>

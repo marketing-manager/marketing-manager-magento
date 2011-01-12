@@ -37,6 +37,10 @@
                             <label>Active</label>
                             <comment></comment>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <comment><![CDATA[
+                            Please ensure you have configured a cronjob for Magento - <a href="http://www.magentocommerce.com/wiki/1_-_installation_and_configuration/how_to_setup_a_cron_job">read more.</a></p>
+                            ]]>
+                            </comment>
                             <frontend_type>select</frontend_type>
                             <sort_order>5</sort_order>
                             <show_in_default>1</show_in_default>

@@ -26,12 +26,12 @@ Mage::helper('foomanjirafe/setup')->runDbSchemaUpgrade($installer, '0.1.0');
 $adminUsers = Mage::getSingleton('admin/user')->getCollection();
 $emails = array();
 foreach ($adminUsers as $adminUser) {
-	if ($adminUser->getIsActive()) {
-		$emails[] = $adminUser->getEmail();
-	}
+    if ($adminUser->getIsActive()) {
+        $emails[] = $adminUser->getEmail();
+    }
 }
 if (!empty($emails)) {
-	Mage::helper('foomanjirafe')->setStoreConfig('emails',implode(',', $emails));
+    Mage::helper('foomanjirafe')->setStoreConfig('emails', implode(',', $emails));
 }
 
 $installer->endSetup();
