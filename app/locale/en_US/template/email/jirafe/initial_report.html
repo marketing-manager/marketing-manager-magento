@@ -1,4 +1,4 @@
-<!--@subject {{var description}} results on {{var dt_nice}} from Jirafe @-->
+<!--@subject {{var dt_nice}} results for {{var description}} from Jirafe @-->
 <!--@vars
 {"var description":"Store Name",
 "var store_id":"Store Id",
@@ -29,39 +29,50 @@
 "var currency":"Base currency code"}
 @-->
 
-<body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0" style="color:#252525; background-color:#999999;">
+<body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0">
 <!-- outer table -->
-<table width="100%" cellpadding="10" cellspacing="0" style="font-family:arial,sans-serif;font-size:14px;">
+<table width="100%" cellpadding="10" cellspacing="0" style="color:#252525;background-color:#999999;">
 <tr>
   <td valign="top" align="center">
-    <!-- inner table -->
-    <table cellspacing="0" cellpadding="0" width="600" style="background: white; border-left-width:3px; border-left-color:black; border-right-width:3px; border-right-color:black;">
+    <!-- border table -->
+    <table cellspacing="0" cellpadding="0" width="600" style="font-family:arial,sans-serif;font-size:13px;">
+    <!-- welcome message -->
+    <tr><td style="text-align:center;padding-bottom:5px;"><strong>Welcome to Jirafe analytics reporting for Magento!</strong></td></tr>
+    <tr><td style="padding-bottom:5px;">You will receive this email daily, with results of yesterday's revenue, orders, and visitors.  To modify who sees this email, navigate to <em>System > Configuration > Jirafe Analytics</em> in your Magento admin console.</td></tr>
     <!-- header -->
-    <tr><td colspan="3" align="left" valign="middle" style="background-color:#999999;"><img src="http://jirafe.com/img/JirafeHeader.png" border="0" width="600" /></td></tr>
-    <!-- date -->
-    <tr><td colspan="3" style="padding-top:10px; padding-left:10px; padding-right:10px; padding-bottom:10px;">Welcome to Jirafe analytics reporting for Magento!<br /><br />You will receive this email daily, with results of yesterday's revenue, orders, and visitors.  To modify who receives this email, please go to your Magento Admin Console, under System > Configuration > Jirafe Analytics.<br /><br />Store results for <b>{{var description}}</b> on {{var dt_nice}}</td></tr>
-    <!-- revenue -->
-    <tr><td colspan="3" style="padding-top:20px; padding-left:10px; padding-right:10px; padding-bottom:10px;"><b>Revenue</b></td></tr>
-    <tr><td style="padding-left:10px;">Total revenue</td><td align="right">{{var revenue_nice}}</td><td style="font-size:10px; color:#666666">&nbsp;</td></tr>
-    <tr><td style="padding-left:10px;">Revenue per customer</td><td align="right">{{var revenue_per_customer_nice}}</td><td style="font-size:10px; color:#666666">&nbsp;</td></tr>
-    <tr><td style="padding-left:10px;">Revenue per visitor</td><td align="right">{{var revenue_per_visitor_nice}}</td><td style="font-size:10px; color:#666666">&nbsp;</td></tr>
-    <!-- orders -->
-    <tr><td colspan="3" style="padding-top:20px; padding-left:10px; padding-right:10px; padding-bottom:10px;"><b>Orders</b></td></tr>
-    <tr><td style="padding-left:10px;">Total orders</td><td align="right">{{var num_orders}}</td><td style="font-size:10px; color:#666666">&nbsp;</td></tr>
-    <tr><td style="padding-left:10px;">Average order value</td><td align="right">{{var revenue_per_order_nice}}</td><td style="font-size:10px; color:#666666">&nbsp;</td></tr>
-    <tr><td style="padding-left:10px;">Largest order</td><td align="right">{{var max_order_nice}}</td><td style="font-size:10px; color:#666666">&nbsp;</td></tr>
-    <tr><td style="padding-left:10px;">Smallest order</td><td align="right">{{var min_order_nice}}</td><td style="font-size:10px; color:#666666">&nbsp;</td></tr>
-    <!-- visitors -->
-    <tr><td colspan="3" style="padding-top:20px; padding-left:10px; padding-right:10px; padding-bottom:10px;"><b>Visitors</b></td></tr>
-    <tr><td style="padding-left:10px;">Total visitors</td><td align="right">{{var num_visitors}}</td><td style="font-size:10px; color:#666666">&nbsp;</td></tr>
-    <tr><td style="padding-left:10px;">Conversion rate</td><td align="right">{{var conversion_rate}}%</td><td style="font-size:10px; color:#666666">&nbsp;</td></tr>
-    <tr><td>&nbsp;</td></tr>
+    <tr style="background-color:#999999;"><td><img src="http://jirafe.com/img/JirafeHeader.png" border="0" width="600" /></td></tr>
+    <tr style="background-color:#444444;">
+      <td>
+        <!-- inner table -->
+        <table cellspacing="0" cellpadding="0" width="596" style="background-color:white;margin-left:2px;margin-right:2px;padding-left:10px;padding-right:10px;padding-top:10px;padding-bottom:10px;font-size:24px;">
+        <!-- welcome -->
+	<tr><td colspan="2" style="padding-top:10px;">{{var dt_nice}} results for {{var description}}:</td></tr>
+        <!-- revenue -->
+        <tr><td colspan="2" style="padding-top:15px;padding-bottom:5px;"><b>Revenue</b></td></tr>
+        <tr><td>Total revenue</td><td align="right">{{var revenue_nice}}</td></tr>
+        <tr><td>Revenue per customer</td><td align="right">{{var revenue_per_customer_nice}}</td></tr>
+        <tr><td>Revenue per visitor</td><td align="right">{{var revenue_per_visitor_nice}}</td></tr>
+        <!-- orders -->
+        <tr><td colspan="2" style="padding-top:15px;padding-bottom:5px;"><b>Orders</b></td></tr>
+        <tr><td>Total orders</td><td align="right">{{var num_orders}}</td></tr>
+        <tr><td>Average order value</td><td align="right">{{var revenue_per_order_nice}}</td></tr>
+        <tr><td>Largest order</td><td align="right">{{var max_order_nice}}</td></tr>
+        <tr><td>Smallest order</td><td align="right">{{var min_order_nice}}</td></tr>
+        <!-- visitors -->
+        <tr><td colspan="2" style="padding-top:15px;padding-bottom:5px;"><b>Visitors</b></td></tr>
+        <tr><td>Total visitors</td><td align="right">{{var num_visitors}}</td></tr>
+        <tr><td>Conversion rate</td><td align="right">{{var conversion_rate}}%</td></tr>
+      </tr>
+      </table>
+    </td></tr>
     <!-- footer -->
     <tr><td colspan="3" align="left" valign="middle" style="background-color:#999999;"><img src=" http://jirafe.com/img/JirafeFooter.png" border="0" width="600" /></td></tr>
+    <!-- follow jirafe -->
+    <tr><td align="center">Follow Jirafe on <a style="color:#994400;" href="http://twitter.com/jirafeinc">Twitter</a>.&nbsp;&nbsp;&nbsp;&nbsp;Give Jirafe <a style="color:#994400;" href="http://getsatisfaction.com/jirafe">feedback</a>.&nbsp;&nbsp;&nbsp;&nbsp;Contact Jirafe by <a style="color:#994400;" href="mailto:hello@jirafe.com">email</a>.</td></tr>
+    <!-- unsubscribe -->
+    <tr><td align="center">Would you rather not see these emails?  <a style="color:#994400;" href="{{var jirafe_settings_url}}">Unsubscribe</a>.</td></tr>
     </table>
   </td>
 </tr>
-<tr><td align="center" style="font-size:11px">Follow Jirafe on <a style="color:#994400;" href="http://twitter.com/jirafeinc">Twitter</a>.&nbsp;&nbsp;&nbsp;&nbsp;Give Jirafe <a style="color:#994400;" href="http://getsatisfaction.com/jirafe">feedback</a>.&nbsp;&nbsp;&nbsp;&nbsp;Contact Jirafe by <a style="color:#994400;" href="mailto:hello@jirafe.com">email</a>.</td></tr>
-<tr><td align="center" style="font-size:11px">Would you rather not see these emails?  <a style="color:#994400;" href="{{var jirafe_settings_url}}">Unsubscribe</a>.</td></tr>
 </table>
 </body>

@@ -181,7 +181,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
 	$reportData['description'] = $store->getFrontendName().' ('.$store->getName().')';
 	$reportData['time_zone'] = $store->getConfig('general/locale/timezone');
 	$reportData['dt'] = $yesterdayAtStoreFormatted;
-	$reportData['dt_nice'] = Mage::helper('core')->formatDate($yesterdayAtStore, 'long');
+	$reportData['dt_nice'] = Mage::helper('core')->formatDate($yesterdayAtStore, 'medium');
 	$reportData['base_url'] = $store->getConfig('web/unsecure/base_url');
 	$reportData['jirafe_settings_url'] = Mage::helper('adminhtml')->getUrl('adminhtml/system_config/edit/section/foomanjirafe', array('_nosecret'=>true,'_nosid'=>true));
 	$reportData['num_orders'] = $this->_gatherStoreOrders($store->getId(), $from, $to);
