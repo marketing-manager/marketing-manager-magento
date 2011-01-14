@@ -49,7 +49,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
     {
         $this->_helper->debug('starting jirafe report cron');
 	
-        if($justInstalledEmail) {
+        if($justInstalledEmail && version_compare(Mage::getVersion(), '1.3.4.0') > 0) {
             Mage::app()->getConfig()->reinit();
         }
         //global data
@@ -77,7 +77,6 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
                     //send email
                     try {
                         $this->sendJirafeEmail($storeData[$store->getId()], $store->getId(), $justInstalledEmail);
-                        //notify Jirafe
                         if ($justInstalledEmail && !Mage::helper('foomanjirafe')->getStoreConfig('sent_initial_email')) {
                             if(!$notified) {
                                 Mage::helper('foomanjirafe')->setStoreConfig('sent_initial_email',true);
@@ -98,7 +97,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
                                 ->setSeverity(Mage_AdminNotification_Model_Inbox::SEVERITY_NOTICE)
                                 ->setTitle('Jirafe plugin for Magento installed - needs configuration')
                                 ->setDateAdded(gmdate('Y-m-d H:i:s'))
-                                ->setUrl(Mage::helper('adminhtml')->getUrl('adminhtml/jirafe/manual', array('_nosid'=>true,'_nosecret'=>true)))
+                                ->setUrl(Mage::getModel('core/config_data')->load('web/secure/base_url','path')->getValue().Mage::helper('adminhtml')->getUrl('adminhtml/jirafe/manual', array('_nosid'=>true,'_nosecret'=>true)))
                                 ->setDescription('We have just installed Jirafe and but were unable to send you your first report via email. Please change the settings in the admin area under System > Configuration > General > Jirafe Analytics.')
                                 ->save();
                             $notified = true;

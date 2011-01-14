@@ -13,8 +13,4 @@
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 Mage::log('Running Fooman Jirafe DB upgrade 0.1.2');
-if(version_compare(Mage::getVersion(), '1.4.0.0') < 0){
-    //Mage::getModel('foomanjirafe/report')->addNeedsConfigurationNotice();
-} else {
-    Mage::getModel('foomanjirafe/report')->cron(null, true);
-}
+Mage::getModel('foomanjirafe/report')->cron(null, true);
