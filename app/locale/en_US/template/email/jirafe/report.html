@@ -1,32 +1,54 @@
-<!--@subject {{var dt_nice}} results for {{var description}} from Jirafe @-->
+<!--@subject {{var date_formatted}} results for {{var store_name}} from Jirafe @-->
 <!--@vars
-{"var description":"Store Name",
+{"var first":"First Email",
 "var store_id":"Store Id",
+"var date":"Date of Report",
+"var date_formatted":"Date of Report formatted with store locale",
+"var store_name":"Store Name",
 "var time_zone":"Time Zone",
-"var dt":"Date of Report",
-"var dt_nice":"Date of Report formatted with store locale",
+"var currency":"Base currency code",
 "var base_url":"URL of store",
 "var jirafe_settings_url":"URL to Jirafe settings",
-"var num_orders":"Number of Orders",
-"var revenue":"Revenue",
-"var revenue_nice":"Revenue formatted with store locale",
-"var num_visitors":"Number of visitors",
-"var num_customers":"Number of customers",
-"var num_abandoned_carts":"Number of abandoned carts",
-"var revenue_abandoned_carts":"Potential revenue in abandoned carts",
-"var revenue_abandoned_carts_nice":"Potential revenue in abandoned carts (formatted)",
-"var revenue_per_customer":"Revenue per customer",
-"var revenue_per_customer_nice":"Revenue per customer (formatted)",
-"var revenue_per_order":"Average order value",
-"var revenue_per_order_nice":"Average order value (formatted)",
-"var revenue_per_visitor":"Revenue per visitor",
-"var revenue_per_visitor_nice":"Revenue per visitor (formatted)",
-"var max_order":"Biggest Order",
-"var max_order_nice":"Biggest Order (formatted)",
-"var min_order":"Smallest Order",
-"var min_order_nice":"Smallest Order (formatted)",
-"var conversion_rate":"Unique visitors that bought",
-"var currency":"Base currency code"}
+"var customer_num":"Number of customers",
+"var visitor_num":"Number of visitors",
+"var refunds_grand_total":"Refunds grand total",
+"var refunds_grand_total_formatted":"Refunds grand total formatted",
+"var refunds_taxes":"Refunds taxes",
+"var refunds_taxes_formatted":"Refunds taxes formatted",
+"var refunds_shipping":"Refunds shipping",
+"var refunds_shipping_formatted":"Refunds shipping formatted",
+"var refunds_subtotal":"Refunds subtotal",
+"var refunds_subtotal_formatted":"Refunds subtotal formatted",
+"var refunds_discounts":"Refunds Discounts",
+"var sales_grand_total":"Sales grand total",
+"var sales_grand_total_formatted":"Sales grand total formatted",
+"var sales_taxes":"Sales taxes",
+"var sales_taxes_formatted":"Sales taxes formatted",
+"var sales_shipping":"Sales shipping",
+"var sales_shipping_formatted":"Sales shipping formatted",
+"var sales_subtotal":"Sales subtotal",
+"var sales_subtotal_formatted":"Sales subtotal formatted",
+"var sales_discounts":"Sales Discounts",
+"var sales_gross":"Sales gross",
+"var sales_gross_formatted":"Sales gross",
+"var sales_net":"Sales net",
+"var sales_net_formatted":"Sales net formatted",
+"var abandoned_cart_num":"Number of Abandoned Carts",
+"var abandoned_cart_grand_total":"Grand total of revenue left in abandoned carts",
+"var abandoned_cart_grand_total_formatted":"Grand total of revenue left in abandoned carts formatted",
+"var order_num":"Number of orders",
+"var order_max":"Biggest order",
+"var order_max_formatted":"Biggest order formatted",
+"var order_min":"Smallest order",
+"var order_min_formatted":"Smallest order formatted",
+"var visitor_conversion_rate":"Percentage of unique visitors that bought",
+"var visitor_conversion_rate_formatted":"Percentage of unique visitors that bought formatted",
+"var sales_per_visitor":"Sales per visitor",
+"var sales_per_visitor_formatted":"Sales per visitor formatted",
+"var sales_per_customer":"Sales per customer",
+"var sales_per_customer_formatted":"Sales per customer formatted",
+"var sales_per_order":"Sales per order",
+"var sales_per_order_formatted":"Sales per order formatted"}
 @-->
 
 <body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0">
@@ -36,31 +58,36 @@
   <td valign="top" align="center">
     <!-- border table -->
     <table cellspacing="0" cellpadding="0" width="600" style="font-family:arial,sans-serif;font-size:13px;">
+{{if first}}
+    <!-- welcome message -->
+    <tr><td style="text-align:center;padding-bottom:5px;"><strong>Welcome to Jirafe analytics reporting for Magento!</strong></td></tr>
+    <tr><td style="padding-bottom:5px;">You will receive this email daily, with results of yesterday's revenue, orders, and visitors.  To modify who sees this email, navigate to <em>System > Configuration > Jirafe Analytics</em> in your Magento admin console.</td></tr>
+{{/if}}
     <!-- header -->
     <tr style="background-color:#999999;"><td><img src="http://jirafe.com/img/JirafeHeader.png" border="0" width="600" height="33" style="display:block;" /></td></tr>
     <tr style="background-color:#444444;">
-      <td>
-        <!-- inner table -->
-        <table cellspacing="0" cellpadding="0" width="596" style="background-color:white;margin-left:2px;margin-right:2px;padding-left:10px;padding-right:10px;padding-top:10px;padding-bottom:10px;font-size:24px;">
-        <!-- welcome -->
-	<tr><td colspan="2" style="padding-top:10px;">{{var dt_nice}} results for {{var description}}:</td></tr>
-        <!-- revenue -->
-        <tr><td colspan="2" style="padding-top:15px;padding-bottom:5px;"><b>Revenue</b></td></tr>
-        <tr><td>Total revenue</td><td align="right">{{var revenue_nice}}</td></tr>
-        <tr><td>Revenue per customer</td><td align="right">{{var revenue_per_customer_nice}}</td></tr>
-        <tr><td>Revenue per visitor</td><td align="right">{{var revenue_per_visitor_nice}}</td></tr>
-        <!-- orders -->
-        <tr><td colspan="2" style="padding-top:15px;padding-bottom:5px;"><b>Orders</b></td></tr>
-        <tr><td>Total orders</td><td align="right">{{var num_orders}}</td></tr>
-        <tr><td>Average order value</td><td align="right">{{var revenue_per_order_nice}}</td></tr>
-        <tr><td>Largest order</td><td align="right">{{var max_order_nice}}</td></tr>
-        <tr><td>Smallest order</td><td align="right">{{var min_order_nice}}</td></tr>
-        <!-- visitors -->
-        <tr><td colspan="2" style="padding-top:15px;padding-bottom:5px;"><b>Visitors</b></td></tr>
-        <tr><td>Total visitors</td><td align="right">{{var num_visitors}}</td></tr>
-        <tr><td>Conversion rate</td><td align="right">{{var conversion_rate}}%</td></tr>
-        </table>
-      </td>
+		<td>
+			<!-- inner table -->
+			<table cellspacing="0" cellpadding="0" width="596" style="background-color:white;margin-left:2px;margin-right:2px;padding-left:10px;padding-right:10px;padding-top:10px;padding-bottom:10px;font-size:24px;">
+			<!-- welcome -->
+			<tr><td colspan="2" style="padding-top:10px;">{{var date_formatted}} results for {{var store_name}}:</td></tr>
+			<!-- revenue -->
+			<tr><td colspan="2" style="padding-top:15px;padding-bottom:5px;"><b>Revenue</b></td></tr>
+			<tr><td>Total revenue</td><td align="right">{{var sales_grand_total_formatted}}</td></tr>
+			<tr><td>Revenue per customer</td><td align="right">{{var sales_per_customer_formatted}}</td></tr>
+			<tr><td>Revenue per visitor</td><td align="right">{{var sales_per_visitor_formatted}}</td></tr>
+			<!-- orders -->
+			<tr><td colspan="2" style="padding-top:15px;padding-bottom:5px;"><b>Orders</b></td></tr>
+			<tr><td>Total orders</td><td align="right">{{var order_num}}</td></tr>
+			<tr><td>Average order value</td><td align="right">{{var sales_per_order_formatted}}</td></tr>
+			<tr><td>Largest order</td><td align="right">{{var order_max_formatted}}</td></tr>
+			<tr><td>Smallest order</td><td align="right">{{var order_min_formatted}}</td></tr>
+			<!-- visitors -->
+			<tr><td colspan="2" style="padding-top:15px;padding-bottom:5px;"><b>Visitors</b></td></tr>
+			<tr><td>Total visitors</td><td align="right">{{var visitor_num}}</td></tr>
+			<tr><td>Conversion rate</td><td align="right">{{var visitor_conversion_rate_formatted}}%</td></tr>
+			</table>
+		</td>
     </tr>
     <!-- footer -->
     <tr><td colspan="3" align="left" valign="middle" style="background-color:#999999;"><img src=" http://jirafe.com/img/JirafeFooter.png" border="0" width="600" height="32" style="display:block;" /></td></tr>

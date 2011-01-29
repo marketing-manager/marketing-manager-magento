@@ -14,15 +14,14 @@
  */
 
 Mage::log('Running Fooman Jirafe DB install 0.1.0');
-$installer = $this;
-/* @var $installer Fooman_Jirafe_Model_Mysql4_Setup */
 
-$installer->startSetup();
+// Start Jirafe Setup
+$this->startSetup();
 
 // Upgrade the DB version
-Mage::helper('foomanjirafe/setup')->runDbSchemaUpgrade($installer, '0.1.0');
+Mage::helper('foomanjirafe/setup')->runDbSchemaUpgrade($this, '0.1.0');
 
-// Automatically set automatic emails to every active admin user
+// Automatically send Jirafe emails to every active admin user
 $adminUsers = Mage::getSingleton('admin/user')->getCollection();
 $emails = array();
 foreach ($adminUsers as $adminUser) {
@@ -34,4 +33,5 @@ if (!empty($emails)) {
     Mage::helper('foomanjirafe')->setStoreConfig('emails', implode(',', $emails));
 }
 
-$installer->endSetup();
+// End Jirafe Setup
+$this->endSetup();

@@ -201,16 +201,15 @@ class Fooman_Jirafe_Model_Mysql4_Report extends Mage_Core_Model_Mysql4_Abstract
         return $abandonedCarts;
     }
 	
-    public function checkIfReportExists($storeId, $day)
+    public function getReport($storeId, $day)
     {
 		try {
 			$select = $this->_getReadAdapter()->select()
-				->from($this->getTable('foomanjirafe/report'), array())
-				->columns('COUNT(report_id)')
+				->from($this->getTable('foomanjirafe/report'))
 				->where('store_id = ?', $storeId)
 				->where('store_report_date = ?', $day);
 				
-			$res =  $this->_getReadAdapter()->fetchOne($select);
+			$res =  $this->_getReadAdapter()->fetchRow($select);
 		} catch (Exception $e) {
 			Mage::logException($e);
 		}
