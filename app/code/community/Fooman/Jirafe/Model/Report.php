@@ -47,6 +47,8 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
             if ($store->getIsActive()) {
 				// Get the store ID
 				$storeId = $store->getId();
+				// Set the current store
+				Mage::app()->setCurrentStore($store);
 				// Get the timespan (array ('from', 'to')) for this report
 				$timespan = $this->_getReportTimespan($store, $gmtTs);
 				// Check if report exists
@@ -221,35 +223,11 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
 	function _getReportTimespan($store, $gmtTs, $span = 'day')
 	{
 		$timespan = array();
-		// Set the current store
-		Mage::app()->setCurrentStore($store);
 		// Get the current timestamp (local time) for this store
         $ts = Mage::getSingleton('core/date')->timestamp($gmtTs);
 		$timespan['from'] = strtotime('yesterday', $ts);
 		$timespan['to'] = strtotime('+1 day', $timespan['from']);
 		return $timespan;
-	
-
-/*
-        $offset = $currentStoreTimestamp - $gmtTs;
-        $format = 'Y-m-d H:i:s';
-
-        $currentTimeAtStore = date($format, $currentStoreTimestamp);
-        $yesterdayAtStore = date("Y-m-d", strtotime("yesterday", $currentStoreTimestamp));
-        $yesterdayAtStoreFormatted = date($format, strtotime($yesterdayAtStore));
-
-        $this->_helper->debug('store '.$store->getName().' $offset '. $offset);
-        $this->_helper->debug('store '.$store->getName().' $currentTimeAtStore '. $currentTimeAtStore);
-        $this->_helper->debug('store '.$store->getName().' $yesterdayAtStore '. $yesterdayAtStore);
-
-        if(Mage::getResourceModel('foomanjirafe/report')->checkIfReportExists($storeId, $yesterdayAtStoreFormatted)) {
-            return false;
-        }
-
-        //db data is stored in GMT so run reports with adjusted times
-        $from = date($format, strtotime($yesterdayAtStore) - $offset);
-        $to = date($format, strtotime("tomorrow",strtotime($yesterdayAtStore)) - $offset);
-*/
 	}
 	
 	function _sendReport($store, $timespan, $data)
