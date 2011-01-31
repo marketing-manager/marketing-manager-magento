@@ -33,8 +33,8 @@ class Fooman_Jirafe_Model_Mysql4_Report extends Mage_Core_Model_Mysql4_Abstract
 				->columns('SUM(base_shipping_amount) AS sales_shipping')
 				->columns('SUM(base_subtotal) AS sales_subtotal')
 				->columns('SUM(base_discount_amount) AS sales_discounts')
-//				->where('created_at >= ?', $from)
-//				->where('created_at <= ?', $to)
+				->where('created_at >= ?', $from)
+				->where('created_at < ?', $to)
 				->where('store_id = ?', $storeId);
 
 			$res = $this->_getReadAdapter()->fetchRow($select);
@@ -63,8 +63,8 @@ class Fooman_Jirafe_Model_Mysql4_Report extends Mage_Core_Model_Mysql4_Abstract
 				->columns('SUM(base_shipping_amount) AS refunds_shipping')
 				->columns('SUM(base_subtotal) AS refunds_subtotal')
 				->columns('SUM(base_discount_amount) AS refunds_discounts')
-//				->where('created_at >= ?', $from)
-//				->where('created_at <= ?', $to)
+				->where('created_at >= ?', $from)
+				->where('created_at < ?', $to)
 				->where('store_id = ?', $storeId);
 				
 			$res = $this->_getReadAdapter()->fetchRow($select);
@@ -91,8 +91,8 @@ class Fooman_Jirafe_Model_Mysql4_Report extends Mage_Core_Model_Mysql4_Abstract
 				->columns('COUNT(entity_id) AS order_num')
 				->columns('MIN(base_grand_total) AS order_min')
 				->columns('MAX(base_grand_total) AS order_max')
-//				->where('created_at >= ?', $from)
-//				->where('created_at <= ?', $to)
+				->where('created_at >= ?', $from)
+				->where('created_at < ?', $to)
 				->where('store_id = ?', $storeId);
 				
             $res = $this->_getReadAdapter()->fetchRow($select);
@@ -109,29 +109,28 @@ class Fooman_Jirafe_Model_Mysql4_Report extends Mage_Core_Model_Mysql4_Abstract
         return $orders;
     }
 
-    public function getStoreUniqueCustomers ($storeId, $from, $to)
-    {
-		$res = 0;
-		
-        try {
-			$select = $this->_getReadAdapter()->select()
-				->from($this->getTable('sales/order'), array())
-				->columns('COUNT(DISTINCT(customer_email))')
-//				->where('created_at >= ?', $from)
-//				->where('created_at <= ?', $to)
-				->where('store_id = ?', $storeId);
-				
-	        $res =  $this->_getReadAdapter()->fetchOne($select);
-
-        } catch (Exception $e) {
-            // Unable to retrieve - leave as null
-			Mage::logException($e);
-        }
-		
-        return $res ? $res : 0;
+	public function getStoreUniqueCustomers ($storeId, $from, $to)
+	{
+		try {
+			$res = array();
+			// We cannot call COUNT(DISTINCT(customer_email)) because v1.4.0 and below have customer_email in another table
+			$collection = Mage::getModel('sales/order')->getCollection()
+				->addAttributeToSelect('customer_email')
+				->addAttributeToFilter('store_id', $storeId)
+				->addAttributeToFilter('created_at', array('from' => $from, 'to' => $to));
+			foreach ($collection as $order) {
+				$res[$order->getCustomerEmail()] = true;
+			}
+			$res = count($res) ? count($res) : 0; // If null, set to 0
+		} catch (Exception $e) {
+			$res = null; // Unable to retrieve - leave as null
+		}
+		return $res;
 	}
 
-    public function getStoreVisitors ($storeId, $from, $to, $initialEmail = false)
+	// first - is this the first email sent?  Therefore, we need to filter the first day of visitors from non-filtered results.
+	// after this, they will automatically be filtered
+    public function getStoreVisitors($storeId, $from, $to, $first=false)
     {
         $numVisitors = 0;
 		
@@ -142,11 +141,11 @@ class Fooman_Jirafe_Model_Mysql4_Report extends Mage_Core_Model_Mysql4_Abstract
 				->columns('vi.remote_addr')
 				->columns('vi.http_user_agent')
 				->distinct()
-//				->where('v.first_visit_at >= ?', $from)
-//				->where('v.first_visit_at <= ?', $to)
+				->where('v.first_visit_at >= ?', $from)
+				->where('v.first_visit_at < ?', $to)
 				->where('v.store_id = ?', $storeId);
 
-            if ($initialEmail) {
+            if ($first) {
                 if (version_compare(Mage::getVersion(), '1.4.0.0') < 0) {
                     $ignoreAgents = array();
                     $ignoreAgentsConfig = Mage::getConfig()->getNode('global/ignore_user_agents');
@@ -181,8 +180,8 @@ class Fooman_Jirafe_Model_Mysql4_Report extends Mage_Core_Model_Mysql4_Abstract
 				->columns('COUNT(q.entity_id) AS abandoned_cart_num')
 				->columns('SUM(q.base_grand_total) AS abandoned_cart_grand_total')
 				->where('o.quote_id IS NULL')
-//				->where('q.created_at >= ?', $from)
-//				->where('q.created_at <= ?', $to)
+				->where('q.created_at >= ?', $from)
+				->where('q.created_at < ?', $to)
 				->where('q.store_id = ?', $storeId)
 				->where('q.is_active = 1');
 

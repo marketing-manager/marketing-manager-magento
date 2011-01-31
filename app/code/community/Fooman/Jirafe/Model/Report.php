@@ -35,7 +35,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
 			Mage::app()->getConfig()->reinit();
 		}
 		
-        // Get the GMT timestamp for this cron
+        // Get the GMT timestamp for this cron - make sure we only get it once for all stores just in case
         $gmtTs = Mage::getSingleton('core/date')->gmtTimestamp();
 		
 		// Set flag to make sure we were successful in reporting and logging all stores
@@ -52,11 +52,11 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
 				// Get the timespan (array ('from', 'to')) for this report
 				$timespan = $this->_getReportTimespan($store, $gmtTs);
 				// Check if report exists
-				$exists = Mage::getResourceModel('foomanjirafe/report')->getReport($storeId, date('Y-m-d', $timespan['from']));
+				$exists = Mage::getResourceModel('foomanjirafe/report')->getReport($storeId, $timespan['date']);
 				if (!$exists) {
 					try {
 						// Create new report
-						$data = $this->_compileReport($store, $timespan);
+						$data = $this->_compileReport($store, $timespan, $first);
 						// Save report
 						$this->_saveReport($store, $timespan, $data);
 						// Send out emails
@@ -104,14 +104,14 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
 		}
 	}
 	
-    private function _compileReport($store, $timespan)
+    private function _compileReport($store, $timespan, $first = false)
     {
 		$reportData = array();
 		
 		// Get the day we are running the report
 		$from = $timespan['from'];
 		$to = $timespan['to'];
-		$reportData['date'] = date('Y-m-d', $from);
+		$reportData['date'] = $timespan['date'];
 
 		// Get store information
 		$storeId = $store->getId();
@@ -156,7 +156,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
 		$reportData += Mage::getResourceModel('foomanjirafe/report')->getStoreOrders($storeId, $from, $to);
 
 		// Get visitor and conversion data
-		$reportData['visitor_num'] = Mage::getResourceModel('foomanjirafe/report')->getStoreVisitors($storeId, $from, $to, $intialEmail);
+		$reportData['visitor_num'] = Mage::getResourceModel('foomanjirafe/report')->getStoreVisitors($storeId, $from, $to, $first);
         if ($reportData['visitor_num'] > 0) {
             $reportData['visitor_conversion_rate'] = $reportData['customer_num'] / $reportData['visitor_num'];
             $reportData['sales_per_visitor'] = $reportData['sales_grand_total'] / $reportData['visitor_num'];
@@ -186,7 +186,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
 //		$this->_helper->debug($storeData);
 		Mage::getModel('foomanjirafe/report')
 			->setStoreId($store->getId())
-			->setStoreReportDate(date('Y-m-d', $timespan['from']))
+			->setStoreReportDate($timespan['date'])
 			->setReportData(json_encode($data))
 			->save();
 	}
@@ -220,14 +220,18 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
 		}
 	}
 	
-	function _getReportTimespan($store, $gmtTs, $span = 'day')
+	function _getReportTimespan($store, $gmtTs, $span='day')
 	{
-		$timespan = array();
 		// Get the current timestamp (local time) for this store
         $ts = Mage::getSingleton('core/date')->timestamp($gmtTs);
-		$timespan['from'] = strtotime('yesterday', $ts);
-		$timespan['to'] = strtotime('+1 day', $timespan['from']);
-		return $timespan;
+		$offset = $ts - $gmtTs;
+		$fromUnix = strtotime('yesterday', $ts) - $offset;
+		$toUnix = strtotime('+1 day', $fromUnix);
+		$from = date('Y-m-d H:i:s', $fromUnix);
+		$to = date('Y-m-d H:i:s', $toUnix);
+		$date = date('Y-m-d', $fromUnix + $offset);
+		
+		return array('from'=>$from, 'to'=>$to, 'date'=>$date);
 	}
 	
 	function _sendReport($store, $timespan, $data)

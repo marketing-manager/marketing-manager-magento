@@ -14,7 +14,7 @@
  */
 Mage::log('Running Fooman Jirafe DB upgrade 0.1.2');
 // Once complete, reinit config files
-if($justInstalledEmail && version_compare(Mage::getVersion(), '1.3.4.0') > 0) {
+if(version_compare(Mage::getVersion(), '1.3.4.0') > 0) {
 	Mage::app()->getConfig()->reinit();
 }
 // Run cron for the first time
