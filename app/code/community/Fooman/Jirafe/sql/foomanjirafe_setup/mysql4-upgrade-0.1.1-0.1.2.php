@@ -14,6 +14,7 @@
  */
 Mage::log('Running Fooman Jirafe DB upgrade 0.1.2');
 // Once complete, reinit config files
+// reloading the config on earlier Magento versions causes an infinite loop
 if(version_compare(Mage::getVersion(), '1.3.4.0') > 0) {
 	Mage::app()->getConfig()->reinit();
 }

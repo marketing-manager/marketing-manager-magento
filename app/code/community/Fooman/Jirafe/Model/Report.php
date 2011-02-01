@@ -29,11 +29,6 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
     public function cron($cronSchedule, $first = false)
     {
         $this->_helper->debug('starting jirafe report cron');
-	
-		// Re-initialise the config array so that we can get the proper values for config settings like timezone
-		if(version_compare(Mage::getVersion(), '1.3.4.0') > 0) {
-			Mage::app()->getConfig()->reinit();
-		}
 		
         // Get the GMT timestamp for this cron - make sure we only get it once for all stores just in case
         $gmtTs = Mage::getSingleton('core/date')->gmtTimestamp();
@@ -47,6 +42,10 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
             if ($store->getIsActive()) {
 				// Get the store ID
 				$storeId = $store->getId();
+                // If Jirafe is disabled for current store skip to next store
+                if(!$this->_helper->getStoreConfig('isActive', $storeId)) {
+                    continue;
+                }
 				// Set the current store
 				Mage::app()->setCurrentStore($store);
 				// Get the timespan (array ('from', 'to')) for this report
@@ -126,7 +125,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         $reportData['currency'] =  Mage::getStoreConfig('currency/options/base', $storeId);
 		
 		// Get version information
-		$reportData['jirafe_version'] = Mage::getResourceModel('core/resource')->getDbVersion('foomanjirafe_setup');
+                $reportData['jirafe_version'] = (string)Mage::getConfig()->getModuleConfig('Fooman_Jirafe')->version;
 		$reportData['magento_version'] = Mage::getVersion();
 		
 		// Get the email addresses where the email will be sent
@@ -187,6 +186,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
 		Mage::getModel('foomanjirafe/report')
 			->setStoreId($store->getId())
 			->setStoreReportDate($timespan['date'])
+                        ->setGeneratedByJirafeVersion($data['jirafe_version'])
 			->setReportData(json_encode($data))
 			->save();
 	}
