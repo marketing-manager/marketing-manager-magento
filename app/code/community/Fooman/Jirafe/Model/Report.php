@@ -125,7 +125,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         $reportData['currency'] =  Mage::getStoreConfig('currency/options/base', $storeId);
 		
 		// Get version information
-                $reportData['jirafe_version'] = (string)Mage::getConfig()->getModuleConfig('Fooman_Jirafe')->version;
+        $reportData['jirafe_version'] = (string)Mage::getConfig()->getModuleConfig('Fooman_Jirafe')->version;
 		$reportData['magento_version'] = Mage::getVersion();
 		
 		// Get the email addresses where the email will be sent
