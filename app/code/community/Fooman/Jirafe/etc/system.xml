@@ -50,7 +50,7 @@
                         <reportType translate="label">
                             <label>Report Type</label>
                             <comment></comment>
-                            <source_model>Fooman_Jirafe_System_Config_Source_Reporttype</source_model>
+                            <source_model>foomanjirafe/system_config_source_reporttype</source_model>
                             <comment><![CDATA[
                             Detailed reports add additional fields, like gross sales, refunds, and discounts to the email
                             ]]>

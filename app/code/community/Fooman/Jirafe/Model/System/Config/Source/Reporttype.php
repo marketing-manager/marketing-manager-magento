@@ -4,7 +4,7 @@
  * Used in creating options for Custom Report Type config value selection
  *
  */
-class Fooman_Jirafe_System_Config_Source_Reporttype
+class Fooman_Jirafe_Model_System_Config_Source_Reporttype
 {
 
     /**

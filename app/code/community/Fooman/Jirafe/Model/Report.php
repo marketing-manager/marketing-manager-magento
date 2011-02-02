@@ -43,8 +43,8 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
             if ($store->getIsActive()) {
 				// Get the store ID
 				$storeId = $store->getId();
-                // Only continue if this plugin is active for the store
-                if ($this->_helper->getStoreConfig('isActive', $storeId)) {
+                // Only continue if this plugin is active for the store or if this is the first email
+                if ($this->_helper->getStoreConfig('isActive', $storeId) || $first) {
 					// Set the current store
 					Mage::app()->setCurrentStore($store);
 					// Get the timespan (array ('from', 'to')) for this report
@@ -164,7 +164,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         if ($reportData['visitor_num'] > 0) {
             $reportData['visitor_conversion_rate'] = $reportData['customer_num'] / $reportData['visitor_num'];
             $reportData['sales_grand_total_per_visitor'] = $reportData['sales_grand_total'] / $reportData['visitor_num'];
-            $reportData['sales_net_per_visitor'] = $reportData['sales_grand_total'] / $reportData['visitor_num'];
+            $reportData['sales_net_per_visitor'] = $reportData['sales_net'] / $reportData['visitor_num'];
         } else {
             $reportData['visitor_conversion_rate'] = 0;
             $reportData['sales_grand_total_per_visitor'] = 0;
@@ -174,7 +174,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
 		// Calculate revenue per customer
         if ($reportData['customer_num'] > 0) {
             $reportData['sales_grand_total_per_customer'] = $reportData['sales_grand_total'] / $reportData['customer_num'];
-            $reportData['sales_net_per_customer'] = $reportData['sales_grand_total'] / $reportData['customer_num'];
+            $reportData['sales_net_per_customer'] = $reportData['sales_net'] / $reportData['customer_num'];
         } else {
             $reportData['sales_grand_total_per_customer'] = 0;
             $reportData['sales_net_per_customer'] = 0;
