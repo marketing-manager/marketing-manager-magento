@@ -39,34 +39,39 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         //loop over stores to create reports
         $storeCollection = Mage::getModel('core/store')->getCollection();
         foreach ($storeCollection as $store) {
+			// Only continue if the store is active
             if ($store->getIsActive()) {
 				// Get the store ID
 				$storeId = $store->getId();
-                // If Jirafe is disabled for current store skip to next store
-                if(!$this->_helper->getStoreConfig('isActive', $storeId)) {
-                    continue;
-                }
-				// Set the current store
-				Mage::app()->setCurrentStore($store);
-				// Get the timespan (array ('from', 'to')) for this report
-				$timespan = $this->_getReportTimespan($store, $gmtTs);
-				// Check if report exists
-				$exists = Mage::getResourceModel('foomanjirafe/report')->getReport($storeId, $timespan['date']);
-				if (!$exists) {
-					try {
-						// Create new report
-						$data = $this->_compileReport($store, $timespan, $first);
-						// Save report
-						$this->_saveReport($store, $timespan, $data);
-						// Send out emails
-						$data_formatted = $this->_getReportDataFormatted($data);
-						$this->_emailReport($store, $timespan, $data + $data_formatted + array('first' => $first));
-						// Send Jirafe heartbeat
-						$this->_sendReport($store, $timespan, $data);
-
-					} catch (Exception $e) {
-						Mage::logException($e);
-						$success = false;
+                // Only continue if this plugin is active for the store
+                if ($this->_helper->getStoreConfig('isActive', $storeId)) {
+					// Set the current store
+					Mage::app()->setCurrentStore($store);
+					// Get the timespan (array ('from', 'to')) for this report
+					$timespan = $this->_getReportTimespan($store, $gmtTs);
+					// Only continue if the report does not already exist
+					$exists = Mage::getResourceModel('foomanjirafe/report')->getReport($storeId, $timespan['date']);
+					if (!$exists) {
+						try {
+							// Create new report
+							$data = $this->_compileReport($store, $timespan, $first);
+							// Save report
+							$this->_saveReport($store, $timespan, $data);
+							// Send out emails
+							$data_formatted = $this->_getReportDataFormatted($data);
+							// Are we sending a simple or a detailed report?
+							$detailReport = $this->_helper->getStoreConfig('reportType', $storeId) == 'detail';
+							// Email the report to users
+							$this->_emailReport($store, $timespan, $data + $data_formatted + array('first' => $first, 'detail_report'=> $detailReport));
+							// Send Jirafe heartbeat
+							$this->_sendReport($store, $timespan, $data);
+	
+						} catch (Exception $e) {
+							Mage::logException($e);
+							$success = false;
+						}
+					} else {
+				        $this->_helper->debug("The report for store ID {$storeId} already exists for {$timespan['date']}.  Discontinuing processing for this report.");
 					}
 				}
 			}
@@ -74,7 +79,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
 		
 		if ($first) {
 			// Set a flag to know that the user has been notified
-			Mage::helper('foomanjirafe')->setStoreConfig('sent_initial_email', true);
+			$this->_helper->setStoreConfig('sent_initial_email', true);
 			// Notify user if it is just installed
 			$this->_notifyAdminUser($success);
 		}
@@ -158,23 +163,29 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
 		$reportData['visitor_num'] = Mage::getResourceModel('foomanjirafe/report')->getStoreVisitors($storeId, $from, $to, $first);
         if ($reportData['visitor_num'] > 0) {
             $reportData['visitor_conversion_rate'] = $reportData['customer_num'] / $reportData['visitor_num'];
-            $reportData['sales_per_visitor'] = $reportData['sales_grand_total'] / $reportData['visitor_num'];
+            $reportData['sales_grand_total_per_visitor'] = $reportData['sales_grand_total'] / $reportData['visitor_num'];
+            $reportData['sales_net_per_visitor'] = $reportData['sales_grand_total'] / $reportData['visitor_num'];
         } else {
             $reportData['visitor_conversion_rate'] = 0;
-            $reportData['sales_per_visitor'] = 0;
+            $reportData['sales_grand_total_per_visitor'] = 0;
+            $reportData['sales_net_per_visitor'] = 0;
         }
 
 		// Calculate revenue per customer
         if ($reportData['customer_num'] > 0) {
-            $reportData['sales_per_customer'] = $reportData['sales_grand_total'] / $reportData['customer_num'];
+            $reportData['sales_grand_total_per_customer'] = $reportData['sales_grand_total'] / $reportData['customer_num'];
+            $reportData['sales_net_per_customer'] = $reportData['sales_grand_total'] / $reportData['customer_num'];
         } else {
-            $reportData['sales_per_customer'] = 0;
+            $reportData['sales_grand_total_per_customer'] = 0;
+            $reportData['sales_net_per_customer'] = 0;
         }
 
         if ($reportData['order_num'] > 0) {
-            $reportData['sales_per_order'] = $reportData['sales_grand_total'] / $reportData['order_num'];
+            $reportData['sales_grand_total_per_order'] = $reportData['sales_grand_total'] / $reportData['order_num'];
+            $reportData['sales_net_per_order'] = $reportData['sales_grand_total'] / $reportData['order_num'];
         } else {
-            $reportData['sales_per_order'] = 0;
+            $reportData['sales_grand_total_per_order'] = 0;
+            $reportData['sales_net_per_order'] = 0;
         }
         return $reportData;
     }
@@ -258,12 +269,16 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
 			'refunds_shipping',
 			'refunds_subtotal',
 			'refunds_taxes',
+			'sales_discounts',
 			'sales_grand_total',
 			'sales_gross',
 			'sales_net',
-			'sales_per_customer',
-			'sales_per_order',
-			'sales_per_visitor',
+			'sales_grand_total_per_customer',
+			'sales_grand_total_per_order',
+			'sales_grand_total_per_visitor',
+			'sales_net_per_customer',
+			'sales_net_per_order',
+			'sales_net_per_visitor',
 			'sales_shipping',
 			'sales_subtotal',
 			'sales_taxes'

@@ -116,8 +116,8 @@ class Fooman_Jirafe_Model_Mysql4_Report extends Mage_Core_Model_Mysql4_Abstract
 			// We cannot call COUNT(DISTINCT(customer_email)) because v1.4.0 and below have customer_email in another table
 			$collection = Mage::getModel('sales/order')->getCollection()
 				->addAttributeToSelect('customer_email')
-				->addAttributeToFilter('store_id', $storeId)
-				->addAttributeToFilter('created_at', array('from' => $from, 'to' => $to));
+				->addAttributeToFilter('created_at', array('from' => $from, 'to' => $to))
+				->addAttributeToFilter('store_id', $storeId);
 			foreach ($collection as $order) {
 				$res[$order->getCustomerEmail()] = true;
 			}

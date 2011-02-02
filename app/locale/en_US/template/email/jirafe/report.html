@@ -1,6 +1,7 @@
 <!--@subject {{var date_formatted}} results for {{var store_name}} from Jirafe @-->
 <!--@vars
 {"var first":"First Email",
+"var detail_report":"Detail Report",
 "var store_id":"Store Id",
 "var date":"Date of Report",
 "var date_formatted":"Date of Report formatted with store locale",
@@ -71,21 +72,39 @@
 			<table cellspacing="0" cellpadding="0" width="596" style="background-color:white;margin-left:2px;margin-right:2px;padding-left:10px;padding-right:10px;padding-top:10px;padding-bottom:10px;font-size:24px;">
 			<!-- welcome -->
 			<tr><td colspan="2" style="padding-top:10px;">{{var date_formatted}} results for {{var store_name}}:</td></tr>
-			<!-- revenue -->
-			<tr><td colspan="2" style="padding-top:15px;padding-bottom:5px;"><b>Revenue</b></td></tr>
-			<tr><td>Total revenue</td><td align="right">{{var sales_grand_total_formatted}}</td></tr>
-			<tr><td>Revenue per customer</td><td align="right">{{var sales_per_customer_formatted}}</td></tr>
-			<tr><td>Revenue per visitor</td><td align="right">{{var sales_per_visitor_formatted}}</td></tr>
-			<!-- orders -->
-			<tr><td colspan="2" style="padding-top:15px;padding-bottom:5px;"><b>Orders</b></td></tr>
-			<tr><td>Total orders</td><td align="right">{{var order_num}}</td></tr>
-			<tr><td>Average order value</td><td align="right">{{var sales_per_order_formatted}}</td></tr>
-			<tr><td>Largest order</td><td align="right">{{var order_max_formatted}}</td></tr>
-			<tr><td>Smallest order</td><td align="right">{{var order_min_formatted}}</td></tr>
 			<!-- visitors -->
 			<tr><td colspan="2" style="padding-top:15px;padding-bottom:5px;"><b>Visitors</b></td></tr>
 			<tr><td>Total visitors</td><td align="right">{{var visitor_num}}</td></tr>
 			<tr><td>Conversion rate</td><td align="right">{{var visitor_conversion_rate_formatted}}%</td></tr>
+			<!-- orders -->
+			<tr><td colspan="2" style="padding-top:15px;padding-bottom:5px;"><b>Orders</b></td></tr>
+			<tr><td>Total orders</td><td align="right">{{var order_num}}</td></tr>
+			<tr><td>Average order value</td><td align="right">{{var sales_grand_total_per_order_formatted}}</td></tr>
+{{if detail_report}}
+			<tr><td>Largest order</td><td align="right">{{var order_max_formatted}}</td></tr>
+			<tr><td>Smallest order</td><td align="right">{{var order_min_formatted}}</td></tr>
+{{/if}}
+			<!-- sales -->
+			<tr><td colspan="2" style="padding-top:15px;padding-bottom:5px;"><b>Sales</b></td></tr>
+			<tr><td>Total customers</td><td align="right">{{var customer_num}}</td></tr>
+			<tr><td>Grand total</td><td align="right">{{var sales_grand_total_formatted}}</td></tr>
+			<tr><td style="padding-left:15px;">per visitor</td><td align="right">{{var sales_grand_total_per_visitor_formatted}}</td></tr>
+			<tr><td style="padding-left:15px;">per customer</td><td align="right">{{var sales_grand_total_per_customer_formatted}}</td></tr>
+{{if detail_report}}
+			<!-- sales detail-->
+			<tr><td colspan="2" style="padding-top:15px;padding-bottom:5px;"><b>Sales Detail</b></td></tr>
+			<tr><td>Gross Sales</td><td align="right">{{var sales_gross_formatted}}</td></tr>
+			<tr><td style="padding-left:15px;">discounts</td><td align="right">{{var sales_discounts_formatted}}</td></tr>
+			<tr><td>Grand Total</td><td align="right" style="border-top:solid;border-top-width:2px">{{var sales_grand_total_formatted}}</td></tr>
+			<tr><td style="padding-left:15px;">taxes</td><td align="right">({{var sales_taxes_formatted}})</td></tr>
+			<tr><td style="padding-left:15px;">shipping</td><td align="right">({{var sales_shipping_formatted}})</td></tr>
+			<tr><td>Subtotal</td><td align="right" style="border-top:solid;border-top-width:2px">{{var sales_subtotal_formatted}}</td></tr>
+			<tr><td style="padding-left:15px;">refunds (subtotal)</td><td align="right">({{var refunds_subtotal_formatted}})</td></tr>
+			<tr><td>Net Sales</td><td align="right" style="border-top:solid;border-top-width:2px">{{var sales_net_formatted}}</td></tr>
+			<tr><td style="padding-left:15px;">per visitor</td><td align="right">{{var sales_net_per_visitor_formatted}}</td></tr>
+			<tr><td style="padding-left:15px;">per customer</td><td align="right">{{var sales_net_per_customer_formatted}}</td></tr>
+{{/if}}
+			<tr><td width="100%">&nbsp;</td><td></td></tr>
 			</table>
 		</td>
     </tr>
