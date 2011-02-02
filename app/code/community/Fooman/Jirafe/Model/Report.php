@@ -182,7 +182,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
 
         if ($reportData['order_num'] > 0) {
             $reportData['sales_grand_total_per_order'] = $reportData['sales_grand_total'] / $reportData['order_num'];
-            $reportData['sales_net_per_order'] = $reportData['sales_grand_total'] / $reportData['order_num'];
+            $reportData['sales_net_per_order'] = $reportData['sales_net'] / $reportData['order_num'];
         } else {
             $reportData['sales_grand_total_per_order'] = 0;
             $reportData['sales_net_per_order'] = 0;
