@@ -265,6 +265,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
 			'abandoned_cart_grand_total',
 			'order_max',
 			'order_min',
+			'refunds_discounts',
 			'refunds_grand_total',
 			'refunds_shipping',
 			'refunds_subtotal',
