@@ -1,0 +1,24 @@
+## Run this to link Jirafe to a Magento instance
+cd app/code/community/
+ln -s ~/code/jirafe/magento-plugin/app/code/community/Fooman
+cd ../../..
+cd app/design/adminhtml/default/default/template/
+ln -s ~/code/jirafe/magento-plugin/app/design/adminhtml/default/default/template/fooman
+cd ../../../../../..
+cd app/etc/modules/
+ln -s ~/code/jirafe/magento-plugin/app/etc/modules/Fooman_Jirafe.xml
+cd ../../..
+cd app/locale/en_US/template/email/
+ln -s ~/code/jirafe/magento-plugin/app/locale/en_US/template/email/jirafe
+cd ../../../../..
+
+## Run this to remove a linked Jirafe from a Magento instance
+rm app/code/community/Fooman
+rm app/design/adminhtml/default/default/template/fooman
+rm app/etc/modules/Fooman_Jirafe.xml
+rm app/locale/en_US/template/email/jirafe
+
+## Run this in the MySQL DB to remove Jirafe
+DROP TABLE `foomanjirafe_report`;
+DELETE FROM `core_config_data` WHERE `path` LIKE '%jirafe%';
+DELETE FROM `core_resource` WHERE `core_resource`.`code` = 'foomanjirafe_setup';
