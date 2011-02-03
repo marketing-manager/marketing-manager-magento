@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<config>
-    <modules>
-        <Fooman_Jirafe>
-            <active>true</active>
-            <codePool>community</codePool>
-        </Fooman_Jirafe>
-    </modules>
-</config>
