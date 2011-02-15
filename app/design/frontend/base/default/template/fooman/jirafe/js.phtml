@@ -1,0 +1,29 @@
+<?php $_isConfigured = Mage::helper('foomanjirafe')->isConfigured() ?>
+<?php if ($_isConfigured) :?>
+    <?php $_siteId = $this->getSiteId() ?>
+    <?php $_pkBaseURL = $this->getPiwikBaseURL(false) ?>
+    <?php $_pkBaseURLSecure = $this->getPiwikBaseURL(true) ?>
+    <!-- Jirafe -->
+    <script type="text/javascript">
+    var _paq = _paq || [];
+    (function(){
+        var u=(("https:" == document.location.protocol) ? "<?php echo $_pkBaseURLSecure ?>" : "<?php echo $_pkBaseURL ?>");
+        _paq.push(['setSiteId', "<?php echo $_siteId ?>"]);
+        _paq.push(['setTrackerUrl', u+'piwik.php']);
+        _paq.push(['enableLinkTracking']);
+        <?php echo $this->getTrackingInfo() ?>
+        <?php echo $this->getAdditionalTrackingInfo() ?>
+        
+        var d=document,
+            g=d.createElement('script'),
+            s=d.getElementsByTagName('script')[0];
+            g.type='text/javascript';
+            g.defer=true;
+            g.async=true;
+            g.src=u+'piwik.js';
+            s.parentNode.insertBefore(g,s);
+    })();
+    </script>
+    <noscript><p><img src="<?php echo $_pkBaseURL ?>piwik.php?idsite=<?php echo $_siteId ?>" style="border:0" alt="" /></p></noscript>
+    <!-- End Jirafe Code -->
+<?php endif;?>

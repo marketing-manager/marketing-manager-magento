@@ -16,6 +16,8 @@
 class Fooman_Jirafe_Helper_Data extends Mage_Core_Helper_Abstract
 {
     const XML_PATH_FOOMANJIRAFE_SETTINGS = 'foomanjirafe/settings/';
+    const JIRAFE_PIWIK_BASE_URL = 'stats.jirafe.com/';
+    const JIRAFE_PURCHASE_GOAL_ID = 1;
     const DEBUG = true;
 
     /**
@@ -56,6 +58,11 @@ class Fooman_Jirafe_Helper_Data extends Mage_Core_Helper_Abstract
 
         //we also set it as a temporary item so we don't need to reload the config
         return Mage::app()->getStore()->setConfig($path, $value);          
+    }
+
+    public function isConfigured ($storeId = Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID)
+    {
+        return ($this->getStoreConfig('isActive', $storeId));
     }
 
     public function debug($mesg)
