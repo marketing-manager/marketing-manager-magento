@@ -59,7 +59,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         $storeCollection = Mage::getModel('core/store')->getCollection();
         $notified = false;
         foreach ($storeCollection as $store) {
-            if ($this->_helper->getStoreConfig('isActive', $store->getId()) || $justInstalledEmail) {
+            if ($this->_helper->getStoreConfig('is_active', $store->getId()) || $justInstalledEmail) {
                 $storeData = array();
                 $storeData[$store->getId()] = $this->_gatherReportData($store, $currentGmtTimestamp, $justInstalledEmail);
 

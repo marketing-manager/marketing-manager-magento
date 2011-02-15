@@ -18,7 +18,7 @@
 <config>
     <modules>
         <Fooman_Jirafe>
-            <version>0.1.4</version>
+            <version>0.2.0</version>
         </Fooman_Jirafe>
     </modules>
 
@@ -124,6 +124,12 @@
             <foomanjirafe>
                 <class>Fooman_Jirafe_Block</class>
             </foomanjirafe>
+            <adminhtml>
+                <rewrite>
+                    <dashboard>Fooman_Jirafe_Block_Adminhtml_Dashboard</dashboard>
+                    <system_account_edit_form>Fooman_Jirafe_Block_Adminhtml_System_Account_Edit_Form</system_account_edit_form>
+                </rewrite>
+            </adminhtml>
         </blocks>
         <template>
             <email>
@@ -150,7 +156,8 @@
         <foomanjirafe>
             <settings>
                 <sent_initial_email>0</sent_initial_email>
-                <isActive>1</isActive>
+                <is_active>1</is_active>
+                <display_dashboard>1</display_dashboard>
                 <emails/>
             </settings>
             <report_email_template>foomanjirafe_report_template</report_email_template>
@@ -158,7 +165,16 @@
             <report_email_identity>jirafe</report_email_identity>
         </foomanjirafe>
     </default>
-        <admin>
+    <frontend>
+        <layout>
+            <updates>
+                <foomanjirafe>
+                    <file>foomanjirafe.xml</file>
+                </foomanjirafe>
+            </updates>
+        </layout>
+    </frontend>
+    <admin>
         <routers>
             <adminhtml>
                 <args>
@@ -189,6 +205,17 @@
                 </admin>
             </resources>
         </acl>
+        <events>
+            <admin_user_save_before>
+                <observers>
+                    <saveJirafeStoreEmailMapping>
+                        <type>singleton</type>
+                        <class>Fooman_Jirafe_Model_Observer</class>
+                        <method>saveJirafeStoreEmailMapping</method>
+                    </saveJirafeStoreEmailMapping>
+                </observers>
+            </admin_user_save_before>
+        </events>
     </adminhtml>
     <crontab>
         <jobs>
