@@ -21,6 +21,18 @@ class Fooman_Jirafe_Adminhtml_JirafeController extends Mage_Adminhtml_Controller
         $this->setUsedModuleName('Fooman_Jirafe');
     }
 
+	// Gets called with the dashboard menu item is displayed
+    public function indexAction()
+    {
+        $this->_title($this->__('Dashboard'));
+
+        $this->loadLayout();
+        $this->_setActiveMenu('dashboard');
+        $this->_addBreadcrumb(Mage::helper('adminhtml')->__('Dashboard'), Mage::helper('adminhtml')->__('Dashboard'));
+		$this->_addContent($this->getLayout()->createBlock('foomanjirafe/adminhtml_dashboard'));
+		$this->renderLayout();
+    }
+	
     public function manualAction()
     {
         $this->loadLayout();

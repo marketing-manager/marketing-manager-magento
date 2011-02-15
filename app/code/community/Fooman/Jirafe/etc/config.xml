@@ -165,7 +165,21 @@
         </routers>
     </admin>
     <adminhtml>
-        <acl>
+		<menu>
+			<dashboard translate="title" module="adminhtml">
+				<title>Dashboard</title>
+				<sort_order>10</sort_order>
+				<action>adminhtml/Jirafe</action>
+			</dashboard>
+	    </menu>
+		<layout>
+			<updates>
+				<foomanjirafe>
+					<file>foomanjirafe.xml</file>
+				</foomanjirafe>
+			</updates>
+		</layout>
+		<acl>
             <resources>
                 <admin>
                     <children>
