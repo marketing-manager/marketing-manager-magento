@@ -58,4 +58,5 @@ class Fooman_Jirafe_Block_Adminhtml_System_Account_Edit_Form extends Mage_Adminh
         ));
         return $this;
     }
+
 }

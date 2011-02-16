@@ -152,7 +152,7 @@
             <settings>
                 <sent_initial_email>0</sent_initial_email>
                 <isActive>1</isActive>
-				<reportType>simple</reportType>
+                <reportType>simple</reportType>
                 <emails/>
             </settings>
             <report_email_template>foomanjirafe_report_template</report_email_template>

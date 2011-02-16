@@ -26,7 +26,8 @@ class Fooman_Jirafe_Helper_Data extends Mage_Core_Helper_Abstract
      * @param   string $key
      * @return  string
      */
-    public function getStoreConfig ($key, $storeId = Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID)
+    public function getStoreConfig ($key,
+            $storeId = Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID)
     {
         $path = self::XML_PATH_FOOMANJIRAFE_SETTINGS . $key;
         return Mage::getStoreConfig($path, $storeId);
@@ -46,18 +47,18 @@ class Fooman_Jirafe_Helper_Data extends Mage_Core_Helper_Abstract
         //save to db
         try {
             $configModel = Mage::getModel('core/config_data');
-            if ($configModel->load($path,'path')->getValue() == null){
+            if ($configModel->load($path, 'path')->getValue() == null) {
                 $configModel
-                    ->setPath($path)
-                    ->setValue($value)
-                    ->save();
+                        ->setPath($path)
+                        ->setValue($value)
+                        ->save();
             }
         } catch (Exception $e) {
             Mage::logException($e);
         }
 
         //we also set it as a temporary item so we don't need to reload the config
-        return Mage::app()->getStore()->setConfig($path, $value);          
+        return Mage::app()->getStore()->setConfig($path, $value);
     }
 
     public function isConfigured ($storeId = Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID)
@@ -65,40 +66,41 @@ class Fooman_Jirafe_Helper_Data extends Mage_Core_Helper_Abstract
         return ($this->getStoreConfig('isActive', $storeId));
     }
 
-	public function getStoreIds()
-	{
-		// Get a list of store IDs to send to the user
-		$stores = Mage::getModel('core/store')->getCollection();
-		$storearr = array();
-		foreach ($stores as $store) {
-			// Only continue if the store is active
-			if ($store->getIsActive()) {
-				$storearr[] = $store->getId();
-			}
-		}
-		
-		return implode(',',$storearr);
-	}
+    public function getStoreIds ()
+    {
+        // Get a list of store IDs to send to the user
+        $stores = Mage::getModel('core/store')->getCollection();
+        $storearr = array();
+        foreach ($stores as $store) {
+            // Only continue if the store is active
+            if ($store->getIsActive()) {
+                $storearr[] = $store->getId();
+            }
+        }
 
-	public function getAdminUserByEmail($email)
-	{
-		$adminUsers = Mage::getSingleton('admin/user')->getCollection();
-		$user = null;
-		// Get admin user for this email
-		foreach ($adminUsers as $adminUser) {
-			if ($adminUser->getEmail() == $email) {
-				$user = $adminUser;
-				break;
-			}
-		}
-		
-		return $user;
-	}
+        return implode(',', $storearr);
+    }
 
-    public function debug($mesg)
+    public function getAdminUserByEmail ($email)
+    {
+        $adminUsers = Mage::getSingleton('admin/user')->getCollection();
+        $user = null;
+        // Get admin user for this email
+        foreach ($adminUsers as $adminUser) {
+            if ($adminUser->getEmail() == $email) {
+                $user = $adminUser;
+                break;
+            }
+        }
+
+        return $user;
+    }
+
+    public function debug ($mesg)
     {
         if (self::DEBUG) {
-            Mage::log($mesg,null,'jirafe.log');
+            Mage::log($mesg, null, 'jirafe.log');
         }
     }
+
 }
