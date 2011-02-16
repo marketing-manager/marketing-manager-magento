@@ -27,7 +27,7 @@ class Fooman_Jirafe_Helper_Setup extends Mage_Core_Helper_Abstract
                             array(
                                 array("type" =>"sql-column", "table" =>"admin_user", "name" =>"jirafe_send_email_for_store","params" =>"varchar(255)"),
                                 array("type" =>"sql-column", "table" =>"admin_user", "name" =>"jirafe_email_report_type","params" =>"varchar(255)"),
-                                array("type" =>"sql-column", "table" =>"admin_user", "name" =>"jirafe_email_suppress","params" =>"varchar(255)"),
+                                array("type" =>"sql-column", "table" =>"admin_user", "name" =>"jirafe_email_suppress","params" =>"tinyint(1)"),
                                 array("type" =>"sql-column", "table" =>"admin_user", "name" =>"jirafe_emails","params" =>"text")
                                 )
                         );

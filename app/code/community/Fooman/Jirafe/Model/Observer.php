@@ -33,8 +33,8 @@ class Fooman_Jirafe_Model_Observer
     {
         $user = $observer->getEvent()->getObject();
         $jirafeStoreIds = implode(',' ,Mage::app()->getRequest()->getPost('jirafe_send_email_for_store'));
-        $jirafeEmailReportType = implode(',', Mage::app()->getRequest()->getPost('jirafe_email_report_type'));
-        $jirafeEmailSuppress = implode(',', Mage::app()->getRequest()->getPost('jirafe_email_suppress'));
+        $jirafeEmailReportType = Mage::app()->getRequest()->getPost('jirafe_email_report_type');
+        $jirafeEmailSuppress = (int)Mage::app()->getRequest()->getPost('jirafe_email_suppress');
         $jirafeEmails = str_replace(array("\r"," "),"",str_replace("\n",",",Mage::app()->getRequest()->getPost('jirafe_emails')));
 
         if($jirafeStoreIds != $user->getJirafeSendEmailForStore()){
