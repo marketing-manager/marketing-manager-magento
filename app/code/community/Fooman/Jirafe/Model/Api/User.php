@@ -27,7 +27,7 @@ class Fooman_Jirafe_Model_Api_User extends Fooman_Jirafe_Model_Api
      * @param $lastName - Your last name
      * @param $mobilePhone - Your mobile phone number
      */
-    public function create ($username, $password, $passwordConfirm, $email, $firstName, $lastName, $mobilePhone)
+    public function create ($username, $password, $passwordConfirm, $email, $firstName=null, $lastName=null, $mobilePhone=null)
     {
         $data = array();
         $data['username'] = $username;
