@@ -7,21 +7,51 @@ class Fooman_Jirafe_Block_Adminhtml_System_Account_Edit_Form extends Mage_Adminh
         parent::_prepareForm();
 
         $form = $this->getForm();
-        $fieldset = $form->addFieldset('jirafe', array('legend'=>Mage::helper('adminhtml')->__('Jirafe')));
+        $fieldset = $form->addFieldset('jirafe', array('legend'=>Mage::helper('adminhtml')->__('Jirafe Analytics')));
 
         $fieldset->addField('jirafe_send_email_for_store', 'multiselect', array(
             'name'      => 'jirafe_send_email_for_store[]',
-            'label'     => Mage::helper('foomanjirafe')->__('Send Daily Email for'),
-            'title'     => Mage::helper('foomanjirafe')->__('Send Daily Email for'),
+            'label'     => Mage::helper('foomanjirafe')->__('Email Daily Report for Store'),
+            'title'     => Mage::helper('foomanjirafe')->__('Email Daily Report for Store'),
+            'after_element_html'     => '<p class="nm"><small>'.Mage::helper('foomanjirafe')->__('Hold down the Shift key to select multiple stores').'</small></p>',
             'required'  => false,
             'values'    => Mage::getSingleton('adminhtml/system_store')->getStoreValuesForForm(false),
             'value'    => explode(",",Mage::getSingleton('admin/session')->getUser()->getJirafeSendEmailForStore())
         ));
+		
+		$reportTypes = array();
+		$reportTypes[] = array('label' => Mage::helper('foomanjirafe')->__('Simple'), 'value' => 'simple');
+		$reportTypes[] = array('label' => Mage::helper('foomanjirafe')->__('Detail'), 'value' => 'detail');
+		
+        $fieldset->addField('jirafe_email_report_type', 'select', array(
+            'name'      => 'jirafe_email_report_type[]',
+            'label'     => Mage::helper('foomanjirafe')->__('Email Report Type'),
+            'title'     => Mage::helper('foomanjirafe')->__('Email Report Type'),
+            'after_element_html'     => '<p class="nm"><small>'.Mage::helper('foomanjirafe')->__('Detail adds gross sales, refunds, discounts to the report').'</small></p>',
+            'required'  => false,
+            'values'    => $reportTypes,
+            'value'     => explode(',', Mage::getSingleton('admin/session')->getUser()->getJirafeEmailReportType())
+        ));
+		
+		$yesNo = array();
+		$yesNo[] = array('label' => Mage::helper('foomanjirafe')->__('Yes'), 'value' => 'yes');
+		$yesNo[] = array('label' => Mage::helper('foomanjirafe')->__('No'), 'value' => 'no');
+		
+        $fieldset->addField('jirafe_email_suppress', 'select', array(
+            'name'      => 'jirafe_email_suppress[]',
+            'label'     => Mage::helper('foomanjirafe')->__('Suppress Emails With No Data'),
+            'title'     => Mage::helper('foomanjirafe')->__('Suppress Emails With No Data'),
+            'after_element_html'     => '<p class="nm"><small>'.Mage::helper('foomanjirafe')->__('Save virtual trees if you have lots of stores with no daily orders').'</small></p>',
+            'required'  => false,
+            'values'    => $yesNo,
+            'value'     => explode(',', Mage::getSingleton('admin/session')->getUser()->getJirafeEmailSuppress())
+        ));
+		
         $fieldset->addField('jirafe_emails', 'textarea', array(
             'name'      => 'jirafe_emails',
-            'label'     => Mage::helper('foomanjirafe')->__('Send Emails To'),
-            'title'     => Mage::helper('foomanjirafe')->__('Send Emails To'),
-            'after_element_html'     => '<p class="nm"><small>'.Mage::helper('foomanjirafe')->__('One email address per Line').'</small></p>',
+            'label'     => Mage::helper('foomanjirafe')->__('Also Email Reports to'),
+            'title'     => Mage::helper('foomanjirafe')->__('Also Email Reports to'),
+            'after_element_html'     => '<p class="nm"><small>'.Mage::helper('foomanjirafe')->__('One email address per line').'</small></p>',
             'required'  => false,
             'value'    => str_replace(",","\n",Mage::getSingleton('admin/session')->getUser()->getJirafeEmails())
         ));

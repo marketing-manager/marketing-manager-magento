@@ -65,6 +65,36 @@ class Fooman_Jirafe_Helper_Data extends Mage_Core_Helper_Abstract
         return ($this->getStoreConfig('isActive', $storeId));
     }
 
+	public function getStoreIds()
+	{
+		// Get a list of store IDs to send to the user
+		$stores = Mage::getModel('core/store')->getCollection();
+		$storearr = array();
+		foreach ($stores as $store) {
+			// Only continue if the store is active
+			if ($store->getIsActive()) {
+				$storearr[] = $store->getId();
+			}
+		}
+		
+		return implode(',',$storearr);
+	}
+
+	public function getAdminUserByEmail($email)
+	{
+		$adminUsers = Mage::getSingleton('admin/user')->getCollection();
+		$user = null;
+		// Get admin user for this email
+		foreach ($adminUsers as $adminUser) {
+			if ($adminUser->getEmail() == $email) {
+				$user = $adminUser;
+				break;
+			}
+		}
+		
+		return $user;
+	}
+
     public function debug($mesg)
     {
         if (self::DEBUG) {

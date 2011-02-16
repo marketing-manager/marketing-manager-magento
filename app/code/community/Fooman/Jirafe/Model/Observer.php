@@ -32,18 +32,30 @@ class Fooman_Jirafe_Model_Observer
     public function saveJirafeStoreEmailMapping($observer)
     {
         $user = $observer->getEvent()->getObject();
-        $jirafeStoreIds = implode(",",Mage::app()->getRequest()->getPost('jirafe_send_email_for_store'));
+        $jirafeStoreIds = implode(',' ,Mage::app()->getRequest()->getPost('jirafe_send_email_for_store'));
+        $jirafeEmailReportType = implode(',', Mage::app()->getRequest()->getPost('jirafe_email_report_type'));
+        $jirafeEmailSuppress = implode(',', Mage::app()->getRequest()->getPost('jirafe_email_suppress'));
         $jirafeEmails = str_replace(array("\r"," "),"",str_replace("\n",",",Mage::app()->getRequest()->getPost('jirafe_emails')));
 
-        if($jirafeEmails != $user->getJirafeEmails()){
-            $user->setJirafeEmails($jirafeEmails);
-            $user->setDataChanges(true);
-            //TODO: Jirafe Emails have changed trigger api call
-        }
         if($jirafeStoreIds != $user->getJirafeSendEmailForStore()){
             $user->setJirafeSendEmailForStore($jirafeStoreIds);
             $user->setDataChanges(true);
             //TODO: Jirafe User to Store mapping has changed trigger api call
+        }
+        if($jirafeEmailReportType != $user->getJirafeEmailReportType()){
+            $user->setJirafeEmailReportType($jirafeEmailReportType);
+            $user->setDataChanges(true);
+            //TODO: Jirafe Email report type have changed trigger api call
+        }
+        if($jirafeEmailSuppress != $user->getJirafeEmailSuppress()){
+            $user->setJirafeEmailSuppress($jirafeEmailSuppress);
+            $user->setDataChanges(true);
+            //TODO: Jirafe Email suppress have changed trigger api call
+        }
+        if($jirafeEmails != $user->getJirafeEmails()){
+            $user->setJirafeEmails($jirafeEmails);
+            $user->setDataChanges(true);
+            //TODO: Jirafe Emails have changed trigger api call
         }
     }
 }
