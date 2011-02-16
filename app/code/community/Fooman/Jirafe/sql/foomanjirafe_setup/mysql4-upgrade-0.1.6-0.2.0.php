@@ -17,7 +17,19 @@ $installer = $this;
 /* @var $installer Fooman_Jirafe_Model_Mysql4_Setup */
 
 $installer->startSetup();
+
+// Modify tables with the new DB schema
 Mage::helper('foomanjirafe/setup')->runDbSchemaUpgrade($installer, '0.2.0');
+
+// Add defaults into config file
+$keys = array('isActive', 'isDashboardActive', 'isEmailActive');
+foreach ($keys as $key) {
+	$value = Mage::helper('foomanjirafe')->getStoreConfig($key);
+	
+	if (is_null($value)) {
+		Mage::helper('foomanjirafe')->setStoreConfig($key, '1');
+	}
+}
 
 // Get email addresses in the global jirafe settings
 $emails = explode(',', Mage::helper('foomanjirafe')->getStoreConfig('emails'));
