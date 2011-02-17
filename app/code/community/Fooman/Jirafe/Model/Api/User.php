@@ -37,7 +37,7 @@ class Fooman_Jirafe_Model_Api_User extends Fooman_Jirafe_Model_Api
         $data['first_name'] = $firstName;
         $data['last_name'] = $lastName;
         $data['mobile_phone'] = $mobilePhone;
-        $this->transmit(self::JIRAFE_API_USERS, $data, Zend_Http_Client::POST);
+        return $this->sendData(self::JIRAFE_API_USERS, $data, Zend_Http_Client::POST);
     }
 
     /**
@@ -47,7 +47,7 @@ class Fooman_Jirafe_Model_Api_User extends Fooman_Jirafe_Model_Api
      */
     public function getInfo ($username)
     {
-        $this->transmit(self::JIRAFE_API_USERS.'/'.$username, false, Zend_Http_Client::GET);
+        return $this->sendData(self::JIRAFE_API_USERS.'/'.$username, false, Zend_Http_Client::GET);
     }
 
     /**
@@ -60,7 +60,7 @@ class Fooman_Jirafe_Model_Api_User extends Fooman_Jirafe_Model_Api
     {
         $data = array();
         $data['email'] = $email;
-        $this->transmit(self::JIRAFE_API_SITES.'/'.$username, $data, Zend_Http_Client::PUT);
+        return $this->sendData(self::JIRAFE_API_SITES.'/'.$username, $data, Zend_Http_Client::PUT);
     }
 
 }

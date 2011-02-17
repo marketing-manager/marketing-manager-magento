@@ -81,19 +81,22 @@ class Fooman_Jirafe_Helper_Data extends Mage_Core_Helper_Abstract
         return implode(',', $storearr);
     }
 
-    public function getAdminUserByEmail ($email)
+    public function collectJirafeEmails ($storeId)
     {
         $adminUsers = Mage::getSingleton('admin/user')->getCollection();
-        $user = null;
-        // Get admin user for this email
+        $emails = array();
+        // loop over all admin users
         foreach ($adminUsers as $adminUser) {
-            if ($adminUser->getEmail() == $email) {
-                $user = $adminUser;
-                break;
+            //if admin user is subscribed to jirafe emails for this store
+            if (in_array($storeId, explode(',',$adminUser->getJirafeSendEmailForStore()))) {
+                //add all emails from the jirafe emails field
+                foreach(explode(',',$adminUser->getJirafeEmails()) as $jirafeEmail) {
+                    $emails[] = $jirafeEmail;
+                }
             }
         }
 
-        return $user;
+        return implode(',',$emails);
     }
 
     public function debug ($mesg)

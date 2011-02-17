@@ -29,7 +29,16 @@ class Fooman_Jirafe_Model_Observer
     }
      */
 
-    public function saveJirafeStoreEmailMapping($observer)
+    public function syncJirafeStore ($observer)
+    {
+        $jirafe = Mage::getModel('foomanjirafe/jirafe');
+        $appId = $jirafe->checkAppId();
+        $store = $observer->getEvent()->getObject();
+        $jirafe->checkSiteId ($appId, $store);
+    }
+
+
+    public function saveJirafeStoreEmailMapping ($observer)
     {
         $user = $observer->getEvent()->getObject();
         $jirafeStoreIds = implode(',' ,Mage::app()->getRequest()->getPost('jirafe_send_email_for_store'));
@@ -37,25 +46,34 @@ class Fooman_Jirafe_Model_Observer
         $jirafeEmailSuppress = (int)Mage::app()->getRequest()->getPost('jirafe_email_suppress');
         $jirafeEmails = str_replace(array("\r"," "),"",str_replace("\n",",",Mage::app()->getRequest()->getPost('jirafe_emails')));
 
+        $jirafeSettingsHaveChanged = false;
         if($jirafeStoreIds != $user->getJirafeSendEmailForStore()){
             $user->setJirafeSendEmailForStore($jirafeStoreIds);
             $user->setDataChanges(true);
+            $jirafeSettingsHaveChanged = true;
             //TODO: Jirafe User to Store mapping has changed trigger api call
         }
         if($jirafeEmailReportType != $user->getJirafeEmailReportType()){
             $user->setJirafeEmailReportType($jirafeEmailReportType);
             $user->setDataChanges(true);
+            $jirafeSettingsHaveChanged = true;
             //TODO: Jirafe Email report type have changed trigger api call
         }
         if($jirafeEmailSuppress != $user->getJirafeEmailSuppress()){
             $user->setJirafeEmailSuppress($jirafeEmailSuppress);
             $user->setDataChanges(true);
+            $jirafeSettingsHaveChanged = true;
             //TODO: Jirafe Email suppress have changed trigger api call
         }
         if($jirafeEmails != $user->getJirafeEmails()){
             $user->setJirafeEmails($jirafeEmails);
             $user->setDataChanges(true);
+            $jirafeSettingsHaveChanged = true;
             //TODO: Jirafe Emails have changed trigger api call
+        }
+
+        if($jirafeSettingsHaveChanged) {
+            //TODO: call api sync
         }
     }
 }

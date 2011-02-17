@@ -32,7 +32,7 @@ class Fooman_Jirafe_Model_Api_Site extends Fooman_Jirafe_Model_Api
         $data['url'] = $url;
         $data['timezone'] = $timezone;
         $data['currency'] = $currency;
-        $this->transmit(self::JIRAFE_API_SITES, $data, Zend_Http_Client::POST);
+        return $this->sendData(self::JIRAFE_API_SITES, $data, Zend_Http_Client::POST);
     }
 
     /**
@@ -42,7 +42,7 @@ class Fooman_Jirafe_Model_Api_Site extends Fooman_Jirafe_Model_Api
      */
     public function getInfo ($siteId)
     {
-        $this->transmit(self::JIRAFE_API_SITES.'/'.$siteId, false, Zend_Http_Client::GET);
+        return $this->sendData(self::JIRAFE_API_SITES.'/'.$siteId, false, Zend_Http_Client::GET);
     }
 
     /**
@@ -52,7 +52,7 @@ class Fooman_Jirafe_Model_Api_Site extends Fooman_Jirafe_Model_Api
      */
     public function getLinkedUsers ($siteId)
     {
-        $this->transmit(self::JIRAFE_API_SITES.'/'.$siteId.self::JIRAFE_API_USERS, false, Zend_Http_Client::GET);
+        return $this->sendData(self::JIRAFE_API_SITES.'/'.$siteId.self::JIRAFE_API_USERS, false, Zend_Http_Client::GET);
     }
 
     /**
@@ -65,7 +65,7 @@ class Fooman_Jirafe_Model_Api_Site extends Fooman_Jirafe_Model_Api
     {
         $data = array();
         $data['timezone'] = $timezone;
-        $this->transmit(self::JIRAFE_API_SITES.'/'.$siteId, $data, Zend_Http_Client::PUT);
+        return $this->sendData(self::JIRAFE_API_SITES.'/'.$siteId, $data, Zend_Http_Client::PUT);
     }
 
     /**
@@ -75,6 +75,6 @@ class Fooman_Jirafe_Model_Api_Site extends Fooman_Jirafe_Model_Api
      */
     public function delete ($siteId)
     {
-        $this->transmit(self::JIRAFE_API_SITES.'/'.$siteId, false, Zend_Http_Client::DELETE);
+        return $this->sendData(self::JIRAFE_API_SITES.'/'.$siteId, false, Zend_Http_Client::DELETE);
     }
 }

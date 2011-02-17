@@ -24,6 +24,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
     {
         $this->_init('foomanjirafe/report');
         $this->_helper = Mage::helper('foomanjirafe');
+        $this->_jirafe = Mage::getModel('foomanjirafe/jirafe');
     }
 
     public function cron ($cronSchedule, $first = false)
@@ -36,6 +37,13 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         // Set flag to make sure we were successful in reporting and logging all stores
         $success = true;
 
+        //check if we have a current applicationi id for jirafe
+        $appId = $this->_jirafe->checkAppId();
+        if(!$appId) {
+            $this->_helper->debug("no Jirafe application ID present - abort cron.");
+            return false;
+        }
+
         //loop over stores to create reports
         $storeCollection = Mage::getModel('core/store')->getCollection();
         foreach ($storeCollection as $store) {
@@ -47,14 +55,16 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
                 if ($this->_helper->getStoreConfig('isActive', $storeId) || $first) {
                     // Set the current store
                     Mage::app()->setCurrentStore($store);
+                    // Check Jirafe Site Id
+                    $siteId = $this->_jirafe->checkSiteId($appId, $store);
                     // Get the timespan (array ('from', 'to')) for this report
                     $timespan = $this->_getReportTimespan($store, $gmtTs);
                     // Only continue if the report does not already exist
                     $exists = Mage::getResourceModel('foomanjirafe/report')->getReport($storeId, $timespan['date']);
-                    if (!$exists) {
+                    if (!$exists && $siteId) {
                         try {
                             // Create new report
-                            $data = $this->_compileReport($store, $timespan, $first);
+                            $data = $this->_compileReport($store, $timespan, $siteId, $first);
                             // Save report
                             $this->_saveReport($store, $timespan, $data);
                             // Send out emails
@@ -107,7 +117,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         }
     }
 
-    private function _compileReport ($store, $timespan, $first = false)
+    private function _compileReport ($store, $timespan, $siteId, $first = false)
     {
         $reportData = array();
 
@@ -119,6 +129,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         // Get store information
         $storeId = $store->getId();
         $reportData['store_id'] = $storeId;
+        $reportData['site_id'] = $siteId;
         $reportData['store_name'] = $store->getFrontendName() . ' (' . $store->getName() . ')';
         $reportData['store_url'] = $store->getConfig('web/unsecure/base_url');
 
@@ -126,14 +137,14 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         $this->_helper->debug("Compiling report for store [{$storeId}] {$reportData['store_name']} on {$reportData['date']}");
 
         // Get the currency
-        $reportData['currency'] = Mage::getStoreConfig('currency/options/base', $storeId);
+        $reportData['currency'] = $store->getConfig('currency/options/base');
 
         // Get version information
         $reportData['jirafe_version'] = (string) Mage::getConfig()->getModuleConfig('Fooman_Jirafe')->version;
         $reportData['magento_version'] = Mage::getVersion();
 
         // Get the email addresses where the email will be sent
-        $reportData['email_addresses'] = $this->_helper->getStoreConfig('emails', $storeId);
+        $reportData['email_addresses'] = $this->_helper->collectJirafeEmails($storeId);
 
         // Get the URL to the Magento admin console, Jirafe settings
         $reportData['jirafe_settings_url'] = Mage::helper('adminhtml')->getUrl('adminhtml/system_config/edit/section/foomanjirafe', array('_nosecret' => true, '_nosid' => true));
@@ -246,7 +257,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
 
     function _sendReport ($store, $timespan, $data)
     {
-        Mage::getModel('foomanjirafe/api')->sendData($data);
+        Mage::getModel('foomanjirafe/api')->sendData(Fooman_Jirafe_Model_Api::JIRAFE_API_HB, $data);
     }
 
     function _getReportDataFormatted ($data)

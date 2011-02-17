@@ -32,7 +32,7 @@ if (!empty($emails)) {
     $storeIds = Mage::helper('foomanjirafe')->getStoreIds();
     // Iterate through the emails and find the admin user for the email
     foreach ($emails as $email) {
-        $adminUser = Mage::helper('foomanjirafe')->getAdminUserByEmail($email);
+        $adminUser = Mage::getModel('admin/user')->load($email,'email');
         if (!empty($adminUser)) {
             $adminUser
                     ->setJirafeSendEmailForStore($storeIds)

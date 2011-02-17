@@ -150,6 +150,10 @@
         </trans_email>
         <foomanjirafe>
             <settings>
+                <app_id/>
+                <app_settings_hash/>
+                <site_id/>
+                <site_settings_hash/>
                 <sent_initial_email>0</sent_initial_email>
                 <isActive>1</isActive>
                 <reportType>simple</reportType>
@@ -200,6 +204,15 @@
             </resources>
         </acl>
         <events>
+            <core_store_save_after>
+                <observers>
+                    <syncJirafeStore>
+                        <type>singleton</type>
+                        <class>Fooman_Jirafe_Model_Observer</class>
+                        <method>syncJirafeStore</method>
+                    </syncJirafeStore>
+                </observers>
+            </core_store_save_after>
             <admin_user_save_before>
                 <observers>
                     <saveJirafeStoreEmailMapping>

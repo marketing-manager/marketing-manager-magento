@@ -94,8 +94,7 @@ class Fooman_Jirafe_Block_Js extends Mage_Core_Block_Template
 
     public function getSiteId ()
     {
-        //TODO: replace with site id retrieved via api
-        return "1";
+        return Mage::helper('foomanjirafe')->getStoreConfig('site_id', Mage::app()->getStore()->getId());
     }
 
     public function getPiwikBaseURL ($secure = false)
