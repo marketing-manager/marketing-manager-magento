@@ -15,7 +15,7 @@
 
 class Fooman_Jirafe_Model_Api
 {
-    const JIRAFE_API_URL = 'http://jirafe-local.com/';
+    const JIRAFE_API_URL = 'https://api.jirafe.com/';
     const JIRAFE_API_VERSION = 'v1';
 
     const JIRAFE_API_HB = '/heartbeat';
