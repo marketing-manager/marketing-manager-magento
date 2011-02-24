@@ -152,6 +152,7 @@
             <settings>
                 <app_id/>
                 <app_settings_hash/>
+                <app_token/>
                 <site_id/>
                 <site_settings_hash/>
                 <sent_initial_email>0</sent_initial_email>
@@ -222,7 +223,23 @@
                     </saveJirafeStoreEmailMapping>
                 </observers>
             </admin_user_save_before>
+            <core_block_abstract_to_html_after>
+                <observers>
+                    <appendJsToAdminHead>
+                        <type>singleton</type>
+                        <class>Fooman_Jirafe_Model_Observer</class>
+                        <method>appendJsToAdminHead</method>
+                    </appendJsToAdminHead>
+                </observers>
+            </core_block_abstract_to_html_after>
         </events>
+        <layout>
+            <updates>
+                <foomanjirafe>
+                    <file>foomanjirafe.xml</file>
+                </foomanjirafe>
+            </updates>
+        </layout>
     </adminhtml>
     <crontab>
         <jobs>

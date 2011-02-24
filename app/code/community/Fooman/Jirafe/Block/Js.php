@@ -1,6 +1,26 @@
 <?php
+/**
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ *
+ * @package     Fooman_Jirafe
+ * @copyright   Copyright (c) 2010 Jirafe Inc (http://www.jirafe.com)
+ * @copyright   Copyright (c) 2010 Fooman Limited (http://www.fooman.co.nz)
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+
 class Fooman_Jirafe_Block_Js extends Mage_Core_Block_Template
 {
+
+    const VISITOR_ALL       = 'A';
+    const VISITOR_BROWSERS  = 'B';
+    const VISITOR_ENGAGED   = 'C';
+    const VISITOR_READY2BUY = 'D';
+    const VISITOR_CUSTOMER  = 'E';
 
     protected $_isCheckoutSuccess = false;
 
@@ -13,6 +33,10 @@ class Fooman_Jirafe_Block_Js extends Mage_Core_Block_Template
         $this->setTemplate('fooman/jirafe/js.phtml');
     }
 
+    protected function _getSession() {
+        return Mage::getSingleton('customer/session');
+    }
+
     public function setIsCheckoutSuccess($flag)
     {
         $this->_isCheckoutSuccess = $flag;
@@ -22,6 +46,29 @@ class Fooman_Jirafe_Block_Js extends Mage_Core_Block_Template
     {
         return $this->_isCheckoutSuccess;
     }
+
+    public function setPiwikVisitorType ($type=null)
+    {
+        $currentType = $this->_getSession()->getPiwikVisitorType();
+        if (empty($currentType)) {
+            $this->_getSession()->setPiwikVisitorType(self::VISITOR_ALL);
+            Mage::register('piwik_visitor_type_set', true);
+        } elseif ($type > $currentType) {
+            $this->_getSession()->setPiwikVisitorType($type);
+        } elseif ($currentType == self::VISITOR_ALL && $type == self::VISITOR_ALL) {
+            //upgrade to browser on second page view
+            if (!Mage::registry('piwik_visitor_type_set')) {
+                $this->_getSession()->setPiwikVisitorType(self::VISITOR_BROWSERS);
+            }
+        }
+    }
+
+    public function getPiwikVisitorType()
+    {
+        $currentType = $this->_getSession()->getPiwikVisitorType();
+        $this->setPiwikVisitorType(self::VISITOR_ALL);
+        return $this->_getSession()->getPiwikVisitorType();
+    }
    
     public function getTrackingInfo()
     {
@@ -29,8 +76,7 @@ class Fooman_Jirafe_Block_Js extends Mage_Core_Block_Template
         $js .= $this->_getPageTrackingInfo()."\n";
         //$js .= $this->_getCartTrackingInfo()."\n";
         $js .= $this->_getPurchaseTrackingInfo()."\n";
-
-        Mage::log($js);
+        Mage::helper('foomanjirafe')->debug($js);
         return $js;
     }
 
@@ -42,7 +88,7 @@ class Fooman_Jirafe_Block_Js extends Mage_Core_Block_Template
 
     public function _getPageTrackingInfo()
     {
-        return "_paq.push(['trackPageView']);";
+        return "_paq.push(['setCustomVariable', 1, 'U','".$this->getPiwikVisitorType()."'],['trackPageView']);";
     }
 
     public function _getCartTrackingInfo()

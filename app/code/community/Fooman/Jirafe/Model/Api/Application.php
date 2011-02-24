@@ -28,50 +28,53 @@ class Fooman_Jirafe_Model_Api_Application extends Fooman_Jirafe_Model_Api
         $data['name'] = $name;
         $data['url'] = $url;
         $data['callback_url'] = $callbackUrl;
-        return $this->sendData(self::JIRAFE_API_APPLICATIONS, $data, Zend_Http_Client::POST);
+        return $this->sendData(self::JIRAFE_API_APPLICATIONS, $data, false, Zend_Http_Client::POST);
     }
 
     /**
      * Get application information for application ID
      *
      * @param $appId
+     * @param $adminToken
      */
-    public function getInfo ($appId)
+    public function getInfo ($appId, $adminToken)
     {
-        return $this->sendData(self::JIRAFE_API_APPLICATIONS.'/'.$appId, false, Zend_Http_Client::GET);
+        return $this->sendData(self::JIRAFE_API_APPLICATIONS.'/'.$appId, false, $adminToken, Zend_Http_Client::GET);
     }
 
     /**
      * Get linked sites for application ID
      *
      * @param $appId
+     * @param $adminToken
      */
-    public function getLinkedSites ($appId)
+    public function getLinkedSites ($appId, $adminToken)
     {
-        return $this->sendData(self::JIRAFE_API_APPLICATIONS.'/'.$appId.self::JIRAFE_API_SITES, false, Zend_Http_Client::GET);
+        return $this->sendData(self::JIRAFE_API_APPLICATIONS.'/'.$appId.self::JIRAFE_API_SITES, false, $adminToken, Zend_Http_Client::GET);
     }
 
     /**
      * Update application information
      *
      * @param $appId
-
+     * @param $adminToken
      */
-    public function update ($appId, $url, $callbackUrl=null)
+    public function update ($appId, $adminToken, $url, $callbackUrl=null)
     {
         $data = array();
         $data['url'] = $url;
         $data['callback_url'] = $callbackUrl;
-        return $this->sendData(self::JIRAFE_API_APPLICATIONS.'/'.$appId, $data, Zend_Http_Client::PUT);
+        return $this->sendData(self::JIRAFE_API_APPLICATIONS.'/'.$appId, $data, $adminToken, Zend_Http_Client::PUT);
     }
 
     /**
      * Delete application (Caution! This operation can't be reverted and will delete all dependent data)
      *
      * @param $appId
+     * @param $adminToken
      */
-    public function delete ($appId)
+    public function delete ($appId, $adminToken)
     {
-        return $this->sendData(self::JIRAFE_API_APPLICATIONS.'/'.$appId, false, Zend_Http_Client::DELETE);
+        return $this->sendData(self::JIRAFE_API_APPLICATIONS.'/'.$appId, false, $adminToken, Zend_Http_Client::DELETE);
     }
 }

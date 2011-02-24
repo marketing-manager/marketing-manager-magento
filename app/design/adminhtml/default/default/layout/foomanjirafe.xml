@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <adminhtml_dashboard_index>
+        <reference name="head">
+            <block type="foomanjirafe/adminhtml_dashboard_js" name="foomanjirafe_dashboard_head" as="foomanjirafe_dashboard_head" />
+        </reference>
+    </adminhtml_dashboard_index>
+</layout>

@@ -19,12 +19,13 @@ class Fooman_Jirafe_Model_Api_Site extends Fooman_Jirafe_Model_Api
     /**
      * Create site (Magento store)
      * @param $appId - The Application ID, created by "Applications" resource
+     * @param $adminToken
      * @param $description - The description of the site (Magento store)
      * @param $url - The URL of the site
      * @param $timezone - The timezone of the site
      * @param $currency - The currency of the site
      */
-    public function create ($appId, $description, $url, $timezone, $currency)
+    public function create ($appId, $adminToken, $description, $url, $timezone, $currency)
     {
         $data = array();
         $data['app_id'] = $appId;
@@ -32,49 +33,53 @@ class Fooman_Jirafe_Model_Api_Site extends Fooman_Jirafe_Model_Api
         $data['url'] = $url;
         $data['timezone'] = $timezone;
         $data['currency'] = $currency;
-        return $this->sendData(self::JIRAFE_API_SITES, $data, Zend_Http_Client::POST);
+        return $this->sendData(self::JIRAFE_API_SITES, $data, $adminToken, Zend_Http_Client::POST);
     }
 
     /**
      * Get site information for site ID
      *
      * @param $siteId
+     * @param $adminToken
      */
-    public function getInfo ($siteId)
+    public function getInfo ($siteId, $adminToken)
     {
-        return $this->sendData(self::JIRAFE_API_SITES.'/'.$siteId, false, Zend_Http_Client::GET);
+        return $this->sendData(self::JIRAFE_API_SITES.'/'.$siteId, false, $adminToken, Zend_Http_Client::GET);
     }
 
     /**
      * Get linked users for site ID
      *
      * @param $siteId
+     * @param $adminToken
      */
-    public function getLinkedUsers ($siteId)
+    public function getLinkedUsers ($siteId, $adminToken)
     {
-        return $this->sendData(self::JIRAFE_API_SITES.'/'.$siteId.self::JIRAFE_API_USERS, false, Zend_Http_Client::GET);
+        return $this->sendData(self::JIRAFE_API_SITES.'/'.$siteId.self::JIRAFE_API_USERS, false, $adminToken, Zend_Http_Client::GET);
     }
 
     /**
      * Update site information
      *
      * @param $siteId
-
+     * @param $adminToken
+     * @param $timezone
      */
-    public function update ($siteId, $timezone)
+    public function update ($siteId, $adminToken, $timezone)
     {
         $data = array();
         $data['timezone'] = $timezone;
-        return $this->sendData(self::JIRAFE_API_SITES.'/'.$siteId, $data, Zend_Http_Client::PUT);
+        return $this->sendData(self::JIRAFE_API_SITES.'/'.$siteId, $data, $adminToken, Zend_Http_Client::PUT);
     }
 
     /**
      * Delete site (Caution! This operation can't be reverted and will delete all dependent data) 
      *
      * @param $siteId
+     * @param $adminToken
      */
-    public function delete ($siteId)
+    public function delete ($siteId, $adminToken)
     {
-        return $this->sendData(self::JIRAFE_API_SITES.'/'.$siteId, false, Zend_Http_Client::DELETE);
+        return $this->sendData(self::JIRAFE_API_SITES.'/'.$siteId, false, $adminToken, Zend_Http_Client::DELETE);
     }
 }

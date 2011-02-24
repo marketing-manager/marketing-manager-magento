@@ -16,6 +16,7 @@
 class Fooman_Jirafe_Model_Api
 {
     const JIRAFE_API_URL = 'https://api.jirafe.com/';
+    const JIRAFE_UI_URL = 'https://api.jirafe.com/app_dev.php/v1/';
     const JIRAFE_API_VERSION = 'v1';
 
     const JIRAFE_API_HB = '/heartbeat';
@@ -23,8 +24,8 @@ class Fooman_Jirafe_Model_Api
     const JIRAFE_API_SITES = '/sites';
     const JIRAFE_API_USERS = '/users';
 
-    public function sendData ($entryPoint, $data,
-            $method = Zend_Http_Client::POST)
+    public function sendData ($entryPoint, $data, $adminToken = false,
+            $method = Zend_Http_Client::POST, $httpAuth = array())
     {
 
         //set up connection
@@ -34,29 +35,42 @@ class Fooman_Jirafe_Model_Api
             'keepalive' => true
         ));
         $conn->setUri(self::JIRAFE_API_URL . self::JIRAFE_API_VERSION . $entryPoint);
+        if($adminToken) {
+            $conn->setParameterGet('token', $adminToken);
+        }
+        if(!empty($httpAuth)) {
+            $conn->setAuth($httpAuth['username'], $httpAuth['password']);
+        }
 
         try {
             //connect and send data to Jirafe
             //$result = $conn->setRawData(json_encode($data), 'application/json')->request($method);
-            Mage::log($data);
+            Mage::helper('foomanjirafe')->debug($data);
+            //loop over data items and add them as post/put parameters if requested
             if (is_array($data) && ($method == Zend_Http_Client::POST || $method == Zend_Http_Client::PUT)) {
                 foreach ($data as $parameter => $value) {
                     $conn->setParameterPost($parameter, $value);
                 }
             }
             $result = $conn->request($method);
-            Mage::log($result);
-            Mage::log($conn->getLastRequest());
+            Mage::helper('foomanjirafe')->debug($result);
+            Mage::helper('foomanjirafe')->debug($conn->getLastRequest());
+            Mage::helper('foomanjirafe')->debug($conn->getLastResponse());
+            Mage::helper('foomanjirafe')->debug(json_decode($result->getBody(),true));
         } catch (Exception $e) {
+            Mage::logException($e);
             return $e->getMessage();
         }
-        $this->_errorChecking($result);
-        return $result->getBody();
+        $this->_errorChecking($conn->getLastResponse());
+        return json_decode($result->getBody(),true);
     }
 
-    private function _errorChecking ($result)
+    private function _errorChecking ($response)
     {
 
+        if ($response->isError()) {
+            throw new Exception($response->getStatus() .' '. $response->getMessage());
+        }
     }
 
 }

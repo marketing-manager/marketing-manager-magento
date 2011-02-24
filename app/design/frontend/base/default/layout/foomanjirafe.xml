@@ -7,14 +7,41 @@
             </block>
         </reference>
     </default>
+    <catalog_category_default>
+        <reference name="foomanjirafe_js">
+            <action method="setPiwikVisitorType"><value>C</value></action>
+        </reference>
+    </catalog_category_default>
+    <catalog_category_layered>
+        <reference name="foomanjirafe_js">
+            <action method="setPiwikVisitorType"><value>C</value></action>
+        </reference>
+    </catalog_category_layered>
+    <catalog_category_layered_nochildren>
+        <reference name="foomanjirafe_js">
+            <action method="setPiwikVisitorType"><value>C</value></action>
+        </reference>
+    </catalog_category_layered_nochildren>       
+    <catalog_product_view>
+        <reference name="foomanjirafe_js">
+            <action method="setPiwikVisitorType"><value>C</value></action>
+        </reference>
+    </catalog_product_view>
+    <checkout_onepage_index>
+        <reference name="foomanjirafe_js">
+            <action method="setPiwikVisitorType"><value>D</value></action>
+        </reference>
+    </checkout_onepage_index>
     <checkout_onepage_success>
         <reference name="foomanjirafe_js">
 	    <action method="setIsCheckoutSuccess"><value>1</value></action>
+            <action method="setPiwikVisitorType"><value>E</value></action>
         </reference>
     </checkout_onepage_success>
     <checkout_multishipping_success>
         <reference name="foomanjirafe_js">
 	    <action method="setIsCheckoutSuccess"><value>1</value></action>
+            <action method="setPiwikVisitorType"><value>E</value></action>
         </reference>
     </checkout_multishipping_success>
 </layout>

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * NOTICE OF LICENSE
  *
@@ -13,6 +12,7 @@
  * @copyright   Copyright (c) 2010 Fooman Limited (http://www.fooman.co.nz)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
+
 class Fooman_Jirafe_Model_Jirafe
 {
 
@@ -38,8 +38,14 @@ class Fooman_Jirafe_Model_Jirafe
             }
         } else {
             //retrieve new application id from jirafe server
-            $appId = Mage::getModel('foomanjirafe/api_application')->create(Mage::getStoreConfig('web/unsecure/base_url', $defaultStoreId), Mage::app()->getStore($storeId)->getName());
-            Mage::helper('foomanjirafe')->setStoreConfig('app_id', $appId);
+            try {
+                $return = Mage::getModel('foomanjirafe/api_application')->create(Mage::app()->getStore($storeId)->getName(), Mage::getStoreConfig('web/unsecure/base_url', $defaultStoreId));
+            } catch (Exception $e) {
+                return false;
+            }
+            Mage::helper('foomanjirafe')->setStoreConfig('app_id', $return['id']);
+            Mage::helper('foomanjirafe')->setStoreConfig('app_token', $return['token']);
+            $appId = $return['id'];
             $changeHash = true;
         }
 
@@ -50,6 +56,12 @@ class Fooman_Jirafe_Model_Jirafe
         return $appId;
     }
 
+    /**
+     * create a md5 hash of the the default store (admin) settings we store server side so we know when we need to update
+     *
+     * @param int $storeId
+     * @return string
+     */
     protected function _createAppSettingsHash ($storeId)
     {
         return md5(Mage::getStoreConfig('web/unsecure/base_url', $storeId) . Mage::app()->getStore($storeId)->getName());
@@ -67,7 +79,7 @@ class Fooman_Jirafe_Model_Jirafe
     {
         //check if we already have a jirafe store id for this Magento store
         $siteId = Mage::helper('foomanjirafe')->getStoreConfig('site_id');
-        $currentHash = $this->_createStoreSettingsHash($store);
+        $currentHash = $this->_createSiteSettingsHash($store);
 
         $changeHash = false;
         if ($siteId) {
@@ -81,14 +93,14 @@ class Fooman_Jirafe_Model_Jirafe
             }
         } else {
             //retrieve new site id from jirafe server
-            $siteId = Mage::getModel('foomanjirafe/api_site')->create(
+            $return = Mage::getModel('foomanjirafe/api_site')->create(
                             $appId,
                             $store->getFrontendName() . ' (' . $store->getName() . ')',
                             $store->getConfig('web/unsecure/base_url'),
                             $store->getConfig('general/locale/timezone'),
                             $store->getConfig('currency/options/base')
             );
-            Mage::helper('foomanjirafe')->setStoreConfig('site_id', $siteId);
+            Mage::helper('foomanjirafe')->setStoreConfig('site_id', $return['id']);
             $changeHash = true;
         }
 
@@ -99,6 +111,12 @@ class Fooman_Jirafe_Model_Jirafe
         return $siteId;
     }
 
+    /**
+     * create a md5 hash of the the store settings we store server side for the site so we know when we need to update
+     *
+     * @param int $storeId
+     * @return string
+     */
     protected function _createSiteSettingsHash ($store)
     {
         return md5( $store->getFrontendName() .

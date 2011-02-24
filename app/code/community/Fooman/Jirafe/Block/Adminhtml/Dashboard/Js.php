@@ -12,14 +12,21 @@
  * @copyright   Copyright (c) 2010 Fooman Limited (http://www.fooman.co.nz)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-?>
-<div id="jirafe"></div>
 
-<script type="text/javascript">
-<!--
-$('#jirafe').jirafe({
-    api_url:    '<?php echo $this->getDashboardApiUrl()?>',
-    api_token:  '<?php echo $this->getJirafeUserToken()?>'
-});
--->
-</script>
+class Fooman_Jirafe_Block_Adminhtml_Dashboard_Js extends Mage_Core_Block_Template
+{
+
+    public function __construct ()
+    {
+        parent::__construct();
+        if ($this->isJirafeDashboardActive()) {
+            $this->setTemplate('fooman/jirafe/dashboard-head.phtml');
+        }
+    }
+
+    public function isJirafeDashboardActive ()
+    {
+        return Mage::helper('foomanjirafe')->getStoreConfig('isDashboardActive');
+    }
+
+}

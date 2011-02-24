@@ -25,12 +25,14 @@ ln -s ~/code/jirafe-magento-plugin/skin/adminhtml/default/default/images/jirafe
 cd ../../../../..
 
 ## Run this to remove a linked Jirafe from a Magento instance
-rm app/code/community/Fooman
-rm app/design/adminhtml/default/default/template/fooman
+rm -r app/code/community/Fooman/Jirafe
+rm -r app/design/adminhtml/default/default/template/fooman/jirafe
 rm app/etc/modules/Fooman_Jirafe.xml
-rm app/locale/en_US/template/email/jirafe
-rm js/fooman
-rm skin/adminhtml/default/default/images/jirafe
+rm -r app/locale/en_US/template/email/jirafe
+rm -r js/fooman/jirafe
+rm -r skin/adminhtml/default/default/images/jirafe
+rm app/design/frontend/base/default/template/layout/foomanjirafe.xml
+rm -r app/design/frontend/base/default/template/fooman/jirafe
 
 ## Run this in the MySQL DB to remove Jirafe (assumes no table prefix)
 DROP TABLE foomanjirafe_report;
@@ -41,3 +43,4 @@ ALTER TABLE admin_user DROP COLUMN jirafe_email_report_type;
 ALTER TABLE admin_user DROP COLUMN jirafe_email_suppress;
 ALTER TABLE admin_user DROP COLUMN jirafe_emails;
 ALTER TABLE admin_user DROP COLUMN jirafe_user_id;
+ALTER TABLE admin_user DROP COLUMN jirafe_user_token;

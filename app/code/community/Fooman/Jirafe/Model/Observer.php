@@ -76,4 +76,20 @@ class Fooman_Jirafe_Model_Observer
             //TODO: call api sync
         }
     }
+
+    /**
+     * we can't add external javascript via normal Magento means
+     * adding child elements to the head block are also not automatically rendered
+     * add foomanjirafe_dashboard_head via this observer
+     *
+     * @param $observer
+     */
+    public function appendJsToAdminHead($observer)
+    {
+        $block = $observer->getEvent()->getBlock();
+        $transport = $observer->getEvent()->getTransport();
+        if ($block instanceof Mage_Adminhtml_Block_Page_Head) {
+            $transport->setHtml($transport->getHtml().$block->getChildHtml('foomanjirafe_dashboard_head'));
+        }
+    }
 }
