@@ -79,6 +79,7 @@ class Fooman_Jirafe_Model_Jirafe
     {
         //check if we already have a jirafe store id for this Magento store
         $siteId = Mage::helper('foomanjirafe')->getStoreConfig('site_id');
+        $adminToken =  Mage::helper('foomanjirafe')->getStoreConfig('app_token');
         $currentHash = $this->_createSiteSettingsHash($store);
 
         $changeHash = false;
@@ -87,6 +88,7 @@ class Fooman_Jirafe_Model_Jirafe
             if ($currentHash != Mage::helper('foomanjirafe')->getStoreConfig('site_settings_hash')) {
                 $return = Mage::getModel('foomanjirafe/api_site')->update(
                                 $siteId,
+                                $adminToken,
                                 $store->getConfig('general/locale/timezone')
                 );
                 $changeHash = true;
@@ -95,6 +97,7 @@ class Fooman_Jirafe_Model_Jirafe
             //retrieve new site id from jirafe server
             $return = Mage::getModel('foomanjirafe/api_site')->create(
                             $appId,
+                            $adminToken,
                             $store->getFrontendName() . ' (' . $store->getName() . ')',
                             $store->getConfig('web/unsecure/base_url'),
                             $store->getConfig('general/locale/timezone'),
