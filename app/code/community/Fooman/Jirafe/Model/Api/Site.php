@@ -17,26 +17,6 @@ class Fooman_Jirafe_Model_Api_Site extends Fooman_Jirafe_Model_Api
 {
    
     /**
-     * Create site (Magento store)
-     * @param $appId - The Application ID, created by "Applications" resource
-     * @param $adminToken
-     * @param $description - The description of the site (Magento store)
-     * @param $url - The URL of the site
-     * @param $timezone - The timezone of the site
-     * @param $currency - The currency of the site
-     */
-    public function create ($appId, $adminToken, $description, $url, $timezone, $currency)
-    {
-        $data = array();
-        $data['app_id'] = $appId;
-        $data['description'] = $description;
-        $data['url'] = $url;
-        $data['timezone'] = $timezone;
-        $data['currency'] = $currency;
-        return $this->sendData(self::JIRAFE_API_SITES, $data, $adminToken, Zend_Http_Client::POST);
-    }
-
-    /**
      * Get site information for site ID
      *
      * @param $siteId

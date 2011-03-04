@@ -15,12 +15,14 @@
 
 class Fooman_Jirafe_Model_Api
 {
-    const JIRAFE_API_URL = 'https://api.jirafe.com/';
-    const JIRAFE_UI_URL = 'https://api.jirafe.com/app_dev.php/v1/';
+    const JIRAFE_API_SERVER = 'https://api.jirafe.com/';
+    const JIRAFE_API_URL = 'http://jirafe-local.com/app_dev.php/';
+    const JIRAFE_UI_URL = 'http://jirafe-local.com/app_dev.php/v1/';
     const JIRAFE_API_VERSION = 'v1';
 
     const JIRAFE_API_HB = '/heartbeat';
     const JIRAFE_API_APPLICATIONS = '/applications';
+    const JIRAFE_API_RESOURCES =  '/resources';
     const JIRAFE_API_SITES = '/sites';
     const JIRAFE_API_USERS = '/users';
 
@@ -52,25 +54,41 @@ class Fooman_Jirafe_Model_Api
                     $conn->setParameterPost($parameter, $value);
                 }
             }
-            $result = $conn->request($method);
-            Mage::helper('foomanjirafe')->debug($result);
+            $conn->request($method);            
             Mage::helper('foomanjirafe')->debug($conn->getLastRequest());
             Mage::helper('foomanjirafe')->debug($conn->getLastResponse());
-            Mage::helper('foomanjirafe')->debug(json_decode($result->getBody(),true));
+            $result = $this->_errorChecking($conn->getLastResponse());
+            Mage::helper('foomanjirafe')->debug($result);
         } catch (Exception $e) {
             Mage::logException($e);
-            return $e->getMessage();
-        }
-        $this->_errorChecking($conn->getLastResponse());
-        return json_decode($result->getBody(),true);
+            return false;
+        }        
+        return $result;
     }
 
     private function _errorChecking ($response)
     {
-
+        //check server response
         if ($response->isError()) {
             throw new Exception($response->getStatus() .' '. $response->getMessage());
         }
+        Mage::helper('foomanjirafe')->debug($response->getBody());
+        //dev mode returns debug toolbar remove it from output here
+        $reponseArray = explode('}', $response->getBody(), 2);
+        $reponseBody = $reponseArray[0].'}';
+        if(strpos($reponseBody,'You are not allowed to access this file.') !== false) {            
+            throw new Exception('Server Response: You are not allowed to access this file.');
+        }
+        //check for returned errors
+        $result = json_decode($reponseBody,true);
+        $errors = array();
+        if(isset($result['errors'])) {
+            foreach ($result['errors'] as $error) {
+                $errors[] = $error;
+            }
+            throw new Exception(implode(',',$errors));
+        }
+        return $result;
     }
 
 }

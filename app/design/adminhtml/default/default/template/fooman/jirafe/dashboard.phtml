@@ -14,12 +14,15 @@
  */
 ?>
 <div id="jirafe"></div>
-
 <script type="text/javascript">
 <!--
-$('#jirafe').jirafe({
+jQuery.noConflict();
+jQuery('#jirafe').Jirafe({
     api_url:    '<?php echo $this->getDashboardApiUrl()?>',
-    api_token:  '<?php echo $this->getJirafeUserToken()?>'
+    api_token:  '<?php echo $this->getJirafeUserToken()?>',
+    app_id:     <?php echo $this->getJirafeApplicationId()?>
 });
 -->
+
 </script>
+

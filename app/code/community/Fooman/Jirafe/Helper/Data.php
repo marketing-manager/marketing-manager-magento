@@ -38,9 +38,9 @@ class Fooman_Jirafe_Helper_Data extends Mage_Core_Helper_Abstract
      *
      * @param string $key
      * @param string $value
-     * @return <type> 
+     * @return <type>
      */
-    public function setStoreConfig ($key, $value)
+    public function setStoreConfig ($key, $value, $storeId = Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID)
     {
         $path = self::XML_PATH_FOOMANJIRAFE_SETTINGS . $key;
 
@@ -50,15 +50,19 @@ class Fooman_Jirafe_Helper_Data extends Mage_Core_Helper_Abstract
             if ($configModel->load($path, 'path')->getValue() == null) {
                 $configModel
                         ->setPath($path)
-                        ->setValue($value)
-                        ->save();
+                        ->setValue($value);
+                if ($storeId != Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID) {
+                    $configModel->setScopeId($storeId);
+                    $configModel->setScope(Mage_Adminhtml_Block_System_Config_Form::SCOPE_STORES);
+                }
+                $configModel->save();
             }
         } catch (Exception $e) {
             Mage::logException($e);
         }
 
         //we also set it as a temporary item so we don't need to reload the config
-        return Mage::app()->getStore()->setConfig($path, $value);
+        return Mage::app()->getStore($storeId)->setConfig($path, $value);
     }
 
     public function isConfigured ($storeId = Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID)
@@ -68,17 +72,30 @@ class Fooman_Jirafe_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function getStoreIds ()
     {
+        return $this->getStores(true);
+    }
+
+    public function getStores ($idsOnly = false)
+    {
         // Get a list of store IDs to send to the user
         $stores = Mage::getModel('core/store')->getCollection();
         $storearr = array();
         foreach ($stores as $store) {
             // Only continue if the store is active
             if ($store->getIsActive()) {
-                $storearr[] = $store->getId();
+                if($idsOnly) {
+                    $storearr[] = $store->getId();
+                } else {
+                    $storearr[$store->getId()] = $store;
+                }
             }
         }
-
-        return implode(',', $storearr);
+        if ($idsOnly) {
+            return implode(',', $storearr);
+        } else {
+            ksort($storearr);
+            return $storearr;
+        }
     }
 
     public function collectJirafeEmails ($storeId)
@@ -104,6 +121,11 @@ class Fooman_Jirafe_Helper_Data extends Mage_Core_Helper_Abstract
         if (self::DEBUG) {
             Mage::log($mesg, null, 'jirafe.log');
         }
+    }
+
+    public function getStoreDescription($store)
+    {
+        return $store->getFrontendName() . ' (' . $store->getName() . ')';
     }
 
 }

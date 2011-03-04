@@ -22,12 +22,11 @@ class Fooman_Jirafe_Model_Api_Application extends Fooman_Jirafe_Model_Api
      * @param $url - The URL of the application, which will be the admin URL for the Magento instance
      * @param $callbackUrl - The URL that will be redirected to after an account login
      */
-    public function create ($name, $url, $callbackUrl=null)
+    public function create ($name, $url)
     {
         $data = array();
         $data['name'] = $name;
         $data['url'] = $url;
-        $data['callback_url'] = $callbackUrl;
         return $this->sendData(self::JIRAFE_API_APPLICATIONS, $data, false, Zend_Http_Client::POST);
     }
 
@@ -59,11 +58,10 @@ class Fooman_Jirafe_Model_Api_Application extends Fooman_Jirafe_Model_Api
      * @param $appId
      * @param $adminToken
      */
-    public function update ($appId, $adminToken, $url, $callbackUrl=null)
+    public function update ($appId, $adminToken, $url)
     {
         $data = array();
         $data['url'] = $url;
-        $data['callback_url'] = $callbackUrl;
         return $this->sendData(self::JIRAFE_API_APPLICATIONS.'/'.$appId, $data, $adminToken, Zend_Http_Client::PUT);
     }
 
@@ -77,4 +75,32 @@ class Fooman_Jirafe_Model_Api_Application extends Fooman_Jirafe_Model_Api
     {
         return $this->sendData(self::JIRAFE_API_APPLICATIONS.'/'.$appId, false, $adminToken, Zend_Http_Client::DELETE);
     }
+    
+    
+  /*  
+    * users - A collection (an array) of JSON data corresponding to the users we want to synchronize. Accepted JSON keys are:
+          o token - Jirafe authentication token for the given user. If provided, the user informations will be updated. If not, the user will be created.
+          o username - Desired username
+          o email - Your email
+          o first_name - Your first name
+          o last_name - Your last name
+          o mobile_phone - Your mobile phone number
+    * sites - A collection (an array) of JSON data corresponding to the sites we want to synchronize. Accepted JSON keys are:
+          o id - Jirafe site id. If provided, the site informations will be updated. If not, the site will be created.
+          o description - The description of the site (Magento store)
+          o url - The URL of the site
+          o timezone - The timezone of the site
+          o currency - The currency of the site
+    */
+    
+    public function sync ($appId, $adminToken, $userArray = array(), $siteArray = array())
+    {
+        if(empty($appId) || empty($adminToken)) {
+            throw new Exception('$appId and $adminToken can\'t be empty');
+        }
+        $data = array();
+        $data['users'] = json_encode($userArray);
+        $data['sites'] = json_encode($siteArray);
+        return $this->sendData(self::JIRAFE_API_APPLICATIONS.'/'.$appId .self::JIRAFE_API_RESOURCES, $data, $adminToken, Zend_Http_Client::POST);
+    }    
 }

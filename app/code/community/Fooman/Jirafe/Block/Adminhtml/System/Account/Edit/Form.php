@@ -10,6 +10,20 @@ class Fooman_Jirafe_Block_Adminhtml_System_Account_Edit_Form extends Mage_Adminh
         $form = $this->getForm();
         $fieldset = $form->addFieldset('jirafe', array('legend' => Mage::helper('adminhtml')->__('Jirafe Analytics')));
 
+        $yesNo = array();
+        $yesNo[] = array('label' => Mage::helper('foomanjirafe')->__('Yes'), 'value' => 1);
+        $yesNo[] = array('label' => Mage::helper('foomanjirafe')->__('No'), 'value' => 0);
+
+        $fieldset->addField('jirafe_send_email', 'select', array(
+            'name' => 'jirafe_email_suppress',
+            'label' => Mage::helper('foomanjirafe')->__('Send Jirafe Emails'),
+            'title' => Mage::helper('foomanjirafe')->__('Send Jirafe Emails'),
+            'required' => false,
+            'values' => $yesNo,
+            'value' => $adminUser->getJirafeSendEmail()
+        ));
+
+        /* We don't yet individually map store to user
         $fieldset->addField('jirafe_send_email_for_store', 'multiselect', array(
             'name' => 'jirafe_send_email_for_store[]',
             'label' => Mage::helper('foomanjirafe')->__('Email Daily Report for Store'),
@@ -19,6 +33,7 @@ class Fooman_Jirafe_Block_Adminhtml_System_Account_Edit_Form extends Mage_Adminh
             'values' => Mage::getSingleton('adminhtml/system_store')->getStoreValuesForForm(false),
             'value' => explode(",", $adminUser->getJirafeSendEmailForStore())
         ));
+         */
 
         $reportTypes = array();
         $reportTypes[] = array('label' => Mage::helper('foomanjirafe')->__('Simple'), 'value' => 'simple');
@@ -33,10 +48,6 @@ class Fooman_Jirafe_Block_Adminhtml_System_Account_Edit_Form extends Mage_Adminh
             'values' => $reportTypes,
             'value' => $adminUser->getJirafeEmailReportType()
         ));
-
-        $yesNo = array();
-        $yesNo[] = array('label' => Mage::helper('foomanjirafe')->__('Yes'), 'value' => 1);
-        $yesNo[] = array('label' => Mage::helper('foomanjirafe')->__('No'), 'value' => 0);
 
         $fieldset->addField('jirafe_email_suppress', 'select', array(
             'name' => 'jirafe_email_suppress',
