@@ -99,8 +99,9 @@ class Fooman_Jirafe_Model_Api_Application extends Fooman_Jirafe_Model_Api
             throw new Exception('$appId and $adminToken can\'t be empty');
         }
         $data = array();
-        $data['users'] = json_encode($userArray);
-        $data['sites'] = json_encode($siteArray);
+        $data['users'] = $userArray;
+        $data['sites'] = $siteArray;
+
         return $this->sendData(self::JIRAFE_API_APPLICATIONS.'/'.$appId .self::JIRAFE_API_RESOURCES, $data, $adminToken, Zend_Http_Client::POST);
     }    
 }

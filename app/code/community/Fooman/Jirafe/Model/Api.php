@@ -26,6 +26,8 @@ class Fooman_Jirafe_Model_Api
     const JIRAFE_API_SITES = '/sites';
     const JIRAFE_API_USERS = '/users';
 
+    //TODO: remove Mage specifics and debug
+
     public function sendData ($entryPoint, $data, $adminToken = false,
             $method = Zend_Http_Client::POST, $httpAuth = array())
     {
@@ -55,8 +57,8 @@ class Fooman_Jirafe_Model_Api
                 }
             }
             $conn->request($method);            
-            Mage::helper('foomanjirafe')->debug($conn->getLastRequest());
-            Mage::helper('foomanjirafe')->debug($conn->getLastResponse());
+            Mage::helper('foomanjirafe')->debug(preg_replace('/<!-- START of Symfony2 Web Debug Toolbar -->(.*?)<!-- END of Symfony2 Web Debug Toolbar -->/', '', $conn->getLastRequest()));
+            Mage::helper('foomanjirafe')->debug(preg_replace('/<!-- START of Symfony2 Web Debug Toolbar -->(.*?)<!-- END of Symfony2 Web Debug Toolbar -->/', '', $conn->getLastResponse()));
             $result = $this->_errorChecking($conn->getLastResponse());
             Mage::helper('foomanjirafe')->debug($result);
         } catch (Exception $e) {
@@ -71,18 +73,20 @@ class Fooman_Jirafe_Model_Api
         //check server response
         if ($response->isError()) {
             throw new Exception($response->getStatus() .' '. $response->getMessage());
-        }
-        Mage::helper('foomanjirafe')->debug($response->getBody());
-        //dev mode returns debug toolbar remove it from output here
-        $reponseArray = explode('}', $response->getBody(), 2);
-        $reponseBody = $reponseArray[0].'}';
+        }        
+        //TODO: dev mode returns debug toolbar remove it from output here
+        $reponseBody = preg_replace('/<!-- START of Symfony2 Web Debug Toolbar -->(.*?)<!-- END of Symfony2 Web Debug Toolbar -->/', '', $response->getBody());
         if(strpos($reponseBody,'You are not allowed to access this file.') !== false) {            
             throw new Exception('Server Response: You are not allowed to access this file.');
         }
+        if(strpos($reponseBody,'Call Stack:') !== false) {            
+            throw new Exception('Server Response contains errors');
+        }
+
         //check for returned errors
         $result = json_decode($reponseBody,true);
-        $errors = array();
-        if(isset($result['errors'])) {
+        if(isset($result['errors']) && !empty($result['errors'])) {
+            $errors = array();
             foreach ($result['errors'] as $error) {
                 $errors[] = $error;
             }

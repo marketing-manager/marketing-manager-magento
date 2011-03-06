@@ -75,6 +75,11 @@ if (!empty($emails)) {
 if (version_compare(Mage::getVersion(), '1.3.4.0') > 0) {
     Mage::app()->getConfig()->reinit();
 }
+
+//Make sure the default (admin) store is loaded
+$defaultStoreId = Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID;
+Mage::app()->getStore($defaultStoreId)->load($defaultStoreId);
+
 // Run cron for the first time since the upgrade, so that users can see any changes right away.
 Mage::getModel('foomanjirafe/report')->cron(null, true);
 

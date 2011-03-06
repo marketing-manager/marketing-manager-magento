@@ -39,6 +39,7 @@ DROP TABLE foomanjirafe_report;
 DELETE FROM core_config_data WHERE path LIKE '%jirafe%';
 DELETE FROM core_resource WHERE code = 'foomanjirafe_setup';
 ALTER TABLE admin_user DROP COLUMN jirafe_send_email_for_store;
+ALTER TABLE admin_user DROP COLUMN jirafe_send_email;
 ALTER TABLE admin_user DROP COLUMN jirafe_email_report_type;
 ALTER TABLE admin_user DROP COLUMN jirafe_email_suppress;
 ALTER TABLE admin_user DROP COLUMN jirafe_emails;
