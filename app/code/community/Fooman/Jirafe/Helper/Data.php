@@ -16,8 +16,6 @@
 class Fooman_Jirafe_Helper_Data extends Mage_Core_Helper_Abstract
 {
     const XML_PATH_FOOMANJIRAFE_SETTINGS = 'foomanjirafe/settings/';
-    const JIRAFE_PIWIK_BASE_URL = 'stats.jirafe.com/';
-    const JIRAFE_PURCHASE_GOAL_ID = 1;
     const DEBUG = true;
 
     /**
@@ -47,16 +45,17 @@ class Fooman_Jirafe_Helper_Data extends Mage_Core_Helper_Abstract
         //save to db
         try {
             $configModel = Mage::getModel('core/config_data');
-            if ($configModel->load($path, 'path')->getValue() == null) {
-                $configModel
-                        ->setPath($path)
-                        ->setValue($value);
-                if ($storeId != Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID) {
-                    $configModel->setScopeId($storeId);
-                    $configModel->setScope(Mage_Adminhtml_Block_System_Config_Form::SCOPE_STORES);
-                }
-                $configModel->save();
+            $configModel->load($path, 'path');
+            $configModel
+                    ->setPath($path)
+                    ->setValue($value);
+            if ($storeId != Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID && $configModel->getScopeId() != $storeId) {
+                $configModel->unsConfigId();
+                $configModel->setScopeId($storeId);
+                $configModel->setScope(Mage_Adminhtml_Block_System_Config_Form::SCOPE_STORES);
             }
+            $configModel->save();
+            //}
         } catch (Exception $e) {
             Mage::logException($e);
         }
@@ -123,9 +122,29 @@ class Fooman_Jirafe_Helper_Data extends Mage_Core_Helper_Abstract
         }
     }
 
-    public function getStoreDescription($store)
+    public function getStoreDescription ($store)
     {
         return $store->getFrontendName() . ' (' . $store->getName() . ')';
+    }
+
+    public function createJirafeUserId ($user)
+    {
+        return 'magento_' . substr($this->getStoreConfig('app_token'), 0, 5) . '_' . $user->getEmail();
+    }
+
+    public function createJirafeUserEmail ($user)
+    {
+        return $this->createJirafeUserId($user);
+    }
+
+    public function getUserEmail ($email)
+    {
+        /*
+         * see createJirafeUserId
+         */
+
+        $array = explode('_', $email, 3);
+        return $array[2];
     }
 
 }

@@ -1,0 +1,9 @@
+<?php $_isConfigured = Mage::helper('foomanjirafe')->isConfigured() ?>
+<?php if ($_isConfigured) :?>
+    <?php $_siteId = $this->getSiteId() ?>
+    <?php $_pkBaseURL = $this->getPiwikBaseURL(false) ?>
+    <?php $_pkBaseURLSecure = $this->getPiwikBaseURL(true) ?>  
+    <!-- Jirafe -->
+    <noscript><p><img src="<?php echo $_pkBaseURL ?>piwik.php?idsite=<?php echo $_siteId ?>" style="border:0" alt="" /></p></noscript>
+    <!-- End Jirafe Code -->
+<?php endif;?>

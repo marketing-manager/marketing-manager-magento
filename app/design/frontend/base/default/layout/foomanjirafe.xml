@@ -5,6 +5,10 @@
             <block type="foomanjirafe/js" name="foomanjirafe_js" as="foomanjirafe_js" >
                 <action method="setIsCheckoutSuccess"><value>0</value></action>
             </block>
+
+        </reference>
+        <reference name="before_body_end">
+            <block type="foomanjirafe/jsAlt" name="foomanjirafe_js_alt" as="foomanjirafe_js_alt" />
         </reference>
     </default>
     <catalog_category_default>

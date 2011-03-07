@@ -8,7 +8,7 @@
     var _paq = _paq || [];
     (function(){
         var u=(("https:" == document.location.protocol) ? "<?php echo $_pkBaseURLSecure ?>" : "<?php echo $_pkBaseURL ?>");
-        _paq.push(['setSiteId', "<?php echo $_siteId ?>"]);
+        _paq.push(['setSiteId', <?php echo $_siteId ?>]);
         _paq.push(['setTrackerUrl', u+'piwik.php']);
         _paq.push(['enableLinkTracking']);
         <?php echo $this->getTrackingInfo() ?>
@@ -23,7 +23,6 @@
             g.src=u+'piwik.js';
             s.parentNode.insertBefore(g,s);
     })();
-    </script>
-    <noscript><p><img src="<?php echo $_pkBaseURL ?>piwik.php?idsite=<?php echo $_siteId ?>" style="border:0" alt="" /></p></noscript>
+    </script>    
     <!-- End Jirafe Code -->
 <?php endif;?>

@@ -20,6 +20,9 @@ class Fooman_Jirafe_Model_Api
     const JIRAFE_UI_URL = 'http://jirafe-local.com/app_dev.php/v1/';
     const JIRAFE_API_VERSION = 'v1';
 
+    const JIRAFE_PIWIK_BASE_URL = 'data.jirafe.com/'; // 'demo.piwik.org/';
+    const JIRAFE_PURCHASE_GOAL_ID = 1;
+
     const JIRAFE_API_HB = '/heartbeat';
     const JIRAFE_API_APPLICATIONS = '/applications';
     const JIRAFE_API_RESOURCES =  '/resources';

@@ -142,13 +142,13 @@ class Fooman_Jirafe_Model_Jirafe
         $i = 0;
         $adminUsers = Mage::getSingleton('admin/user')->getCollection();
         foreach ($adminUsers as $adminUser) {
-            if ($adminUser->getIsActive()) {
+            if ($adminUser->getIsActive() &&  $adminUser->getEmail()) {
                 $tmpUserArray = array();
                 if( $adminUser->getJirafeUserToken()) {
                     $tmpUserArray['token'] = $adminUser->getJirafeUserToken();
                 }
-                $tmpUserArray['username'] = $adminUser->getUsername();
-                $tmpUserArray['email'] = $adminUser->getEmail();
+                $tmpUserArray['username'] = $jirafeHelper->createJirafeUserId($adminUser);
+                $tmpUserArray['email'] = $jirafeHelper->createJirafeUserEmail($adminUser);
                 $tmpUserArray['first_name'] = $adminUser->getFirstname();
                 $tmpUserArray['last_name'] = $adminUser->getLastname();
                 //$tmpUserArray['mobile_phone'] = $adminUser->getMobilePhone();
@@ -160,19 +160,21 @@ class Fooman_Jirafe_Model_Jirafe
             $return = Mage::getModel('foomanjirafe/api_application')-> sync($appId, $adminToken, $userArray, $siteArray);
             if(isset($return['users']) && !empty($return['users'])) {
                 foreach ($return['users'] as $jirafeUserInfo) {
-                    $adminUser = Mage::getModel('admin/user')->load($jirafeUserInfo['email'],'email');
-                    $adminUser->setJirafeUserToken($jirafeUserInfo['token'])->save();
+                    $adminEmail = $jirafeHelper->getUserEmail($jirafeUserInfo['email']);
+                    $adminUser = Mage::getModel('admin/user')->load($adminEmail,'email');
+                    if($adminUser->getId()) {
+                        $adminUser->setJirafeUserId($jirafeUserInfo['email']);
+                        $adminUser->setJirafeUserToken($jirafeUserInfo['token'])->save();
+                    }
                 }
             }
 
-            //TODO: change $i to returned external_id
-            $i=1;
+            //TODO: change $key to returned external_id
             if(isset($return['sites']) && !empty($return['sites'])) {
-                foreach ($return['sites'] as $jirafeStoreInfo) {
-                    $store = Mage::app()->getStore($i);
+                foreach ($return['sites'] as $key=>$jirafeStoreInfo) {
+                    $store = Mage::app()->getStore()->load($key+1);
                     $jirafeHelper->setStoreConfig('site_id',$jirafeStoreInfo['site_id'], $store->getId());
                     $jirafeHelper->setStoreConfig('site_settings_hash', $this->_createSiteSettingsHash($store), $store->getId());
-                    $i++;
                 }
             }
 
