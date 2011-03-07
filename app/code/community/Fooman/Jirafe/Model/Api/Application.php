@@ -101,7 +101,7 @@ class Fooman_Jirafe_Model_Api_Application extends Fooman_Jirafe_Model_Api
         $data = array();
         $data['users'] = $userArray;
         $data['sites'] = $siteArray;
-
+        
         return $this->sendData(self::JIRAFE_API_APPLICATIONS.'/'.$appId .self::JIRAFE_API_RESOURCES, $data, $adminToken, Zend_Http_Client::POST);
     }    
 }

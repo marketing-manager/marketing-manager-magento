@@ -45,23 +45,35 @@ class Fooman_Jirafe_Helper_Data extends Mage_Core_Helper_Abstract
         //save to db
         try {
             $configModel = Mage::getModel('core/config_data');
-            $configModel->load($path, 'path');
-            $configModel
-                    ->setPath($path)
-                    ->setValue($value);
-            if ($storeId != Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID && $configModel->getScopeId() != $storeId) {
-                $configModel->unsConfigId();
-                $configModel->setScopeId($storeId);
-                $configModel->setScope(Mage_Adminhtml_Block_System_Config_Form::SCOPE_STORES);
+            $collection = $configModel->getCollection()
+                        ->addFieldToFilter('path', $path)
+                        ->addFieldToFilter('scope_id', $storeId);
+            if ($storeId != Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID) {
+                $collection->addFieldToFilter('scope', Mage_Adminhtml_Block_System_Config_Form::SCOPE_STORES);
             }
-            $configModel->save();
-            //}
+
+            if ($collection->load()->getSize() > 0) {
+                //value already exists -> update
+                foreach ($collection as $existingConfigData) {
+                    $existingConfigData->setValue($value)->save();
+                }
+            } else {
+                //new value
+                $configModel
+                        ->setPath($path)
+                        ->setValue($value);
+                if ($storeId != Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID ) {
+                    $configModel->setScopeId($storeId);
+                    $configModel->setScope(Mage_Adminhtml_Block_System_Config_Form::SCOPE_STORES);
+                }
+                $configModel->save();
+            }
         } catch (Exception $e) {
             Mage::logException($e);
         }
 
         //we also set it as a temporary item so we don't need to reload the config
-        return Mage::app()->getStore($storeId)->setConfig($path, $value);
+        return Mage::app()->getStore($storeId)->load($storeId)->setConfig($path, $value);
     }
 
     public function isConfigured ($storeId = Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID)

@@ -41,7 +41,7 @@ class Fooman_Jirafe_Block_Adminhtml_Dashboard extends Mage_Adminhtml_Block_Dashb
 
     public function getDashboardApiUrl ()
     {
-        return Fooman_Jirafe_Model_Api::JIRAFE_UI_URL;
+        return Mage::getModel('foomanjirafe/api')->getApiUrl();
     }
 
     public function getJirafeUserToken ()
@@ -54,4 +54,8 @@ class Fooman_Jirafe_Block_Adminhtml_Dashboard extends Mage_Adminhtml_Block_Dashb
         return Mage::helper('foomanjirafe')->getStoreConfig('app_id');
     }
 
+    public function getJirafeApplicationToken ()
+    {
+        return Mage::helper('foomanjirafe')->getStoreConfig('app_token');
+    }
 }

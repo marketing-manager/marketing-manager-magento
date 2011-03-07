@@ -15,9 +15,8 @@
 
 class Fooman_Jirafe_Model_Api
 {
-    const JIRAFE_API_SERVER = 'https://api.jirafe.com/';
-    const JIRAFE_API_URL = 'http://jirafe-local.com/app_dev.php/';
-    const JIRAFE_UI_URL = 'http://jirafe-local.com/app_dev.php/v1/';
+    const JIRAFE_API_SERVER = 'jirafe-local.com/';
+    const JIRAFE_API_BASE = 'app_dev.php/';
     const JIRAFE_API_VERSION = 'v1';
 
     const JIRAFE_PIWIK_BASE_URL = 'data.jirafe.com/'; // 'demo.piwik.org/';
@@ -29,19 +28,26 @@ class Fooman_Jirafe_Model_Api
     const JIRAFE_API_SITES = '/sites';
     const JIRAFE_API_USERS = '/users';
 
-    //TODO: remove Mage specifics and debug
+    public function getApiUrl ($includeBase = true, $includeVersion = true, $secure = false)
+    {
+        $proto = $secure ? 'https://' : 'http://';
+        $base = $includeBase ? self::JIRAFE_API_BASE : '';
+        $version = $includeVersion ? self::JIRAFE_API_VERSION : '';
+        return $proto . self::JIRAFE_API_SERVER . $base . $version;
+    }
 
+    //TODO: remove Mage specifics and debug
     public function sendData ($entryPoint, $data, $adminToken = false,
             $method = Zend_Http_Client::POST, $httpAuth = array())
     {
 
         //set up connection
-        $conn = new Zend_Http_Client(self::JIRAFE_API_URL);
+        $conn = new Zend_Http_Client($this->getApiUrl(true, false));
         $conn->setConfig(array(
             'timeout' => 30,
             'keepalive' => true
         ));
-        $conn->setUri(self::JIRAFE_API_URL . self::JIRAFE_API_VERSION . $entryPoint);
+        $conn->setUri($this->getApiUrl() . $entryPoint);
         if($adminToken) {
             $conn->setParameterGet('token', $adminToken);
         }

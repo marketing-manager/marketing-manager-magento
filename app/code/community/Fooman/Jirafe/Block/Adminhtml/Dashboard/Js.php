@@ -29,4 +29,8 @@ class Fooman_Jirafe_Block_Adminhtml_Dashboard_Js extends Mage_Core_Block_Templat
         return Mage::helper('foomanjirafe')->getStoreConfig('isDashboardActive');
     }
 
+    public function getApiBaseUrl()
+    {
+        return Mage::getModel('foomanjirafe/api')->getApiUrl(false,false,Mage::app()->getStore()->isCurrentlySecure());
+    }
 }

@@ -84,8 +84,11 @@ class Fooman_Jirafe_Model_Jirafe
         //check if we already have a jirafe store id for this Magento store
         $siteId = Mage::helper('foomanjirafe')->getStoreConfig('site_id', $store->getId());
         $adminToken =  Mage::helper('foomanjirafe')->getStoreConfig('app_token');
+        $store->load($store->getId());
         $currentHash = $this->_createSiteSettingsHash($store);
-
+Mage::log($store->getName().' $siteId '.$siteId.' $store->getId() ' .$store->getId());
+Mage::log($store->getName(). $currentHash);
+Mage::log($store->getName().Mage::helper('foomanjirafe')->getStoreConfig('site_settings_hash', $store->getId()));
         //check if we haven't yet assigned a site id or if settings have changed
         if (!$siteId || $currentHash != Mage::helper('foomanjirafe')->getStoreConfig('site_settings_hash', $store->getId())) {
             $this->syncUsersAndStores();
@@ -106,8 +109,7 @@ class Fooman_Jirafe_Model_Jirafe
      */
     protected function _createSiteSettingsHash ($store)
     {
-        return md5( $store->getFrontendName() .
-                    $store->getName() .
+        return md5( $store->getName() .
                     $store->getConfig('web/unsecure/base_url') .
                     $store->getConfig('general/locale/timezone') .
                     $store->getConfig('currency/options/base')
@@ -125,10 +127,9 @@ class Fooman_Jirafe_Model_Jirafe
         $userArray = array();
         $siteArray = array();
 
-        $i = 0;
-        foreach ($jirafeHelper->getStores() as $store) {
+        foreach ($jirafeHelper->getStores() as $storeId => $store) {
             $tmpStoreArray = array();
-            $siteId = $jirafeHelper->getStoreConfig('site_id', $store->getId());
+            $siteId = $store->getConfig(Fooman_Jirafe_Helper_Data::XML_PATH_FOOMANJIRAFE_SETTINGS.'site_id');
             if ($siteId){
                 $tmpStoreArray['site_id'] = $siteId;
             }
@@ -136,7 +137,7 @@ class Fooman_Jirafe_Model_Jirafe
             $tmpStoreArray['url'] = $store->getConfig('web/unsecure/base_url');
             $tmpStoreArray['timezone'] = $store->getConfig('general/locale/timezone');
             $tmpStoreArray['currency'] = $store->getConfig('currency/options/base');
-            $siteArray[$i++] = $tmpStoreArray;
+            $siteArray[$storeId] = $tmpStoreArray;
         }
 
         $i = 0;
@@ -172,7 +173,7 @@ class Fooman_Jirafe_Model_Jirafe
             //TODO: change $key to returned external_id
             if(isset($return['sites']) && !empty($return['sites'])) {
                 foreach ($return['sites'] as $key=>$jirafeStoreInfo) {
-                    $store = Mage::app()->getStore()->load($key+1);
+                    $store = Mage::app()->getStore($key+1)->load($key+1);
                     $jirafeHelper->setStoreConfig('site_id',$jirafeStoreInfo['site_id'], $store->getId());
                     $jirafeHelper->setStoreConfig('site_settings_hash', $this->_createSiteSettingsHash($store), $store->getId());
                 }
