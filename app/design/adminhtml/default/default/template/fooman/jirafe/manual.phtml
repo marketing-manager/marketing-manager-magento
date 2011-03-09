@@ -14,6 +14,7 @@
  */
 ?>
 <h1>Welcome to Jirafe analytics reporting for Magento!</h1>
+<?php echo $this->getChildHtml('foomanjirafe_status')?>
 <ol style="list-style-type: decimal; padding: 5px;">
     <li><p>You will receive a daily email, with results of yesterday's revenue, orders, and visitors.</p>
         <p>To modify who receives this email, please go to <a href="<?php echo $this->getConfigUrl()?>">System > Configuration > Jirafe Analytics</a>.</p>

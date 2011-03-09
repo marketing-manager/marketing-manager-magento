@@ -8,4 +8,9 @@
             <block type="foomanjirafe/adminhtml_status" name="foomanjirafe_status" as="foomanjirafe_status" />
         </reference>
     </adminhtml_dashboard_index>
+    <adminhtml_jirafe_manual>
+        <reference name="content">
+            <block type="foomanjirafe/adminhtml_status" name="foomanjirafe_status" as="foomanjirafe_status" />
+        </reference>
+    </adminhtml_jirafe_manual>
 </layout>

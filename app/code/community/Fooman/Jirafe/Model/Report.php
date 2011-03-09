@@ -41,46 +41,54 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         $appId = $this->_jirafe->checkAppId();
         if(!$appId) {
             $this->_helper->debug("no Jirafe application ID present - abort cron.");
-            return false;
-        }
-
-        //loop over stores to create reports
-        $storeCollection = Mage::getModel('core/store')->getCollection();
-        foreach ($storeCollection as $store) {
-            // Only continue if the store is active
-            if ($store->getIsActive()) {
-                // Get the store ID
-                $storeId = $store->getId();
-                // Only continue if this plugin is active for the store or if this is the first email
-                if ($this->_helper->getStoreConfig('isActive', $storeId) || $first) {
-                    // Set the current store
-                    Mage::app()->setCurrentStore($store);
-                    // Check Jirafe Site Id
-                    $siteId = $this->_jirafe->checkSiteId($appId, $store);
-                    // Get the timespan (array ('from', 'to')) for this report
-                    $timespan = $this->_getReportTimespan($store, $gmtTs);
-                    // Only continue if the report does not already exist
-                    $exists = Mage::getResourceModel('foomanjirafe/report')->getReport($storeId, $timespan['date']);
-                    if (!$exists && $siteId) {
-                        try {
-                            // Create new report
-                            $data = $this->_compileReport($store, $timespan, $siteId, $first);
-                            // Save report
-                            $this->_saveReport($store, $timespan, $data);
-                            // Send out emails
-                            $data_formatted = $this->_getReportDataFormatted($data);
-                            // Are we sending a simple or a detailed report?
-                            $detailReport = $this->_helper->getStoreConfig('reportType', $storeId) == 'detail';
-                            // Email the report to users
-                            $this->_emailReport($store, $timespan, $data + $data_formatted + array('first' => $first, 'detail_report' => $detailReport));
-                            // Send Jirafe heartbeat
-                            $this->_sendReport($store, $timespan, $data);
-                        } catch (Exception $e) {
-                            Mage::logException($e);
-                            $success = false;
+            $success = false;
+        } else {
+            //loop over stores to create reports
+            $storeCollection = Mage::getModel('core/store')->getCollection();
+            foreach ($storeCollection as $store) {
+                // Only continue if the store is active
+                if ($store->getIsActive()) {
+                    // Get the store ID
+                    $storeId = $store->getId();
+                    // Only continue if this plugin is active for the store or if this is the first email
+                    if ($this->_helper->getStoreConfig('isActive', $storeId) || $first) {
+                        // Set the current store
+                        Mage::app()->setCurrentStore($store);
+                        // Check Jirafe Site Id
+                        $siteId = $this->_jirafe->checkSiteId($appId, $store);
+                        // Get the timespan (array ('from', 'to')) for this report
+                        $timespan = $this->_getReportTimespan($store, $gmtTs);
+                        // Only continue if the report does not already exist
+                        $exists = Mage::getResourceModel('foomanjirafe/report')->getReport($storeId, $timespan['date']);
+                        if (!$exists && $siteId) {
+                            try {
+                                // Create new report
+                                $data = $this->_compileReport($store, $timespan, $siteId, $first);
+                                // Save report
+                                $this->_saveReport($store, $timespan, $data);
+                                // Send out emails
+                                $data_formatted = $this->_getReportDataFormatted($data);
+                                // Are we sending a simple or a detailed report?
+                                $detailReport = $this->_helper->getStoreConfig('reportType', $storeId) == 'detail';
+                                // Email the report to users
+                                $this->_emailReport($store, $timespan, $data + $data_formatted + array('first' => $first, 'detail_report' => $detailReport));
+                                // Send Jirafe heartbeat
+                                $this->_sendReport($store, $timespan, $data);
+                                //save status message
+                                $this->_helper->setStoreConfig('last_status_message',
+                                        $this->_helper->__("Successfully sent report for %s for %s", $data['store_name'], $timespan['date'])
+                                    );
+                            } catch (Exception $e) {
+                                Mage::logException($e);
+                                $success = false;
+                                //save status message
+                                $this->_helper->setStoreConfig('last_status_message',
+                                        $this->_helper->__("Encountered errors sending report for %s", $this->_helper->getStoreDescription($store))
+                                    );
+                            }
+                        } else {
+                            $this->_helper->debug("The report for store ID {$storeId} already exists for {$timespan['date']}.  Discontinuing processing for this report.");
                         }
-                    } else {
-                        $this->_helper->debug("The report for store ID {$storeId} already exists for {$timespan['date']}.  Discontinuing processing for this report.");
                     }
                 }
             }
@@ -91,15 +99,6 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
             $this->_helper->setStoreConfig('sent_initial_email', true);
             // Notify user if it is just installed
             $this->_notifyAdminUser($success);
-        }
-        if ($success) {
-            $this->_helper->setStoreConfig('last_status_message',
-                    $this->_helper->__("Successfully sent report for %s for %s", $data['store_name'], $timespan['date'])
-                );
-        } else {
-            $this->_helper->setStoreConfig('last_status_message',
-                    $this->_helper->__("Encountered errors sending report for %s for %s", $data['store_name'], $timespan['date'])
-                );
         }
 
         $this->_helper->debug('finished jirafe report cron');
@@ -139,7 +138,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         $storeId = $store->getId();
         $reportData['store_id'] = $storeId;
         $reportData['site_id'] = $siteId;
-        $reportData['store_name'] = $store->getFrontendName() . ' (' . $store->getName() . ')';
+        $reportData['store_name'] = $this->_helper->getStoreDescription($store);
         $reportData['store_url'] = $store->getConfig('web/unsecure/base_url');
 
         // Tell debugger we are kicking off the report compilation
