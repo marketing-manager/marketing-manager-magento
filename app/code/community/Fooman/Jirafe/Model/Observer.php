@@ -33,8 +33,10 @@ class Fooman_Jirafe_Model_Observer
     {
         $jirafe = Mage::getModel('foomanjirafe/jirafe');
         $appId = $jirafe->checkAppId();
-        $store = $observer->getEvent()->getObject();
-        $jirafe->checkSiteId ($appId, $store);
+        if ($appId) {
+            $store = $observer->getEvent()->getObject();
+            $jirafe->checkSiteId($appId, $store);
+        }
     }
 
 
@@ -51,29 +53,25 @@ class Fooman_Jirafe_Model_Observer
             $user->setJirafeSendEmailForStore($jirafeStoreIds);
             $user->setDataChanges(true);
             $jirafeSettingsHaveChanged = true;
-            //TODO: Jirafe User to Store mapping has changed trigger api call
         }
         if($jirafeEmailReportType != $user->getJirafeEmailReportType()){
             $user->setJirafeEmailReportType($jirafeEmailReportType);
             $user->setDataChanges(true);
             $jirafeSettingsHaveChanged = true;
-            //TODO: Jirafe Email report type have changed trigger api call
         }
         if($jirafeEmailSuppress != $user->getJirafeEmailSuppress()){
             $user->setJirafeEmailSuppress($jirafeEmailSuppress);
             $user->setDataChanges(true);
             $jirafeSettingsHaveChanged = true;
-            //TODO: Jirafe Email suppress have changed trigger api call
         }
         if($jirafeEmails != $user->getJirafeEmails()){
             $user->setJirafeEmails($jirafeEmails);
             $user->setDataChanges(true);
             $jirafeSettingsHaveChanged = true;
-            //TODO: Jirafe Emails have changed trigger api call
         }
 
         if($jirafeSettingsHaveChanged) {
-            //TODO: call api sync
+            Mage::getModel('foomanjirafe/jirafe')->syncUsersAndStores();
         }
     }
 

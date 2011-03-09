@@ -16,6 +16,10 @@
 class Fooman_Jirafe_Helper_Data extends Mage_Core_Helper_Abstract
 {
     const XML_PATH_FOOMANJIRAFE_SETTINGS = 'foomanjirafe/settings/';
+    const JIRAFE_STATUS_NOT_INSTALLED = '0';
+    const JIRAFE_STATUS_ERROR = '1';
+    const JIRAFE_STATUS_APP_TOKEN_RECEIVED = '2';
+
     const DEBUG = true;
 
     /**
@@ -78,7 +82,7 @@ class Fooman_Jirafe_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function isConfigured ($storeId = Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID)
     {
-        return ($this->getStoreConfig('isActive', $storeId));
+        return ($this->getStoreConfig('app_id', $storeId) && $this->getStoreConfig('app_token', $storeId));
     }
 
     public function getStoreIds ()

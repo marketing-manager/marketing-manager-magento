@@ -4,5 +4,8 @@
         <reference name="head">
             <block type="foomanjirafe/adminhtml_dashboard_js" name="foomanjirafe_dashboard_head" as="foomanjirafe_dashboard_head" />
         </reference>
+        <reference name="dashboard">
+            <block type="foomanjirafe/adminhtml_status" name="foomanjirafe_status" as="foomanjirafe_status" />
+        </reference>
     </adminhtml_dashboard_index>
 </layout>

@@ -92,6 +92,15 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
             // Notify user if it is just installed
             $this->_notifyAdminUser($success);
         }
+        if ($success) {
+            $this->_helper->setStoreConfig('last_status_message',
+                    $this->_helper->__("Successfully sent report for %s for %s", $data['store_name'], $timespan['date'])
+                );
+        } else {
+            $this->_helper->setStoreConfig('last_status_message',
+                    $this->_helper->__("Encountered errors sending report for %s for %s", $data['store_name'], $timespan['date'])
+                );
+        }
 
         $this->_helper->debug('finished jirafe report cron');
     }

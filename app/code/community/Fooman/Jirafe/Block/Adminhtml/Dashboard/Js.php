@@ -13,7 +13,7 @@
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
-class Fooman_Jirafe_Block_Adminhtml_Dashboard_Js extends Mage_Core_Block_Template
+class Fooman_Jirafe_Block_Adminhtml_Dashboard_Js extends Mage_Adminhtml_Block_Template
 {
 
     public function __construct ()

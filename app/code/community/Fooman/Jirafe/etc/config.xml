@@ -150,6 +150,8 @@
         </trans_email>
         <foomanjirafe>
             <settings>
+                <last_status>0</last_status>
+                <last_status_message/>
                 <app_id/>
                 <app_settings_hash/>
                 <app_token/>

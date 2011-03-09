@@ -33,8 +33,15 @@ class Fooman_Jirafe_Model_Jirafe
         if ($appId) {
             //check if settings have changed            
             if ($currentHash != Mage::helper('foomanjirafe')->getStoreConfig('app_settings_hash')) {
-                $return = Mage::getModel('foomanjirafe/api_application')->update($appId, Mage::getStoreConfig('web/unsecure/base_url', $defaultStoreId));
-                $changeHash = true;
+                try {
+                    $return = Mage::getModel('foomanjirafe/api_application')->update($appId, Mage::getStoreConfig('web/unsecure/base_url', $defaultStoreId));
+                    $changeHash = true;
+                } catch (Exception $e) {
+                    Mage::logException($e);
+                    Mage::helper('foomanjirafe')->setStoreConfig('last_status_message', $e->getMessage());
+                    Mage::helper('foomanjirafe')->setStoreConfig('last_status', Fooman_Jirafe_Helper_Data::JIRAFE_STATUS_ERROR);
+                    return false;
+                }
             }
         } else {
             //retrieve new application id from jirafe server
@@ -45,12 +52,16 @@ class Fooman_Jirafe_Model_Jirafe
                 }
             } catch (Exception $e) {
                 Mage::logException($e);
+                Mage::helper('foomanjirafe')->setStoreConfig('last_status_message', $e->getMessage());
+                Mage::helper('foomanjirafe')->setStoreConfig('last_status', Fooman_Jirafe_Helper_Data::JIRAFE_STATUS_ERROR);
                 return false;
             }
             Mage::helper('foomanjirafe')->setStoreConfig('app_id', $return['app_id']);
             Mage::helper('foomanjirafe')->setStoreConfig('app_token', $return['token']);
             $appId = $return['app_id'];
             $changeHash = true;
+            Mage::helper('foomanjirafe')->setStoreConfig('last_status_message', Mage::helper('foomanjirafe')->__('Application successfully set up'));
+            Mage::helper('foomanjirafe')->setStoreConfig('last_status', Fooman_Jirafe_Helper_Data::JIRAFE_STATUS_APP_TOKEN_RECEIVED);
         }
 
         //save updated hash
@@ -86,9 +97,6 @@ class Fooman_Jirafe_Model_Jirafe
         $adminToken =  Mage::helper('foomanjirafe')->getStoreConfig('app_token');
         $store->load($store->getId());
         $currentHash = $this->_createSiteSettingsHash($store);
-Mage::log($store->getName().' $siteId '.$siteId.' $store->getId() ' .$store->getId());
-Mage::log($store->getName(). $currentHash);
-Mage::log($store->getName().Mage::helper('foomanjirafe')->getStoreConfig('site_settings_hash', $store->getId()));
         //check if we haven't yet assigned a site id or if settings have changed
         if (!$siteId || $currentHash != Mage::helper('foomanjirafe')->getStoreConfig('site_settings_hash', $store->getId())) {
             $this->syncUsersAndStores();
