@@ -20,7 +20,7 @@ class Fooman_Jirafe_Model_Api
     const JIRAFE_API_VERSION = 'v1';
 
     const JIRAFE_PIWIK_BASE_URL = 'data.jirafe.com/'; // 'demo.piwik.org/';
-    const JIRAFE_PURCHASE_GOAL_ID = 1;
+    const JIRAFE_PIWIK_PURCHASE_GOAL_ID = 1;
 
     const JIRAFE_API_HB = '/heartbeat';
     const JIRAFE_API_APPLICATIONS = '/applications';
@@ -88,7 +88,7 @@ class Fooman_Jirafe_Model_Api
         if(strpos($reponseBody,'You are not allowed to access this file.') !== false) {            
             throw new Exception('Server Response: You are not allowed to access this file.');
         }
-        if(strpos($reponseBody,'Call Stack:') !== false) {            
+        if(strpos($reponseBody,'Call Stack:') !== false) {
             throw new Exception('Server Response contains errors');
         }
 
