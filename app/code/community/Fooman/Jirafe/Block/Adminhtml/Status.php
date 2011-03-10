@@ -26,6 +26,13 @@ class Fooman_Jirafe_Block_Adminhtml_Status extends Mage_Adminhtml_Block_Template
         return Mage::helper('foomanjirafe')->isConfigured();
     }
 
+    public function isOk ()
+    {
+        return Mage::helper('foomanjirafe')->isConfigured() 
+                && $this->getStatus() != Fooman_Jirafe_Helper_Data::JIRAFE_STATUS_NOT_INSTALLED 
+                && $this->getStatus() != Fooman_Jirafe_Helper_Data::JIRAFE_STATUS_ERROR;
+    }
+
     public function getStatus ()
     {
         return Mage::helper('foomanjirafe')->getStoreConfig('last_status');
