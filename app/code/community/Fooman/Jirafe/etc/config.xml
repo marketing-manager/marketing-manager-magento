@@ -207,7 +207,7 @@
             </resources>
         </acl>
         <events>
-            <core_store_save_after>
+            <store_save_commit_after>
                 <observers>
                     <syncJirafeStore>
                         <type>singleton</type>
@@ -215,7 +215,34 @@
                         <method>syncJirafeStore</method>
                     </syncJirafeStore>
                 </observers>
-            </core_store_save_after>
+            </store_save_commit_after>
+            <store_delete_after>
+                <observers>
+                    <fullSyncJirafeStore>
+                        <type>singleton</type>
+                        <class>Fooman_Jirafe_Model_Observer</class>
+                        <method>fullSyncJirafeStore</method>
+                    </fullSyncJirafeStore>
+                </observers>
+            </store_delete_after>
+            <admin_user_delete_after>
+                <observers>
+                    <fullSyncJirafeStore>
+                        <type>singleton</type>
+                        <class>Fooman_Jirafe_Model_Observer</class>
+                        <method>fullSyncJirafeStore</method>
+                    </fullSyncJirafeStore>
+                </observers>
+            </admin_user_delete_after>
+            <admin_user_save_after>
+                <observers>
+                    <fullSyncJirafeStore>
+                        <type>singleton</type>
+                        <class>Fooman_Jirafe_Model_Observer</class>
+                        <method>fullSyncNewUser</method>
+                    </fullSyncJirafeStore>
+                </observers>
+            </admin_user_save_after>
             <admin_user_save_before>
                 <observers>
                     <saveJirafeStoreEmailMapping>
