@@ -15,11 +15,16 @@
 
 class Fooman_Jirafe_Model_Api
 {
-    const JIRAFE_API_SERVER = 'jirafe-local.com/';
-    const JIRAFE_API_BASE = 'app_dev.php/';
-    const JIRAFE_API_VERSION = 'v1';
+    const JIRAFE_API_SERVER = 'api.jirafe.com';
+//    const JIRAFE_API_SERVER = 'api.jirafe.local';
 
-    const JIRAFE_PIWIK_BASE_URL = 'data.jirafe.com/'; // 'demo.piwik.org/';
+    const JIRAFE_API_BASE = '';
+//    const JIRAFE_API_BASE = 'app_dev.php';
+
+    const JIRAFE_PIWIK_BASE_URL = 'data.jirafe.com';
+//    const JIRAFE_PIWIK_BASE_URL = 'piwik.local';
+
+    const JIRAFE_API_VERSION = 'v1';
     const JIRAFE_PIWIK_PURCHASE_GOAL_ID = 1;
 
     const JIRAFE_API_HB = '/heartbeat';
@@ -30,10 +35,29 @@ class Fooman_Jirafe_Model_Api
 
     public function getApiUrl ($includeBase = true, $includeVersion = true, $secure = false)
     {
-        $proto = $secure ? 'https://' : 'http://';
-        $base = $includeBase ? self::JIRAFE_API_BASE : '';
-        $version = $includeVersion ? self::JIRAFE_API_VERSION : '';
-        return $proto . self::JIRAFE_API_SERVER . $base . $version;
+		// Protocol
+        $url = $secure ? 'https://' : 'http://';
+		
+		// Server
+		$url .= self::JIRAFE_API_SERVER;
+		
+		// Base
+		if ($includeBase) {
+			$base = self::JIRAFE_API_BASE;
+			if (!empty($base)) {
+				$url .= "/{$base}";
+			}
+		}
+		
+		// Version
+		if ($includeVersion) {
+			$version = self::JIRAFE_API_VERSION;
+			if (!empty($version)) {
+				$url .= "/{$version}";
+			}
+		}
+		
+        return $url;
     }
 
     //TODO: remove Mage specifics and debug
