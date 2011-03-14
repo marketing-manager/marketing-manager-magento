@@ -35,32 +35,31 @@ class Fooman_Jirafe_Model_Api
 
     public function getApiUrl ($includeBase = true, $includeVersion = true, $secure = false)
     {
-		// Protocol
+        // Protocol
         $url = $secure ? 'https://' : 'http://';
-		
-		// Server
-		$url .= self::JIRAFE_API_SERVER;
-		
-		// Base
-		if ($includeBase) {
-			$base = self::JIRAFE_API_BASE;
-			if (!empty($base)) {
-				$url .= "/{$base}";
-			}
-		}
-		
-		// Version
-		if ($includeVersion) {
-			$version = self::JIRAFE_API_VERSION;
-			if (!empty($version)) {
-				$url .= "/{$version}";
-			}
-		}
-		
+
+        // Server
+        $url .= self::JIRAFE_API_SERVER;
+
+        // Base
+        if ($includeBase) {
+            $base = self::JIRAFE_API_BASE;
+            if (!empty($base)) {
+                $url .= "/{$base}";
+            }
+        }
+
+        // Version
+        if ($includeVersion) {
+            $version = self::JIRAFE_API_VERSION;
+            if (!empty($version)) {
+                $url .= "/{$version}";
+            }
+        }
+
         return $url;
     }
 
-    //TODO: remove Mage specifics and debug
     public function sendData ($entryPoint, $data, $adminToken = false,
             $method = Zend_Http_Client::POST, $httpAuth = array())
     {
@@ -81,8 +80,6 @@ class Fooman_Jirafe_Model_Api
 
         try {
             //connect and send data to Jirafe
-            //$result = $conn->setRawData(json_encode($data), 'application/json')->request($method);
-            Mage::helper('foomanjirafe')->debug($data);
             //loop over data items and add them as post/put parameters if requested
             if (is_array($data) && ($method == Zend_Http_Client::POST || $method == Zend_Http_Client::PUT)) {
                 foreach ($data as $parameter => $value) {
@@ -90,12 +87,8 @@ class Fooman_Jirafe_Model_Api
                 }
             }
             $conn->request($method);            
-            Mage::helper('foomanjirafe')->debug(preg_replace('/<!-- START of Symfony2 Web Debug Toolbar -->(.*?)<!-- END of Symfony2 Web Debug Toolbar -->/', '', $conn->getLastRequest()));
-            Mage::helper('foomanjirafe')->debug(preg_replace('/<!-- START of Symfony2 Web Debug Toolbar -->(.*?)<!-- END of Symfony2 Web Debug Toolbar -->/', '', $conn->getLastResponse()));
             $result = $this->_errorChecking($conn->getLastResponse());
-            Mage::helper('foomanjirafe')->debug($result);
         } catch (Exception $e) {
-            Mage::logException($e);
             return false;
         }        
         return $result;
