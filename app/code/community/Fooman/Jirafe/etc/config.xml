@@ -161,6 +161,7 @@
                 <isActive>1</isActive>
                 <reportType>simple</reportType>
                 <emails/>
+                <isDashboardActive/>
             </settings>
             <report_email_template>foomanjirafe_report_template</report_email_template>
             <report_email_identity>jirafe</report_email_identity>
@@ -254,11 +255,11 @@
             </admin_user_save_before>
             <core_block_abstract_to_html_after>
                 <observers>
-                    <appendJsToAdminHead>
+                    <appendToAdminBlocks>
                         <type>singleton</type>
                         <class>Fooman_Jirafe_Model_Observer</class>
-                        <method>appendJsToAdminHead</method>
-                    </appendJsToAdminHead>
+                        <method>appendToAdminBlocks</method>
+                    </appendToAdminBlocks>
                 </observers>
             </core_block_abstract_to_html_after>
         </events>
