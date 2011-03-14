@@ -1,8 +1,8 @@
 <?php $_isConfigured = Mage::helper('foomanjirafe')->isConfigured() ?>
 <?php if ($_isConfigured) :?>
     <?php $_siteId = $this->getSiteId() ?>
-    <?php $_pkBaseURL = $this->getPiwikBaseURL(false) ?>
-    <?php $_pkBaseURLSecure = $this->getPiwikBaseURL(true) ?>
+    <?php $_pkBaseURL = $this->getPiwikBaseURL(false) . '/' ?>
+    <?php $_pkBaseURLSecure = $this->getPiwikBaseURL(true) . '/' ?>
     <!-- Jirafe -->
     <script type="text/javascript">
     var _paq = _paq || [];
