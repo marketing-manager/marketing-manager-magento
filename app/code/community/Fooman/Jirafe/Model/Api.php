@@ -89,6 +89,7 @@ class Fooman_Jirafe_Model_Api
             $conn->request($method);            
             $result = $this->_errorChecking($conn->getLastResponse());
         } catch (Exception $e) {
+            throw new Exception($e->getMessage());
             return false;
         }        
         return $result;
@@ -108,7 +109,10 @@ class Fooman_Jirafe_Model_Api
         if(strpos($reponseBody,'Call Stack:') !== false) {
             throw new Exception('Server Response contains errors');
         }
-
+        if(strpos($reponseBody,'Fatal error:') !== false) {
+            throw new Exception('Server Response contains errors');
+        }
+        
         //check for returned errors
         $result = json_decode($reponseBody,true);
         if(isset($result['errors']) && !empty($result['errors'])) {
