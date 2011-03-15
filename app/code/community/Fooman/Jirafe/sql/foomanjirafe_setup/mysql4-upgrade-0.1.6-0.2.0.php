@@ -67,8 +67,19 @@ if (!empty($emails)) {
     }
 }
 
-// TODO Remove the emails field in global Jirafe settings
-// TODO Remove the ReportType field in global Jirafe settings
+// Remove the emails field in global Jirafe settings
+$configModel = Mage::getModel('core/config_data');
+$collection = $configModel->getCollection()->addFieldToFilter('path', Fooman_Jirafe_Helper_Data::XML_PATH_FOOMANJIRAFE_SETTINGS.'emails');
+foreach ($collection as $jirafeOldSetting) {
+    $jirafeOldSetting->delete();
+}
+
+// Remove the ReportType field in global Jirafe settings
+$configModel = Mage::getModel('core/config_data');
+$collection = $configModel->getCollection()->addFieldToFilter('path', Fooman_Jirafe_Helper_Data::XML_PATH_FOOMANJIRAFE_SETTINGS.'reportType');
+foreach ($collection as $jirafeOldSetting) {
+    $jirafeOldSetting->delete();
+}
 
 // Once complete, reinit config files
 // reloading the config on earlier Magento versions causes an infinite loop
