@@ -175,6 +175,17 @@
                 </foomanjirafe>
             </updates>
         </layout>
+        <events>
+            <checkout_cart_product_add_after>
+                <observers>
+                    <readyToBuy>
+                        <type>singleton</type>
+                        <class>Fooman_Jirafe_Model_Observer</class>
+                        <method>readyToBuy</method>
+                    </readyToBuy>
+                </observers>
+            </checkout_cart_product_add_after>
+        </events>
     </frontend>
     <admin>
         <routers>

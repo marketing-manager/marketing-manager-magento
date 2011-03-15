@@ -146,4 +146,9 @@ class Fooman_Jirafe_Model_Observer
             $transport->setHtml($transport->getHtml().$block->getChildHtml('foomanjirafe_dashboard_toggle'));
         }
     }
+
+    public function readyToBuy ($observer)
+    {
+        Mage::getSingleton('customer/session')->setPiwikVisitorType(Fooman_Jirafe_Block_Js::VISITOR_READY2BUY);
+    }
 }
