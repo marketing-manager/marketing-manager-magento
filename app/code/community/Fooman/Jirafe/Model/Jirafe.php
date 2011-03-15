@@ -103,7 +103,8 @@ class Fooman_Jirafe_Model_Jirafe
             $siteId = Mage::helper('foomanjirafe')->getStoreConfig('site_id', $store->getId());
         }
         if(empty($siteId)){
-            Mage::logException(new Exception('Jirafe site_id is empty.'));
+            Mage::helper('foomanjirafe')->setStoreConfig('last_status_message', Mage::helper('foomanjirafe')->__('Jirafe site_id is empty.'));
+            Mage::helper('foomanjirafe')->setStoreConfig('last_status', Fooman_Jirafe_Helper_Data::JIRAFE_STATUS_ERROR);
             return false;
         }
         return $siteId;
@@ -141,11 +142,12 @@ class Fooman_Jirafe_Model_Jirafe
             if ($siteId){
                 $tmpStoreArray['site_id'] = $siteId;
             }
+            $tmpStoreArray['external_id'] = $storeId;
             $tmpStoreArray['description'] = $jirafeHelper->getStoreDescription($store);
             $tmpStoreArray['url'] = $store->getConfig('web/unsecure/base_url');
             $tmpStoreArray['timezone'] = $store->getConfig('general/locale/timezone');
             $tmpStoreArray['currency'] = $store->getConfig('currency/options/base');
-            $siteArray[$storeId] = $tmpStoreArray;
+            $siteArray[] = $tmpStoreArray;
         }
 
         $i = 0;
@@ -165,6 +167,7 @@ class Fooman_Jirafe_Model_Jirafe
                 $emails[] = $adminUser->getEmail();
             }
         }
+        Mage::log($siteArray);
         try {
             $return = Mage::getModel('foomanjirafe/api_application')-> sync($appId, $adminToken, $userArray, $siteArray);
             if(isset($return['users']) && !empty($return['users'])) {
@@ -178,16 +181,17 @@ class Fooman_Jirafe_Model_Jirafe
                 }
             }
 
-            //TODO: change $key to returned external_id
             if(isset($return['sites']) && !empty($return['sites'])) {
-                foreach ($return['sites'] as $key=>$jirafeStoreInfo) {
-                    $store = Mage::app()->getStore($key+1)->load($key+1);
+                foreach ($return['sites'] as $jirafeStoreInfo) {
+                    $store = Mage::app()->getStore($jirafeStoreInfo['external_id'])->load($jirafeStoreInfo['external_id']);
                     $jirafeHelper->setStoreConfig('site_id',$jirafeStoreInfo['site_id'], $store->getId());
                     $jirafeHelper->setStoreConfig('site_settings_hash', $this->_createSiteSettingsHash($store), $store->getId());
                 }
             }
 
         } catch (Exception $e) {
+            Mage::helper('foomanjirafe')->setStoreConfig('last_status_message', $e->getMessage());
+            Mage::helper('foomanjirafe')->setStoreConfig('last_status', Fooman_Jirafe_Helper_Data::JIRAFE_STATUS_ERROR);
             return false;
         }
         return true;
