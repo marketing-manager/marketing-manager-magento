@@ -107,7 +107,8 @@ class Fooman_Jirafe_Block_Js extends Mage_Core_Block_Template
                 foreach ($quote->getAllItems() as $quoteItem) {
                     $items[] = array('sku'=>$quoteItem->getSku(),'price'=>$quoteItem->getBasePrice());
                 }
-                $js .= "_paq.push(['trackGoal',".Fooman_Jirafe_Model_Api::JIRAFE_PIWIK_PURCHASE_GOAL_ID.",'".$quote->getBaseGrandTotal()."', ".json_encode($items)."]);";
+                //$js .= "_paq.push(['trackGoal',".Fooman_Jirafe_Model_Api::JIRAFE_PIWIK_PURCHASE_GOAL_ID.",'".$quote->getBaseGrandTotal()."', ".json_encode($items)."]);";
+                $js .= "_paq.push(['trackGoal',".Fooman_Jirafe_Model_Api::JIRAFE_PIWIK_PURCHASE_GOAL_ID.",'".$quote->getBaseGrandTotal()."']);";
             }
         }
         return $js;
@@ -146,7 +147,6 @@ class Fooman_Jirafe_Block_Js extends Mage_Core_Block_Template
 
     public function getPiwikBaseURL ($secure = false)
     {
-        //TODO: decide if we want to distribute a local fallback piwik.js
         $protocol =  $secure?"https://":"http://";
         return $protocol. Fooman_Jirafe_Model_Api::JIRAFE_PIWIK_BASE_URL;
     }
