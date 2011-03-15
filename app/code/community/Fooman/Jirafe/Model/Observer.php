@@ -15,19 +15,6 @@
 
 class Fooman_Jirafe_Model_Observer
 {
-    /* the event with the order_ids added was only introduced in Magento 1.4.2.0
-    public function setSuccessfulOrderIds(Varien_Event_Observer $observer)
-    {
-        $orderIds = $observer->getEvent()->getOrderIds();
-        if (empty($orderIds) || !is_array($orderIds)) {
-            return;
-        }
-        $block = Mage::app()->getFrontController()->getAction()->getLayout()->getBlock('foomanjirafe_js');
-        if ($block) {
-            $block->setOrderIds($orderIds);
-        }
-    }
-     */
 
     /**
      * sync a jirafe store when adding a new store or after saving
@@ -38,11 +25,15 @@ class Fooman_Jirafe_Model_Observer
      */
     public function syncJirafeStore ($observer)
     {
-        $jirafe = Mage::getModel('foomanjirafe/jirafe');
-        $appId = $jirafe->checkAppId();
-        if ($appId) {
-            $store = $observer->getEvent()->getStore();
-            $jirafe->checkSiteId($appId, $store);
+        if (!Mage::registry('foomanjirafe_store_sync_running')) {
+            Mage::register('foomanjirafe_store_sync_running', true);
+            $jirafe = Mage::getModel('foomanjirafe/jirafe');
+            $appId = $jirafe->checkAppId();
+            if ($appId) {
+                $store = $observer->getEvent()->getStore();
+                $jirafe->checkSiteId($appId, $store);
+            }
+            Mage::unregister('foomanjirafe_store_sync_running');
         }
     }
 
@@ -54,10 +45,14 @@ class Fooman_Jirafe_Model_Observer
      */
     public function fullSyncJirafeStore ($observer)
     {
-        $jirafe = Mage::getModel('foomanjirafe/jirafe');
-        $appId = $jirafe->checkAppId();
-        if ($appId) {
-            $jirafe->syncUsersAndStores();
+        if (!Mage::registry('foomanjirafe_store_sync_running')) {
+            Mage::register('foomanjirafe_store_sync_running', true);
+            $jirafe = Mage::getModel('foomanjirafe/jirafe');
+            $appId = $jirafe->checkAppId();
+            if ($appId) {
+                $jirafe->syncUsersAndStores();
+            }
+            Mage::unregister('foomanjirafe_store_sync_running');
         }
     }
 
@@ -69,17 +64,21 @@ class Fooman_Jirafe_Model_Observer
      */
     public function fullSyncNewUser ($observer)
     {
-        $jirafeEmailReportType = Mage::app()->getRequest()->getPost('jirafe_email_report_type');
-        if(!$jirafeEmailReportType) {
-            //we don't have Jirafe POST data from the My Account Form = we are adding a new user
-            //TODO: is also called when updating a user via System > Role
-            $jirafe = Mage::getModel('foomanjirafe/jirafe');
-            $appId = $jirafe->checkAppId();
-            if ($appId) {
-                $jirafe->syncUsersAndStores();
+        if (!Mage::registry('foomanjirafe_user_sync_running')) {
+            Mage::register('foomanjirafe_user_sync_running', true);
+            $jirafeEmailReportType = Mage::app()->getRequest()->getPost('jirafe_email_report_type');
+            if(!$jirafeEmailReportType) {
+                //we don't have Jirafe POST data from the My Account Form = we are adding a new user
+                //TODO: is also called when updating a user via System > Role
+                $jirafe = Mage::getModel('foomanjirafe/jirafe');
+                $appId = $jirafe->checkAppId();
+                if ($appId) {
+                    $jirafe->syncUsersAndStores();
+                }
             }
+            Mage::unregister('foomanjirafe_user_sync_running');
         }
-    }    
+    }
 
     /**
      * sync all stores and users with Jirafe
