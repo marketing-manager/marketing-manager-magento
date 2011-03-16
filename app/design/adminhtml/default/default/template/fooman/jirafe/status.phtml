@@ -22,6 +22,8 @@
     <?php echo $this->__('Jirafe has reported errors. Please try the sychronise action.'); ?>
 <?php endif;?>
  <?php echo $this->__('Last Status'); ?>: <?php echo $this->getStatusMessage();?>
- <span style="float:right;"><a href="<?php echo $this->getSyncUrl()?>"><?php echo $this->__('Synchronise Magento with Jirafe'); ?></a> |
-    <a href="<?php echo $this->getReportUrl()?>"><?php echo $this->__('Run Report'); ?></a></span></li>
+ <?php if ($this->isDebug()): ?>
+     <span style="float:right;"><a href="<?php echo $this->getSyncUrl()?>"><?php echo $this->__('Synchronise Magento with Jirafe'); ?></a> |
+        <a href="<?php echo $this->getReportUrl()?>"><?php echo $this->__('Run Report'); ?></a></span></li>
+ <?php endif;?>
 </ul>
