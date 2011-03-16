@@ -75,33 +75,5 @@ class Fooman_Jirafe_Model_Api_Application extends Fooman_Jirafe_Model_Api
     {
         return $this->sendData(self::JIRAFE_API_APPLICATIONS.'/'.$appId, false, $adminToken, Zend_Http_Client::DELETE);
     }
-    
-    
-  /*  
-    * users - A collection (an array) of JSON data corresponding to the users we want to synchronize. Accepted JSON keys are:
-          o token - Jirafe authentication token for the given user. If provided, the user informations will be updated. If not, the user will be created.
-          o username - Desired username
-          o email - Your email
-          o first_name - Your first name
-          o last_name - Your last name
-          o mobile_phone - Your mobile phone number
-    * sites - A collection (an array) of JSON data corresponding to the sites we want to synchronize. Accepted JSON keys are:
-          o id - Jirafe site id. If provided, the site informations will be updated. If not, the site will be created.
-          o description - The description of the site (Magento store)
-          o url - The URL of the site
-          o timezone - The timezone of the site
-          o currency - The currency of the site
-    */
-    
-    public function sync ($appId, $adminToken, $userArray = array(), $siteArray = array())
-    {
-        if(empty($appId) || empty($adminToken)) {
-            throw new Exception('$appId and $adminToken can\'t be empty');
-        }
-        $data = array();
-        $data['users'] = $userArray;
-        $data['sites'] = $siteArray;
-        
-        return $this->sendData(self::JIRAFE_API_APPLICATIONS.'/'.$appId .self::JIRAFE_API_RESOURCES, $data, $adminToken, Zend_Http_Client::POST);
-    }    
+       
 }

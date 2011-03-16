@@ -26,7 +26,7 @@ class Fooman_Jirafe_Model_Api
 
     const JIRAFE_API_VERSION = 'v1';
 
-    const JIRAFE_API_HB = '/heartbeat';
+    const JIRAFE_API_LOGS = '/logs';
     const JIRAFE_API_APPLICATIONS = '/applications';
     const JIRAFE_API_RESOURCES =  '/resources';
     const JIRAFE_API_SITES = '/sites';

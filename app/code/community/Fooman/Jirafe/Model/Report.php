@@ -158,7 +158,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         $reportData['jirafe_settings_url'] = Mage::helper('adminhtml')->getUrl('adminhtml/system_config/edit/section/foomanjirafe', array('_nosecret' => true, '_nosid' => true));
 
         // Get the timezone for this store
-        $reportData['time_zone'] = $store->getConfig('general/locale/timezone');
+        $reportData['timezone'] = $store->getConfig('general/locale/timezone');
 
         // Get customer data
         $reportData['customer_num'] = Mage::getResourceModel('foomanjirafe/report')->getStoreUniqueCustomers($storeId, $from, $to);
@@ -266,7 +266,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
 
     function _sendReport ($store, $timespan, $data)
     {
-        Mage::getModel('foomanjirafe/api')->sendData(Fooman_Jirafe_Model_Api::JIRAFE_API_HB, $data);
+        return Mage::getModel('foomanjirafe/jirafe')->sendLogUpdate($data);
     }
 
     function _getReportDataFormatted ($data)
