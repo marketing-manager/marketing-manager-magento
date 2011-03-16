@@ -34,7 +34,8 @@ class Fooman_Jirafe_Model_Jirafe
             //check if settings have changed            
             if ($currentHash != Mage::helper('foomanjirafe')->getStoreConfig('app_settings_hash')) {
                 try {
-                    $return = Mage::getModel('foomanjirafe/api_application')->update($appId, Mage::getStoreConfig('web/unsecure/base_url', $defaultStoreId));
+                    $baseUrl = Mage::helper('foomanjirafe')->getUnifiedStoreBaseUrl(Mage::getStoreConfig('web/unsecure/base_url', $defaultStoreId));
+                    $return = Mage::getModel('foomanjirafe/api_application')->update($appId, $baseUrl);
                     $changeHash = true;
                 } catch (Exception $e) {
                     Mage::logException($e);
@@ -46,7 +47,8 @@ class Fooman_Jirafe_Model_Jirafe
         } else {
             //retrieve new application id from jirafe server
             try {
-                $return = Mage::getModel('foomanjirafe/api_application')->create(Mage::helper('foomanjirafe')->getStoreDescription(Mage::app()->getStore($defaultStoreId)), Mage::getStoreConfig('web/unsecure/base_url', $defaultStoreId));
+                $baseUrl = Mage::helper('foomanjirafe')->getUnifiedStoreBaseUrl(Mage::getStoreConfig('web/unsecure/base_url', $defaultStoreId));
+                $return = Mage::getModel('foomanjirafe/api_application')->create(Mage::helper('foomanjirafe')->getStoreDescription(Mage::app()->getStore($defaultStoreId)), $baseUrl);
                 if(empty($return['app_id']) || empty($return['token'])) {
                     throw new Exception ('Jirafe did not return a valid application Id or token.');
                 }
@@ -79,7 +81,8 @@ class Fooman_Jirafe_Model_Jirafe
      */
     protected function _createAppSettingsHash ($storeId)
     {
-        return md5(Mage::getStoreConfig('web/unsecure/base_url', $storeId) . Mage::app()->getStore($storeId)->getName());
+        $baseUrl = Mage::helper('foomanjirafe')->getUnifiedStoreBaseUrl(Mage::getStoreConfig('web/unsecure/base_url', $storeId));
+        return md5($baseUrl . Mage::app()->getStore($storeId)->getName());
     }
 
     /**
@@ -118,8 +121,9 @@ class Fooman_Jirafe_Model_Jirafe
      */
     protected function _createSiteSettingsHash ($store)
     {
+        $baseUrl = Mage::helper('foomanjirafe')->getUnifiedStoreBaseUrl(Mage::getStoreConfig('web/unsecure/base_url', $store->getId()));
         return md5( $store->getName() .
-                    $store->getConfig('web/unsecure/base_url') .
+                    $baseUrl .
                     $store->getConfig('general/locale/timezone') .
                     $store->getConfig('currency/options/base')
                 );
@@ -144,7 +148,7 @@ class Fooman_Jirafe_Model_Jirafe
             }
             $tmpStoreArray['external_id'] = $storeId;
             $tmpStoreArray['description'] = $jirafeHelper->getStoreDescription($store);
-            $tmpStoreArray['url'] = $store->getConfig('web/unsecure/base_url');
+            $tmpStoreArray['url'] = Mage::helper('foomanjirafe')->getUnifiedStoreBaseUrl($store->getConfig('web/unsecure/base_url'));
             $tmpStoreArray['timezone'] = $store->getConfig('general/locale/timezone');
             $tmpStoreArray['currency'] = $store->getConfig('currency/options/base');
             $siteArray[] = $tmpStoreArray;
