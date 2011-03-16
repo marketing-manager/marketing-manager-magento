@@ -45,7 +45,7 @@ if (!empty($emails)) {
     // Iterate through the emails and find the admin user for the email
     foreach ($emails as $email) {
         $adminUser = Mage::getModel('admin/user')->load($email,'email');
-        if (!empty($adminUser)) {
+        if ($adminUser->getId()) {
             $adminUser
                     ->setJirafeSendEmailForStore($storeIds)
                     ->setJirafeEmailReportType($reportType)
