@@ -95,15 +95,19 @@ class Fooman_Jirafe_Model_Jirafe
      */
     public function checkSiteId ($appId, $store)
     {
+        //Mage::app()->getConfig()->reinit();
+        $store = $store->loadConfig($store->getStoreId());
         //check if we already have a jirafe store id for this Magento store
-        $siteId = Mage::helper('foomanjirafe')->getStoreConfig('site_id', $store->getId());
-        $adminToken =  Mage::helper('foomanjirafe')->getStoreConfig('app_token');
-        $store->load($store->getId());
+        $siteId = Mage::helper('foomanjirafe')->getStoreConfig('site_id', $store->getStoreId());
+        $adminToken = Mage::helper('foomanjirafe')->getStoreConfig('app_token');
         $currentHash = $this->_createSiteSettingsHash($store);
+
+        $dbHash = Mage::helper('foomanjirafe')->getStoreConfigDirect('site_settings_hash', $store->getStoreId());
+
         //check if we haven't yet assigned a site id or if settings have changed
-        if (!$siteId || $currentHash != Mage::helper('foomanjirafe')->getStoreConfig('site_settings_hash', $store->getId())) {
+        if (!$siteId || $currentHash != $dbHash) {
             $this->syncUsersAndStores();
-            $siteId = Mage::helper('foomanjirafe')->getStoreConfig('site_id', $store->getId());
+            $siteId = Mage::helper('foomanjirafe')->getStoreConfig('site_id', $store->getStoreId());
         }
         if(empty($siteId)){
             Mage::helper('foomanjirafe')->setStoreConfig('last_status_message', Mage::helper('foomanjirafe')->__('Jirafe site_id is empty.'));
@@ -122,7 +126,7 @@ class Fooman_Jirafe_Model_Jirafe
     protected function _createSiteSettingsHash ($store)
     {
         $baseUrl = Mage::helper('foomanjirafe')->getUnifiedStoreBaseUrl(Mage::getStoreConfig('web/unsecure/base_url', $store->getId()));
-        return md5( $store->getName() .
+        return  md5(Mage::helper('foomanjirafe')->getStoreDescription($store) .
                     $baseUrl .
                     $store->getConfig('general/locale/timezone') .
                     $store->getConfig('currency/options/base')

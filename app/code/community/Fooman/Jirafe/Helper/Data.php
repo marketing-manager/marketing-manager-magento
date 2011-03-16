@@ -37,6 +37,30 @@ class Fooman_Jirafe_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
     /**
+     * Return store config value for key directly from db
+     *
+     * @param   string $key
+     * @return  string
+     */
+    public function getStoreConfigDirect ($key,
+            $storeId = Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID)
+    {
+        $path = self::XML_PATH_FOOMANJIRAFE_SETTINGS . $key;
+        $collection = Mage::getModel('core/config_data')->getCollection()
+                        ->addFieldToFilter('path', $path)
+                        ->addFieldToFilter('scope_id', $storeId);
+        if ($storeId != Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID) {
+            $collection->addFieldToFilter('scope', Mage_Adminhtml_Block_System_Config_Form::SCOPE_STORES);
+        }
+        if ($collection->load()->getSize() == 1) {
+            //value exists /-> update/ should only be one
+            foreach ($collection as $existingConfigData) {
+                return $existingConfigData->getValue();
+            }
+        }
+    }
+
+    /**
      * Save store config value for key
      *
      * @param string $key
@@ -173,7 +197,7 @@ class Fooman_Jirafe_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function getStoreDescription ($store)
     {
-        return $store->getFrontendName() . ' (' . $store->getName() . ')';
+        return Mage::getModel('core/store_group')->load($store->getGroupId())->getName() . ' (' . $store->getData('name') . ')';
     }
 
     public function createJirafeUserId ($user)
