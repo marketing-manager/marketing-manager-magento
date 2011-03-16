@@ -107,8 +107,7 @@ class Fooman_Jirafe_Block_Js extends Mage_Core_Block_Template
                 foreach ($quote->getAllVisibleItems() as $quoteItem) {
                     $items[] = array('sku'=>$quoteItem->getSku(),'price'=>$quoteItem->getBasePrice());
                 }
-                //$js .= "_paq.push(['trackGoal',".Fooman_Jirafe_Model_Api::JIRAFE_PIWIK_PURCHASE_GOAL_ID.",'".$quote->getBaseGrandTotal()."', ".json_encode($items)."]);";
-                $js .= "_paq.push(['trackGoal',".Fooman_Jirafe_Model_Api::JIRAFE_PIWIK_PURCHASE_GOAL_ID.",'".$quote->getBaseGrandTotal()."']);";
+                  $js .= "_paq.push(['trackGoal',".Mage::helper('foomanjirafe')->getStoreConfig('checkoutGoalId', Mage::app()->getStore()->getId()).",'".$quote->getBaseGrandTotal()."']);";
             }
         }
         return $js;

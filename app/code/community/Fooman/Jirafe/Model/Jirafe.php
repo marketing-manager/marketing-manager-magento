@@ -188,6 +188,7 @@ class Fooman_Jirafe_Model_Jirafe
                     $store = Mage::app()->getStore($jirafeStoreInfo['external_id'])->load($jirafeStoreInfo['external_id']);
                     $jirafeHelper->setStoreConfig('site_id',$jirafeStoreInfo['site_id'], $store->getId());
                     $jirafeHelper->setStoreConfig('site_settings_hash', $this->_createSiteSettingsHash($store), $store->getId());
+                    $jirafeHelper->setStoreConfig('checkoutGoalId',$jirafeStoreInfo['checkout_goal_id'], $store->getId());
                 }
             }
 
