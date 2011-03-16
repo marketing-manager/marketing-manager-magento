@@ -45,6 +45,7 @@ class Fooman_Jirafe_Model_Observer
      */
     public function fullSyncJirafeStore ($observer)
     {
+        Mage::helper('foomanjirafe')->debug('fullSyncJirafeStore');
         if (!Mage::registry('foomanjirafe_store_sync_running')) {
             Mage::register('foomanjirafe_store_sync_running', true);
             $jirafe = Mage::getModel('foomanjirafe/jirafe');
@@ -64,6 +65,7 @@ class Fooman_Jirafe_Model_Observer
      */
     public function fullSyncNewUser ($observer)
     {
+        Mage::helper('foomanjirafe')->debug('fullSyncNewUser');
         if (!Mage::registry('foomanjirafe_user_sync_running')) {
             Mage::register('foomanjirafe_user_sync_running', true);
             $jirafeEmailReportType = Mage::app()->getRequest()->getPost('jirafe_email_report_type');
@@ -90,6 +92,7 @@ class Fooman_Jirafe_Model_Observer
      */
     public function saveJirafeStoreEmailMapping ($observer)
     {
+        Mage::helper('foomanjirafe')->debug('saveJirafeStoreEmailMapping');
         $user = $observer->getEvent()->getObject();
         $jirafeEmailReportType = Mage::app()->getRequest()->getPost('jirafe_email_report_type');
 

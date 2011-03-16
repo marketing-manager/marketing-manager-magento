@@ -19,6 +19,7 @@ class Fooman_Jirafe_Helper_Data extends Mage_Core_Helper_Abstract
     const JIRAFE_STATUS_NOT_INSTALLED = '0';
     const JIRAFE_STATUS_ERROR = '1';
     const JIRAFE_STATUS_APP_TOKEN_RECEIVED = '2';
+    const JIRAFE_STATUS_SYNC_COMPLETED = '3';
 
     const DEBUG = true;
 

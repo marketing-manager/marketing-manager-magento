@@ -89,6 +89,7 @@ class Fooman_Jirafe_Model_Api
             $conn->request($method);            
             $result = $this->_errorChecking($conn->getLastResponse());
         } catch (Exception $e) {
+            Mage::logException($conn->getLastResponse());
             throw new Exception($e->getMessage());
             return false;
         }        

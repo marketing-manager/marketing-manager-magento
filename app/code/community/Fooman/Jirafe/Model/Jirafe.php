@@ -167,9 +167,11 @@ class Fooman_Jirafe_Model_Jirafe
                 $emails[] = $adminUser->getEmail();
             }
         }
-        Mage::log($siteArray);
+        Mage::helper('foomanjirafe')->debug($userArray);
+        Mage::helper('foomanjirafe')->debug($siteArray);
         try {
             $return = Mage::getModel('foomanjirafe/api_application')-> sync($appId, $adminToken, $userArray, $siteArray);
+            Mage::helper('foomanjirafe')->debug($return);
             if(isset($return['users']) && !empty($return['users'])) {
                 foreach ($return['users'] as $jirafeUserInfo) {
                     $adminEmail = $jirafeHelper->getUserEmail($jirafeUserInfo['email']);
@@ -194,6 +196,8 @@ class Fooman_Jirafe_Model_Jirafe
             Mage::helper('foomanjirafe')->setStoreConfig('last_status', Fooman_Jirafe_Helper_Data::JIRAFE_STATUS_ERROR);
             return false;
         }
+        Mage::helper('foomanjirafe')->setStoreConfig('last_status_message', Mage::helper('foomanjirafe')->__('Jirafe sync completed successfully'));
+        Mage::helper('foomanjirafe')->setStoreConfig('last_status', Fooman_Jirafe_Helper_Data::JIRAFE_STATUS_SYNC_COMPLETED);
         return true;
     }
 
