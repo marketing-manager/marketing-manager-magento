@@ -73,6 +73,8 @@ class Fooman_Jirafe_Model_Api
         if($adminToken) {
             $conn->setParameterGet('token', $adminToken);
         }
+//		$conn->setParameterGet('XDEBUG_SESSION_START', 'switzer');
+
         if(!empty($httpAuth)) {
             $conn->setAuth($httpAuth['username'], $httpAuth['password']);
         }
