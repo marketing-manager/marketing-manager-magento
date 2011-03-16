@@ -11,7 +11,7 @@
             <block type="foomanjirafe/jsAlt" name="foomanjirafe_js_alt" as="foomanjirafe_js_alt" />
         </reference>
     </default>
-    <catalog_category_default>
+    <!--<catalog_category_default>
         <reference name="foomanjirafe_js">
             <action method="setPiwikVisitorType"><value>C</value></action>
         </reference>
@@ -25,7 +25,7 @@
         <reference name="foomanjirafe_js">
             <action method="setPiwikVisitorType"><value>C</value></action>
         </reference>
-    </catalog_category_layered_nochildren>       
+    </catalog_category_layered_nochildren>-->
     <catalog_product_view>
         <reference name="foomanjirafe_js">
             <action method="setPiwikVisitorType"><value>C</value></action>
