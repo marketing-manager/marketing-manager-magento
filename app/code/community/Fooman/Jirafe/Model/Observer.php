@@ -25,15 +25,11 @@ class Fooman_Jirafe_Model_Observer
      */
     public function syncJirafeStore ($observer)
     {
-        if (!Mage::registry('foomanjirafe_store_sync_running')) {
-            Mage::register('foomanjirafe_store_sync_running', true);
-            $jirafe = Mage::getModel('foomanjirafe/jirafe');
-            $appId = $jirafe->checkAppId();
-            if ($appId) {
-                $store = $observer->getEvent()->getStore();
-                $jirafe->checkSiteId($appId, $store);
-            }
-            Mage::unregister('foomanjirafe_store_sync_running');
+        $jirafe = Mage::getModel('foomanjirafe/jirafe');
+        $appId = $jirafe->checkAppId();
+        if ($appId) {
+            $store = $observer->getEvent()->getStore();
+            $jirafe->checkSiteId($appId, $store);
         }
     }
 
@@ -45,15 +41,10 @@ class Fooman_Jirafe_Model_Observer
      */
     public function fullSyncJirafeStore ($observer)
     {
-        Mage::helper('foomanjirafe')->debug('fullSyncJirafeStore');
-        if (!Mage::registry('foomanjirafe_store_sync_running')) {
-            Mage::register('foomanjirafe_store_sync_running', true);
-            $jirafe = Mage::getModel('foomanjirafe/jirafe');
-            $appId = $jirafe->checkAppId();
-            if ($appId) {
-                $jirafe->syncUsersAndStores();
-            }
-            Mage::unregister('foomanjirafe_store_sync_running');
+        $jirafe = Mage::getModel('foomanjirafe/jirafe');
+        $appId = $jirafe->checkAppId();
+        if ($appId) {
+            $jirafe->syncUsersAndStores();
         }
     }
 
@@ -66,19 +57,15 @@ class Fooman_Jirafe_Model_Observer
     public function fullSyncNewUser ($observer)
     {
         Mage::helper('foomanjirafe')->debug('fullSyncNewUser');
-        if (!Mage::registry('foomanjirafe_user_sync_running')) {
-            Mage::register('foomanjirafe_user_sync_running', true);
-            $jirafeEmailReportType = Mage::app()->getRequest()->getPost('jirafe_email_report_type');
-            if(!$jirafeEmailReportType) {
-                //we don't have Jirafe POST data from the My Account Form = we are adding a new user
-                //TODO: is also called when updating a user via System > Role
-                $jirafe = Mage::getModel('foomanjirafe/jirafe');
-                $appId = $jirafe->checkAppId();
-                if ($appId) {
-                    $jirafe->syncUsersAndStores();
-                }
+        $jirafeEmailReportType = Mage::app()->getRequest()->getPost('jirafe_email_report_type');
+        if(!$jirafeEmailReportType) {
+            //we don't have Jirafe POST data from the My Account Form = we are adding a new user
+            //TODO: is also called when updating a user via System > Role
+            $jirafe = Mage::getModel('foomanjirafe/jirafe');
+            $appId = $jirafe->checkAppId();
+            if ($appId) {
+                $jirafe->syncUsersAndStores();
             }
-            Mage::unregister('foomanjirafe_user_sync_running');
         }
     }
 
