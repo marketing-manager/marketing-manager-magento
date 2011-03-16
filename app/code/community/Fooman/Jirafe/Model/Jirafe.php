@@ -96,7 +96,7 @@ class Fooman_Jirafe_Model_Jirafe
     public function checkSiteId ($appId, $store)
     {
         //Mage::app()->getConfig()->reinit();
-        $store = $store->loadConfig($store->getStoreId());
+
         //check if we already have a jirafe store id for this Magento store
         $siteId = Mage::helper('foomanjirafe')->getStoreConfig('site_id', $store->getStoreId());
         $adminToken = Mage::helper('foomanjirafe')->getStoreConfig('app_token');
@@ -148,6 +148,7 @@ class Fooman_Jirafe_Model_Jirafe
             $siteArray = array();
 
             foreach ($jirafeHelper->getStores() as $storeId => $store) {
+                $store->loadConfig($storeId);
                 $tmpStoreArray = array();
                 $siteId = $store->getConfig(Fooman_Jirafe_Helper_Data::XML_PATH_FOOMANJIRAFE_SETTINGS.'site_id');
                 if ($siteId){
@@ -155,9 +156,10 @@ class Fooman_Jirafe_Model_Jirafe
                 }
                 $tmpStoreArray['external_id'] = $storeId;
                 $tmpStoreArray['description'] = $jirafeHelper->getStoreDescription($store);
-                $tmpStoreArray['url'] = Mage::helper('foomanjirafe')->getUnifiedStoreBaseUrl($store->getConfig('web/unsecure/base_url'));
-                $tmpStoreArray['timezone'] = $store->getConfig('general/locale/timezone');
-                $tmpStoreArray['currency'] = $store->getConfig('currency/options/base');
+                //newly created stores don't fall back on global config values
+                $tmpStoreArray['url'] = Mage::helper('foomanjirafe')->getUnifiedStoreBaseUrl($store->getConfig('web/unsecure/base_url')?$store->getConfig('web/unsecure/base_url'):Mage::getStoreConfig('web/unsecure/base_url'));
+                $tmpStoreArray['timezone'] = $store->getConfig('general/locale/timezone')?$store->getConfig('general/locale/timezone'):Mage::getStoreConfig('general/locale/timezone');
+                $tmpStoreArray['currency'] = $store->getConfig('currency/options/base')?$store->getConfig('currency/options/base'):Mage::getStoreConfig('currency/options/base');
                 $siteArray[] = $tmpStoreArray;
             }
 
