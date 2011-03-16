@@ -166,7 +166,7 @@ class Fooman_Jirafe_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function getUnifiedStoreBaseUrl ($baseUrl)
     {
-        return rtrim($baseUrl, '/') . '/';
+        return rtrim($baseUrl, '/');
     }
 
 }
