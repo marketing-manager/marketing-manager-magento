@@ -152,7 +152,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         $reportData['magento_version'] = Mage::getVersion();
 
         // Get the email addresses where the email will be sent
-        $reportData['email_addresses'] = $this->_helper->collectJirafeEmails($storeId);
+        $reportData['admin_emails'] = $this->_helper->collectJirafeEmails($storeId);
 
         // Get the URL to the Magento admin console, Jirafe settings
         $reportData['jirafe_settings_url'] = Mage::helper('adminhtml')->getUrl('adminhtml/system_config/edit/section/foomanjirafe', array('_nosecret' => true, '_nosid' => true));
@@ -227,7 +227,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         // Get the template
         $template = Mage::getStoreConfig(self::XML_PATH_EMAIL_TEMPLATE, $storeId);
         // Get the list of emails to send this report
-        $emails = explode(',', $this->_helper->getStoreConfig('emails', $storeId));
+        $emails = $this->_helper->collectJirafeEmails($storeId, false);
         // Translate email
         $translate = Mage::getSingleton('core/translate');
         /* @var $translate Mage_Core_Model_Translate */
@@ -235,13 +235,14 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
 
         $emailTemplate = Mage::getModel('core/email_template');
         /* @var $emailTemplate Mage_Core_Model_Email_Template */
-        foreach ($emails as $email) {
+        foreach ($emails as $emailAddress=>$reportType) {
+            $data['detail_report'] = $reportType;
             $emailTemplate
                     ->setDesignConfig(array('area' => 'backend'))
                     ->sendTransactional(
                             $template,
                             Mage::getStoreConfig(self::XML_PATH_EMAIL_IDENTITY, $storeId),
-                            trim($email),
+                            trim($emailAddress),
                             null,
                             $data,
                             $storeId

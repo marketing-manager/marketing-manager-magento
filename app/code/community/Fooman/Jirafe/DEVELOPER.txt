@@ -46,6 +46,6 @@ ALTER TABLE admin_user DROP COLUMN jirafe_send_email_for_store;
 ALTER TABLE admin_user DROP COLUMN jirafe_send_email;
 ALTER TABLE admin_user DROP COLUMN jirafe_email_report_type;
 ALTER TABLE admin_user DROP COLUMN jirafe_email_suppress;
-ALTER TABLE admin_user DROP COLUMN jirafe_emails;
+ALTER TABLE admin_user DROP COLUMN jirafe_also_send_to;
 ALTER TABLE admin_user DROP COLUMN jirafe_user_id;
 ALTER TABLE admin_user DROP COLUMN jirafe_user_token;

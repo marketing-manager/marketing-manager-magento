@@ -114,22 +114,54 @@ class Fooman_Jirafe_Helper_Data extends Mage_Core_Helper_Abstract
         }
     }
 
-    public function collectJirafeEmails ($storeId)
+    /**
+     * return admin email addresses that we are emailing the reports to
+     * either return a csv list of just emails or an array
+     * with key = email address and value = report type
+     *
+     * @param int $storeId
+     * @param boolean $asCsv
+     * @return string|array
+     */
+    public function collectJirafeEmails ($storeId, $asCsv = true)
     {
         $adminUsers = Mage::getSingleton('admin/user')->getCollection();
         $emails = array();
         // loop over all admin users
         foreach ($adminUsers as $adminUser) {
+            /* TODO: NEXT VERSION
             //if admin user is subscribed to jirafe emails for this store
             if (in_array($storeId, explode(',',$adminUser->getJirafeSendEmailForStore()))) {
                 //add all emails from the jirafe emails field
                 foreach(explode(',',$adminUser->getJirafeEmails()) as $jirafeEmail) {
-                    $emails[] = $jirafeEmail;
+                    if(!empty($jirafeEmail)) {
+                        $emails[] = $jirafeEmail;
+                    }
+                }
+            }*/
+            if ($adminUser->getJirafeSendEmail()) {
+                if ($asCsv) {
+                    $emails[] = $adminUser->getEmail();
+                    foreach (explode(',', $adminUser->getJirafeAlsoSendTo()) as $jirafeEmail) {
+                        if (!empty($jirafeEmail)) {
+                            $emails[] = $jirafeEmail;
+                        }
+                    }
+                } else {
+                    $emails[$adminUser->getEmail()] = $adminUser->getJirafeEmailReportType();
+                    foreach (explode(',', $adminUser->getJirafeAlsoSendTo()) as $jirafeEmail) {
+                        if (!empty($jirafeEmail)) {
+                            $emails[$jirafeEmail] = $adminUser->getJirafeEmailReportType();
+                        }
+                    }
                 }
             }
         }
-
-        return implode(',',$emails);
+        if ($asCsv) {
+            return implode(',',$emails);
+        } else {
+            return $emails;
+        }
     }
 
     public function debug ($mesg)
