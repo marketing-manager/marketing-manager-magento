@@ -64,12 +64,11 @@ class Fooman_Jirafe_Model_Api
     {
 
         //set up connection
-        $conn = new Zend_Http_Client($this->getApiUrl(true, false));
+        $conn = new Zend_Http_Client($this->getApiUrl(true, true, true) . $entryPoint);
         $conn->setConfig(array(
             'timeout' => 30,
             'keepalive' => true
         ));
-        $conn->setUri($this->getApiUrl() . $entryPoint);
         if($adminToken) {
             $conn->setParameterGet('token', $adminToken);
         }
