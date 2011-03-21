@@ -15,14 +15,14 @@
 
 class Fooman_Jirafe_Model_Api
 {
-    const JIRAFE_API_SERVER = 'api.jirafe.com';
-//    const JIRAFE_API_SERVER = 'api.jirafe.local';
+    const JIRAFE_API_SERVER = 'https://api.jirafe.com';
+//    const JIRAFE_API_SERVER = 'http://api.jirafe.local';
 
     const JIRAFE_API_BASE = '';
 //    const JIRAFE_API_BASE = 'app_dev.php';
 
-    const JIRAFE_PIWIK_BASE_URL = 'data.jirafe.com';
-//    const JIRAFE_PIWIK_BASE_URL = 'piwik.local';
+    const JIRAFE_PIWIK_BASE_URL = 'https://data.jirafe.com';
+//    const JIRAFE_PIWIK_BASE_URL = 'http://piwik.local';
 
     const JIRAFE_API_VERSION = 'v1';
 
@@ -32,31 +32,46 @@ class Fooman_Jirafe_Model_Api
     const JIRAFE_API_SITES = '/sites';
     const JIRAFE_API_USERS = '/users';
 
-    public function getApiUrl ($includeBase = true, $includeVersion = true, $secure = false)
+    /**
+     * Returns the URL of the API
+     *
+     * @param  string $entryPoint An optional entry point
+     *
+     * @return string
+     */
+    public function getApiUrl($entryPoint = null)
     {
-        // Protocol
-        $url = $secure ? 'https://' : 'http://';
-
         // Server
-        $url .= self::JIRAFE_API_SERVER;
+        $url = rtrim(self::JIRAFE_API_SERVER, '/');
 
         // Base
-        if ($includeBase) {
-            $base = self::JIRAFE_API_BASE;
-            if (!empty($base)) {
-                $url .= "/{$base}";
-            }
+        if ((boolean) self::JIRAFE_API_BASE) {
+            $url.= '/' . ltrim(self::JIRAFE_API_BASE, '/');
         }
 
         // Version
-        if ($includeVersion) {
-            $version = self::JIRAFE_API_VERSION;
-            if (!empty($version)) {
-                $url .= "/{$version}";
-            }
+        if ((boolean) self::JIRAFE_API_VERSION) {
+            $url.= '/' . ltrim(self::JIRAFE_API_VERSION, '/');
+        }
+
+        // Entry Point
+        if (null !== $entryPoint) {
+            $url.= '/' . ltrim($entryPoint, '/');
         }
 
         return $url;
+    }
+
+    /**
+     * Returns the URL of the asset corresponding to the specified filename
+     *
+     * @param  string $filename The filename of the asset
+     *
+     * @return string
+     */
+    public function getAssetUrl($filename)
+    {
+        return rtrim(self::JIRAFE_API_SERVER, '/') . '/' . ltrim($filename, '/');
     }
 
     public function sendData ($entryPoint, $data, $adminToken = false,
@@ -64,7 +79,7 @@ class Fooman_Jirafe_Model_Api
     {
 
         //set up connection
-        $conn = new Zend_Http_Client($this->getApiUrl(true, true, true) . $entryPoint);
+        $conn = new Zend_Http_Client($this->getApiUrl($entryPoint));
         $conn->setConfig(array(
             'timeout' => 30,
             'keepalive' => true
@@ -86,13 +101,13 @@ class Fooman_Jirafe_Model_Api
                     $conn->setParameterPost($parameter, $value);
                 }
             }
-            $conn->request($method);            
+            $conn->request($method);
             $result = $this->_errorChecking($conn->getLastResponse());
         } catch (Exception $e) {
             Mage::logException($conn->getLastResponse());
             throw new Exception($e->getMessage());
             return false;
-        }        
+        }
         return $result;
     }
 
@@ -101,10 +116,10 @@ class Fooman_Jirafe_Model_Api
         //check server response
         if ($response->isError()) {
             throw new Exception($response->getStatus() .' '. $response->getMessage());
-        }        
+        }
         //TODO: dev mode returns debug toolbar remove it from output here
         $reponseBody = preg_replace('/<!-- START of Symfony2 Web Debug Toolbar -->(.*?)<!-- END of Symfony2 Web Debug Toolbar -->/', '', $response->getBody());
-        if(strpos($reponseBody,'You are not allowed to access this file.') !== false) {            
+        if(strpos($reponseBody,'You are not allowed to access this file.') !== false) {
             throw new Exception('Server Response: You are not allowed to access this file.');
         }
         if(strpos($reponseBody,'Call Stack:') !== false) {
@@ -113,7 +128,7 @@ class Fooman_Jirafe_Model_Api
         if(strpos($reponseBody,'Fatal error:') !== false) {
             throw new Exception('Server Response contains errors');
         }
-        
+
         //check for returned errors
         $result = json_decode($reponseBody,true);
         if(isset($result['errors']) && !empty($result['errors'])) {
