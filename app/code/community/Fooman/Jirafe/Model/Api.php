@@ -21,8 +21,9 @@ class Fooman_Jirafe_Model_Api
     const JIRAFE_API_BASE = '';
 //    const JIRAFE_API_BASE = 'app_dev.php';
 
-    const JIRAFE_PIWIK_BASE_URL = 'https://data.jirafe.com';
-//    const JIRAFE_PIWIK_BASE_URL = 'http://piwik.local';
+	// Don't put http/s on this URL because it is added later
+    const JIRAFE_PIWIK_BASE_URL = 'data.jirafe.com';
+//    const JIRAFE_PIWIK_BASE_URL = 'piwik.local';
 
     const JIRAFE_API_VERSION = 'v1';
 
