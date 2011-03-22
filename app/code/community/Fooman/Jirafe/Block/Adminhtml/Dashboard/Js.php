@@ -15,22 +15,37 @@
 
 class Fooman_Jirafe_Block_Adminhtml_Dashboard_Js extends Mage_Adminhtml_Block_Template
 {
-
-    public function __construct ()
+    /**
+     * {@inheritDoc}
+     */
+    public function __construct()
     {
         parent::__construct();
+
         if ($this->isJirafeDashboardActive()) {
             $this->setTemplate('fooman/jirafe/dashboard-head.phtml');
         }
     }
 
-    public function isJirafeDashboardActive ()
+    /**
+     * Indicates whether the dashboard is activated (in the configuration)
+     *
+     * @return boolean
+     */
+    public function isJirafeDashboardActive()
     {
         return Mage::helper('foomanjirafe')->getStoreConfig('isDashboardActive');
     }
 
-    public function getApiBaseUrl()
+    /**
+     * Returns the URL of the asset
+     *
+     * @param  string $filename The filename of the asset
+     *
+     * @return string
+     */
+    public function getAssetUrl($filename)
     {
-        return Mage::getModel('foomanjirafe/api')->getApiUrl(false,false,Mage::app()->getStore()->isCurrentlySecure());
+        return Mage::getModel('foomanjirafe/api')->getAssetUrl($filename);
     }
 }
