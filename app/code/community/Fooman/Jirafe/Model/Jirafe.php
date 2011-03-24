@@ -148,7 +148,7 @@ class Fooman_Jirafe_Model_Jirafe
             $siteArray = array();
 
             foreach ($jirafeHelper->getStores() as $storeId => $store) {
-                $store->loadConfig($storeId);
+                Mage::app()->getConfig()->removeCache();
                 $tmpStoreArray = array();
                 $siteId = $store->getConfig(Fooman_Jirafe_Helper_Data::XML_PATH_FOOMANJIRAFE_SETTINGS.'site_id');
                 if ($siteId){
