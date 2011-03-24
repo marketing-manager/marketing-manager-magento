@@ -100,7 +100,7 @@ class Fooman_Jirafe_Helper_Data extends Mage_Core_Helper_Abstract
         } catch (Exception $e) {
             Mage::logException($e);
         }
-
+        Mage::app()->getConfig()->removeCache();
         //we also set it as a temporary item so we don't need to reload the config
         return Mage::app()->getStore($storeId)->load($storeId)->setConfig($path, $value);
     }
