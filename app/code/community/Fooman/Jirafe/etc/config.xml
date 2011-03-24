@@ -93,6 +93,11 @@
                     <visitor>Fooman_Jirafe_Model_Log_Visitor</visitor>
                 </rewrite>
             </log>
+            <adminhtml>
+                <rewrite>
+                    <system_config_backend_currency_base>Fooman_Jirafe_Model_Adminhtml_System_Config_Backend_Currency_Base</system_config_backend_currency_base>
+                </rewrite>
+            </adminhtml>
         </models>
         <resources>
             <foomanjirafe_setup>
@@ -238,6 +243,15 @@
                     </fullSyncJirafeStore>
                 </observers>
             </store_delete_after>
+            <core_config_data_save_after>
+                <observers>
+                    <syncAfterSettingsSave>
+                        <type>singleton</type>
+                        <class>Fooman_Jirafe_Model_Observer</class>
+                        <method>syncAfterSettingsSave</method>
+                    </syncAfterSettingsSave>
+                </observers>
+            </core_config_data_save_after>
             <admin_user_delete_after>
                 <observers>
                     <fullSyncJirafeStore>

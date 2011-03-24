@@ -213,6 +213,7 @@ class Fooman_Jirafe_Model_Jirafe
             Mage::helper('foomanjirafe')->setStoreConfig('last_status_message', Mage::helper('foomanjirafe')->__('Jirafe sync completed successfully'));
             Mage::helper('foomanjirafe')->setStoreConfig('last_status', Fooman_Jirafe_Helper_Data::JIRAFE_STATUS_SYNC_COMPLETED);
             Mage::unregister('foomanjirafe_sync_running');
+            Mage::register('foomanjirafe_sync_has_run', true);
             return true;
         }
     }

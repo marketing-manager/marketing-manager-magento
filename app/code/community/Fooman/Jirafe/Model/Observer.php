@@ -32,6 +32,35 @@ class Fooman_Jirafe_Model_Observer
             $jirafe->checkSiteId($appId, $store);
         }
     }
+    
+    /**
+     * sync a jirafe store after settings have been saved
+     * checks local settings hash for settings before sync
+     *
+     * @param $observer
+     */
+    public function syncAfterSettingsSave ($observer)
+    {
+        Mage::helper('foomanjirafe')->debug('syncAfterSettingsSave');
+        $settingsOfInterest = array(
+            'web/unsecure/base_url',
+            'general/locale/timezone',
+            'currency/options/base'
+        );
+        Mage::helper('foomanjirafe')->debug($observer->getEvent()->getConfigData()->getPath());
+        if (in_array($observer->getEvent()->getConfigData()->getPath(), $settingsOfInterest)) {
+            $jirafe = Mage::getModel('foomanjirafe/jirafe');
+            $appId = $jirafe->checkAppId();
+            if ($appId) {
+                $storeCollection = Mage::getModel('core/store')->getCollection();
+                foreach ($storeCollection as $store) {
+                    if (!Mage::registry('foomanjirafe_sync_has_run')) {
+                        $jirafe->checkSiteId($appId, $store);
+                    }
+                }
+            }
+        }
+    }
 
     /**
      * sync all stores and users with Jirafe
@@ -57,10 +86,7 @@ class Fooman_Jirafe_Model_Observer
     public function fullSyncNewUser ($observer)
     {
         Mage::helper('foomanjirafe')->debug('fullSyncNewUser');
-        $jirafeEmailReportType = Mage::app()->getRequest()->getPost('jirafe_email_report_type');
-        if(!$jirafeEmailReportType) {
-            //we don't have Jirafe POST data from the My Account Form = we are adding a new user
-            //TODO: is also called when updating a user via System > Role
+        if (!Mage::registry('foomanjirafe_single_user_sync_has_run')) {
             $jirafe = Mage::getModel('foomanjirafe/jirafe');
             $appId = $jirafe->checkAppId();
             if ($appId) {
@@ -113,6 +139,7 @@ class Fooman_Jirafe_Model_Observer
             if($jirafeSettingsHaveChanged) {
                 Mage::getModel('foomanjirafe/jirafe')->syncUsersAndStores();
             }
+            Mage::register('foomanjirafe_single_user_sync_has_run', true);
         }
     }
 
