@@ -111,16 +111,18 @@ class Fooman_Jirafe_Model_Observer
 
         if ($jirafeEmailReportType) {
             //we have Jirafe POST data from the My Account Form = we are updating an existing user
-            $jirafeStoreIds = implode(',', Mage::app()->getRequest()->getPost('jirafe_send_email_for_store'));
             $jirafeEmailSuppress = (int) Mage::app()->getRequest()->getPost('jirafe_email_suppress');
             $jirafeAlsoSendTo = str_replace(array("\r", " "), "", str_replace("\n", ",", Mage::app()->getRequest()->getPost('jirafe_also_send_to')));
 
             $jirafeSettingsHaveChanged = false;
+            /*
+            $jirafeStoreIds = implode(',', Mage::app()->getRequest()->getPost('jirafe_send_email_for_store'));
             if ($jirafeStoreIds != $user->getJirafeSendEmailForStore()) {
                 $user->setJirafeSendEmailForStore($jirafeStoreIds);
                 $user->setDataChanges(true);
                 $jirafeSettingsHaveChanged = true;
             }
+             */
             if ($jirafeEmailReportType != $user->getJirafeEmailReportType()) {
                 $user->setJirafeEmailReportType($jirafeEmailReportType);
                 $user->setDataChanges(true);
