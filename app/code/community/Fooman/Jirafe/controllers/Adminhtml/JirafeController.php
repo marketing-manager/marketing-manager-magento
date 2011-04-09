@@ -52,9 +52,11 @@ class Fooman_Jirafe_Adminhtml_JirafeController extends Mage_Adminhtml_Controller
 
     public function toggleDashboardAction()
     {
-        $active = Mage::helper('foomanjirafe/data')->isDashboardActive());
-        Mage::helper('foomanjirafe')->setStoreConfig('isDashboardActive', !$active);
-        Mage::app()->getConfig()->removeCache();
+        $user = Mage::getSingleton('admin/session')->getUser();
+        $active = $user->getJirafeDashboardActive();
+        $user
+            ->setJirafeDashboardActive(!$active)
+            ->save();
         $this->_redirect('adminhtml/dashboard');
     }
 }

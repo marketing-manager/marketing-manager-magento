@@ -225,7 +225,13 @@ class Fooman_Jirafe_Helper_Data extends Mage_Core_Helper_Abstract
 	
 	public function isDashboardActive()
 	{
-        return (Mage::helper('foomanjirafe')->getStoreConfig('isDashboardActive') && Mage::helper('foomanjirafe')->getStoreConfig('isActive'));
+        // To check if the dashboard is active, you must check:
+        // 1. If the plugin is active
+        // 2. If the dashboard is active for this user
+        return (
+            Mage::helper('foomanjirafe')->getStoreConfig('isActive') &&
+            Mage::getSingleton('admin/session')->getUser()->getJirafeDashboardActive()
+        );
 	}
 
 	public function isEmailActive()

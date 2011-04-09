@@ -21,6 +21,17 @@ class Fooman_Jirafe_Helper_Setup extends Mage_Core_Helper_Abstract
         $instructions = array();
         switch ($version) {
 
+            case '0.2.5':
+                $instructions = array_merge(
+                        $instructions,
+                            array(
+                                array("type" =>"sql-column", "table" =>"admin_user", "name" =>"jirafe_dashboard_active","params" =>"tinyint(1) DEFAULT 1")
+                                )
+                        );
+                if(!$returnComplete) {
+                    break;
+                }
+                //nobreak intentionally;
             case '0.2.0':
                 $instructions = array_merge(
                         $instructions,

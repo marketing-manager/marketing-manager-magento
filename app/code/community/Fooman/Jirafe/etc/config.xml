@@ -168,7 +168,6 @@
                 <reportType>simple</reportType>
                 <emails/>
 				<isEmailActive/>
-                <isDashboardActive/>
             </settings>
             <report_email_template>foomanjirafe_report_template</report_email_template>
             <report_email_identity>jirafe</report_email_identity>

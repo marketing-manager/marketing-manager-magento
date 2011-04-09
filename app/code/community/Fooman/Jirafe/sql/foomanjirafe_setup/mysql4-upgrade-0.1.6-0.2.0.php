@@ -23,7 +23,7 @@ $installer->startSetup();
 Mage::helper('foomanjirafe/setup')->runDbSchemaUpgrade($installer, '0.2.0');
 
 // Add defaults into config file
-$keys = array('isActive', 'isDashboardActive', 'isEmailActive');
+$keys = array('isActive', 'isEmailActive');
 foreach ($keys as $key) {
 	$value = Mage::helper('foomanjirafe')->getStoreConfig($key);
 	

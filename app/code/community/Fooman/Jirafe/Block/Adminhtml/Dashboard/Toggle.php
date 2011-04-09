@@ -18,7 +18,9 @@ class Fooman_Jirafe_Block_Adminhtml_Dashboard_Toggle extends Mage_Adminhtml_Bloc
 
     public function __construct ()
     {
-        $this->setTemplate('fooman/jirafe/dashboard-toggle.phtml');
+		if (Mage::helper('foomanjirafe')->getStoreConfig('isActive')) {
+	        $this->setTemplate('fooman/jirafe/dashboard-toggle.phtml');
+		}
     }
 
     public function getToggleLinkName()
