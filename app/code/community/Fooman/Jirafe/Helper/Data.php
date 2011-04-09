@@ -222,5 +222,14 @@ class Fooman_Jirafe_Helper_Data extends Mage_Core_Helper_Abstract
     {
         return rtrim($baseUrl, '/');
     }
+	
+	public function isDashboardActive()
+	{
+        return (Mage::helper('foomanjirafe')->getStoreConfig('isDashboardActive') && Mage::helper('foomanjirafe')->getStoreConfig('isActive'));
+	}
 
+	public function isEmailActive()
+	{
+        return (Mage::helper('foomanjirafe')->getStoreConfig('isEmailActive') && Mage::helper('foomanjirafe')->getStoreConfig('isActive'));
+	}
 }

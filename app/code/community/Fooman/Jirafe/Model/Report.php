@@ -227,7 +227,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
     private function _emailReport ($store, $timespan, $data)
     {
 		// Make sure email is active at a global level
-		if (Mage::helper('foomanjirafe')->getStoreConfig('isEmailActive')) {
+        if (Mage::helper('foomanjirafe/data')->isEmailActive()) {
 			// Get the store ID
 			$storeId = $store->getId();
 			// Get the template

@@ -23,7 +23,7 @@ class Fooman_Jirafe_Block_Adminhtml_Dashboard_Toggle extends Mage_Adminhtml_Bloc
 
     public function getToggleLinkName()
     {
-        if (Mage::helper('foomanjirafe')->getStoreConfig('isDashboardActive')) {
+        if (Mage::helper('foomanjirafe/data')->isDashboardActive()) {
             return Mage::helper('foomanjirafe')->__('Click here to view the default Magento dashboard');
         } else {
             return Mage::helper('foomanjirafe')->__('Click here to view the enhanced Jirafe dashboard');

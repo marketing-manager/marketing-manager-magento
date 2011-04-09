@@ -181,7 +181,7 @@ class Fooman_Jirafe_Model_Jirafe
                 }
             }
             try {
-                $return = Mage::getModel('foomanjirafe/api_resource')-> sync($appId, $adminToken, $userArray, $siteArray);
+                $return = Mage::getModel('foomanjirafe/api_resource')->sync($appId, $adminToken, $userArray, $siteArray);
                 if(isset($return['users']) && !empty($return['users'])) {
                     foreach ($return['users'] as $jirafeUserInfo) {
                         $adminEmail = $jirafeHelper->getUserEmail($jirafeUserInfo['email']);

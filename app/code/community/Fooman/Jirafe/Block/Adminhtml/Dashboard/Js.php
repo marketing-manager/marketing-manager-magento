@@ -22,19 +22,9 @@ class Fooman_Jirafe_Block_Adminhtml_Dashboard_Js extends Mage_Adminhtml_Block_Te
     {
         parent::__construct();
 
-        if ($this->isJirafeDashboardActive()) {
+        if (Mage::helper('foomanjirafe/data')->isDashboardActive()) {
             $this->setTemplate('fooman/jirafe/dashboard-head.phtml');
         }
-    }
-
-    /**
-     * Indicates whether the dashboard is activated (in the configuration)
-     *
-     * @return boolean
-     */
-    public function isJirafeDashboardActive()
-    {
-        return Mage::helper('foomanjirafe')->getStoreConfig('isDashboardActive');
     }
 
     /**
