@@ -46,7 +46,7 @@ class Fooman_Jirafe_Adminhtml_JirafeController extends Mage_Adminhtml_Controller
     {
         $jirafe = Mage::getModel('foomanjirafe/jirafe');
         $appId = $jirafe->checkAppId();
-        $jirafe->syncUsersAndStores();
+        $jirafe->syncUsersStores();
         $this->_redirect('adminhtml/dashboard');
     }
 

@@ -54,13 +54,11 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
                     if ($this->_helper->getStoreConfig('isActive', $storeId) || $first) {
                         // Set the current store
                         Mage::app()->setCurrentStore($store);
-                        // Check Jirafe Site Id
-                        $siteId = $this->_jirafe->checkSiteId($appId, $store);
                         // Get the timespan (array ('from', 'to')) for this report
                         $timespan = $this->_getReportTimespan($store, $gmtTs);
                         // Only continue if the report does not already exist
                         $exists = Mage::getResourceModel('foomanjirafe/report')->getReport($storeId, $timespan['date']);
-                        if (!$exists && $siteId) {
+                        if (!$exists) {
                             try {
                                 // Create new report
                                 $data = $this->_compileReport($store, $timespan, $siteId, $first);
