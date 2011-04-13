@@ -18,12 +18,12 @@ class Fooman_Jirafe_Block_Adminhtml_Dashboard_Toggle extends Mage_Adminhtml_Bloc
 
     public function __construct ()
     {
-		if (Mage::helper('foomanjirafe')->getStoreConfig('isActive')) {
-	        $this->setTemplate('fooman/jirafe/dashboard-toggle.phtml');
-		}
+        if (Mage::helper('foomanjirafe')->getStoreConfig('isActive')) {
+            $this->setTemplate('fooman/jirafe/dashboard-toggle.phtml');
+        }
     }
 
-    public function getToggleLinkName()
+    public function getToggleLinkName ()
     {
         if (Mage::helper('foomanjirafe/data')->isDashboardActive()) {
             return Mage::helper('foomanjirafe')->__('Click here to view the default Magento dashboard');
@@ -32,7 +32,7 @@ class Fooman_Jirafe_Block_Adminhtml_Dashboard_Toggle extends Mage_Adminhtml_Bloc
         }
     }
 
-    public function getToggleUrl()
+    public function getToggleUrl ()
     {
         return Mage::helper('adminhtml')->getUrl('adminhtml/jirafe/toggleDashboard');
     }

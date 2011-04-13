@@ -28,21 +28,22 @@ class Fooman_Jirafe_Block_Js extends Mage_Core_Block_Template
      * Set default template
      *
      */
-    protected function _construct()
+    protected function _construct ()
     {
         $this->setTemplate('fooman/jirafe/js.phtml');
     }
 
-    protected function _getSession() {
+    protected function _getSession ()
+    {
         return Mage::getSingleton('customer/session');
     }
 
-    public function setIsCheckoutSuccess($flag)
+    public function setIsCheckoutSuccess ($flag)
     {
         $this->_isCheckoutSuccess = $flag;
     }
 
-    public function getIsCheckoutSuccess()
+    public function getIsCheckoutSuccess ()
     {
         return $this->_isCheckoutSuccess;
     }
@@ -63,46 +64,46 @@ class Fooman_Jirafe_Block_Js extends Mage_Core_Block_Template
         }
     }
 
-    public function getPiwikVisitorType()
+    public function getPiwikVisitorType ()
     {
         $currentType = $this->_getSession()->getPiwikVisitorType();
         $this->setPiwikVisitorType(self::VISITOR_ALL);
         return $this->_getSession()->getPiwikVisitorType();
     }
-   
-    public function getTrackingInfo()
+
+    public function getTrackingInfo ()
     {
         $js = "";
-        $js .= $this->_getPageTrackingInfo()."\n";
+        $js .= $this->_getPageTrackingInfo() . "\n";
         //$js .= $this->_getCartTrackingInfo()."\n";
-        $js .= $this->_getPurchaseTrackingInfo()."\n";
+        $js .= $this->_getPurchaseTrackingInfo() . "\n";
         Mage::helper('foomanjirafe')->debug($js);
         return $js;
     }
 
     
-    public function getAdditionalTrackingInfo()
+    public function getAdditionalTrackingInfo ()
     {
         return "";
     }
 
-    public function _getPageTrackingInfo()
+    public function _getPageTrackingInfo ()
     {
         $js = "";
         if ($this->getIsCheckoutSuccess()) {
             //$js .= "_paq.push(['setCustomVariable',5, 'orderId','".$this->_getLastOrderIncrementId()."']);";
         }
-        $js .= "_paq.push(['setCustomVariable','1','U','".$this->getPiwikVisitorType()."']);
+        $js .= "_paq.push(['setCustomVariable','1','U','" . $this->getPiwikVisitorType() . "']);
         _paq.push(['trackPageView']);";
         return $js;
     }
 
-    public function _getCartTrackingInfo()
+    public function _getCartTrackingInfo ()
     {
         return "";
     }
 
-    public function _getPurchaseTrackingInfo()
+    public function _getPurchaseTrackingInfo ()
     {
         $js = "";
         if ($this->getIsCheckoutSuccess()) {
@@ -110,7 +111,7 @@ class Fooman_Jirafe_Block_Js extends Mage_Core_Block_Template
             $quote = $this->_getLastQuote();
             if ($quote) {
                 foreach ($quote->getAllVisibleItems() as $quoteItem) {
-                    $items[] = array('sku'=>$quoteItem->getSku(),'price'=>$quoteItem->getBasePrice());
+                    $items[] = array('sku' => $quoteItem->getSku(), 'price' => $quoteItem->getBasePrice());
                 }
                 //$js .= "_paq.push(['trackGoal',".Mage::helper('foomanjirafe')->getStoreConfig('checkoutGoalId', Mage::app()->getStore()->getId()).",'".$quote->getBaseGrandTotal()."']);";
             }
@@ -123,7 +124,7 @@ class Fooman_Jirafe_Block_Js extends Mage_Core_Block_Template
      * 
      * @return Mage_Sales_Model_Quote|bool
      */
-    public function _getLastQuote()
+    public function _getLastQuote ()
     {
         $orderIncrementId = Mage::getSingleton('checkout/session')->getLastRealOrderId();
         if ($orderIncrementId) {
@@ -134,12 +135,12 @@ class Fooman_Jirafe_Block_Js extends Mage_Core_Block_Template
         } else {
             $quoteId = Mage::getSingleton('checkout/session')->getLastQuoteId();
         }
-        
+
         if ($quoteId) {
-             $quote = Mage::getModel('sales/quote')->load($quoteId);
-             if ($quote->getId()) {
-                 return $quote;
-             }
+            $quote = Mage::getModel('sales/quote')->load($quoteId);
+            if ($quote->getId()) {
+                return $quote;
+            }
         }
         return false;
     }
@@ -149,7 +150,7 @@ class Fooman_Jirafe_Block_Js extends Mage_Core_Block_Template
      *
      * @return string|bool
      */
-    public function _getLastOrderIncrementId()
+    public function _getLastOrderIncrementId ()
     {
         $orderIncrementId = Mage::getSingleton('checkout/session')->getLastRealOrderId();
         if ($orderIncrementId) {
@@ -159,10 +160,10 @@ class Fooman_Jirafe_Block_Js extends Mage_Core_Block_Template
         }
 
         if ($quoteId) {
-             $quote = Mage::getModel('sales/quote')->load($quoteId);
-             if ($quote->getId()) {
-                 return $quote->getReservedOrderId();
-             }
+            $quote = Mage::getModel('sales/quote')->load($quoteId);
+            if ($quote->getId()) {
+                return $quote->getReservedOrderId();
+            }
         }
         return false;
     }
@@ -174,8 +175,8 @@ class Fooman_Jirafe_Block_Js extends Mage_Core_Block_Template
 
     public function getPiwikBaseURL ($secure = false)
     {
-        $protocol =  $secure?"https://":"http://";
-        return $protocol. Fooman_Jirafe_Model_Api::JIRAFE_PIWIK_BASE_URL;
+        $protocol = $secure ? "https://" : "http://";
+        return $protocol . Fooman_Jirafe_Model_Api::JIRAFE_PIWIK_BASE_URL;
     }
 
 }

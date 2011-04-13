@@ -67,7 +67,8 @@ class Fooman_Jirafe_Helper_Data extends Mage_Core_Helper_Abstract
      * @param string $value
      * @return <type>
      */
-    public function setStoreConfig ($key, $value, $storeId = Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID)
+    public function setStoreConfig ($key, $value,
+            $storeId = Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID)
     {
         $path = self::XML_PATH_FOOMANJIRAFE_SETTINGS . $key;
 
@@ -75,8 +76,8 @@ class Fooman_Jirafe_Helper_Data extends Mage_Core_Helper_Abstract
         try {
             $configModel = Mage::getModel('core/config_data');
             $collection = $configModel->getCollection()
-                        ->addFieldToFilter('path', $path)
-                        ->addFieldToFilter('scope_id', $storeId);
+                            ->addFieldToFilter('path', $path)
+                            ->addFieldToFilter('scope_id', $storeId);
             if ($storeId != Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID) {
                 $collection->addFieldToFilter('scope', Mage_Adminhtml_Block_System_Config_Form::SCOPE_STORES);
             }
@@ -91,7 +92,7 @@ class Fooman_Jirafe_Helper_Data extends Mage_Core_Helper_Abstract
                 $configModel
                         ->setPath($path)
                         ->setValue($value);
-                if ($storeId != Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID ) {
+                if ($storeId != Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID) {
                     $configModel->setScopeId($storeId);
                     $configModel->setScope(Mage_Adminhtml_Block_System_Config_Form::SCOPE_STORES);
                 }
@@ -123,7 +124,7 @@ class Fooman_Jirafe_Helper_Data extends Mage_Core_Helper_Abstract
         foreach ($stores as $store) {
             // Only continue if the store is active
             if ($store->getIsActive()) {
-                if($idsOnly) {
+                if ($idsOnly) {
                     $storearr[] = $store->getId();
                 } else {
                     $storearr[$store->getId()] = $store;
@@ -147,40 +148,41 @@ class Fooman_Jirafe_Helper_Data extends Mage_Core_Helper_Abstract
      * @param boolean $asCsv
      * @return string|array
      */
-    public function collectJirafeEmails ($storeId, $asCsv = true, $excludeSuppress = false)
+    public function collectJirafeEmails ($storeId, $asCsv = true,
+            $excludeSuppress = false)
     {
         $adminUsers = Mage::getSingleton('admin/user')->getCollection();
         $emails = array();
         // loop over all admin users
         foreach ($adminUsers as $adminUser) {
             if ($adminUser->getIsActive() && $adminUser->getJirafeSendEmail()) {
-				// Check to make sure that the user wants a report for this store
-				$storeIds = $adminUser->getJirafeSendEmailForStore();
-				if (strpos(",$storeIds,", ",$storeId,") !== false) {
-					// If user wants to suppress emails with no revenue...
-					$suppress = $adminUser->getJirafeEmailSuppress();
-					if ($excludeSuppress && $suppress) {
-						if ($asCsv) {
-							$emails[] = $adminUser->getEmail();
-							foreach (explode(',', $adminUser->getJirafeAlsoSendTo()) as $jirafeEmail) {
-								if (!empty($jirafeEmail)) {
-									$emails[] = $jirafeEmail;
-								}
-							}
-						} else {
-							$emails[$adminUser->getEmail()] = $adminUser->getJirafeEmailReportType();
-							foreach (explode(',', $adminUser->getJirafeAlsoSendTo()) as $jirafeEmail) {
-								if (!empty($jirafeEmail)) {
-									$emails[$jirafeEmail] = $adminUser->getJirafeEmailReportType();
-								}
-							}
-						}
-					}
-	 			}
+                // Check to make sure that the user wants a report for this store
+                $storeIds = $adminUser->getJirafeSendEmailForStore();
+                if (strpos(",$storeIds,", ",$storeId,") !== false) {
+                    // If user wants to suppress emails with no revenue...
+                    $suppress = $adminUser->getJirafeEmailSuppress();
+                    if ($excludeSuppress && $suppress) {
+                        if ($asCsv) {
+                            $emails[] = $adminUser->getEmail();
+                            foreach (explode(',', $adminUser->getJirafeAlsoSendTo()) as $jirafeEmail) {
+                                if (!empty($jirafeEmail)) {
+                                    $emails[] = $jirafeEmail;
+                                }
+                            }
+                        } else {
+                            $emails[$adminUser->getEmail()] = $adminUser->getJirafeEmailReportType();
+                            foreach (explode(',', $adminUser->getJirafeAlsoSendTo()) as $jirafeEmail) {
+                                if (!empty($jirafeEmail)) {
+                                    $emails[$jirafeEmail] = $adminUser->getJirafeEmailReportType();
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
         if ($asCsv) {
-            return implode(',',$emails);
+            return implode(',', $emails);
         } else {
             return $emails;
         }
@@ -223,19 +225,19 @@ class Fooman_Jirafe_Helper_Data extends Mage_Core_Helper_Abstract
         return rtrim($baseUrl, '/');
     }
 	
-	public function isDashboardActive()
-	{
+    public function isDashboardActive ()
+    {
         // To check if the dashboard is active, you must check:
         // 1. If the plugin is active
         // 2. If the dashboard is active for this user
         return (
-            Mage::helper('foomanjirafe')->getStoreConfig('isActive') &&
-            Mage::getSingleton('admin/session')->getUser()->getJirafeDashboardActive()
+        Mage::helper('foomanjirafe')->getStoreConfig('isActive') &&
+        Mage::getSingleton('admin/session')->getUser()->getJirafeDashboardActive()
         );
-	}
+    }
 
-	public function isEmailActive()
-	{
+    public function isEmailActive ()
+    {
         return (Mage::helper('foomanjirafe')->getStoreConfig('isEmailActive') && Mage::helper('foomanjirafe')->getStoreConfig('isActive'));
-	}
+    }
 }

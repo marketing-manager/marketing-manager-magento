@@ -20,7 +20,7 @@ class Fooman_Jirafe_Block_JsAlt extends Fooman_Jirafe_Block_Js
      * Set default template
      *
      */
-    protected function _construct()
+    protected function _construct ()
     {
         $this->setTemplate('fooman/jirafe/js-alt.phtml');
     }
