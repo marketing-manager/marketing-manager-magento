@@ -20,13 +20,26 @@ class Fooman_Jirafe_Helper_Setup extends Mage_Core_Helper_Abstract
     {
         $instructions = array();
         switch ($version) {
-
+            case '0.2.6':
+                $instructions = array_merge(
+                        $instructions,
+                            array(
+                                array("type" =>"sql-column", "table" =>"sales/order", "name" =>"jirafe_visitor_id","params" =>"varchar(255) DEFAULT NULL"),
+                                array("type" =>"sql-column", "table" =>"sales/order", "name" =>"jirafe_attribution_data","params" =>"text DEFAULT NULL"),
+                                array("type" =>"sql-column", "table" =>"sales/order", "name" =>"jirafe_export_status","params" =>"int(5) DEFAULT 0"),
+                                array("type" =>"sql-column", "table" =>"sales/order", "name" =>"jirafe_placed_from_frontend","params" =>"tinyint(1) DEFAULT 0"),
+                                )
+                        );
+                if(!$returnComplete) {
+                    break;
+                }
+                //nobreak intentionally;
             case '0.2.0':
                 $instructions = array_merge(
                         $instructions,
                             array(
                                 array("type" =>"sql-column", "table" =>"admin_user", "name" =>"jirafe_send_email_for_store","params" =>"varchar(255)"),
-                                array("type" =>"sql-column", "table" =>"admin_user", "name" =>"jirafe_send_email","params" =>"tinyint(1) DEFAULT 1"),
+                                array("type" =>"sql-column", "table" =>"admin_user", "name" =>"jirafe_send_email","params" =>"tinyint(1) DEFAULT 0"),
                                 array("type" =>"sql-column", "table" =>"admin_user", "name" =>"jirafe_email_report_type","params" =>"varchar(255) DEFAULT 'simple'"),
                                 array("type" =>"sql-column", "table" =>"admin_user", "name" =>"jirafe_user_id","params" =>"varchar(255)"),
                                 array("type" =>"sql-column", "table" =>"admin_user", "name" =>"jirafe_user_token","params" =>"varchar(255)"),

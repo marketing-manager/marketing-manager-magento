@@ -16,6 +16,10 @@
 class Fooman_Jirafe_Model_Jirafe
 {
 
+    const STATUS_ORDER_NOT_EXPORTED = 0;
+    const STATUS_ORDER_EXPORTED = 1;
+    const STATUS_ORDER_FAILED = 2;
+
     /**
      * check if Magento instance has a jirafe application id, create one if none exists
      * update jirafe server if any parameters have changed

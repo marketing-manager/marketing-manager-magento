@@ -16,6 +16,73 @@
 class Fooman_Jirafe_Model_Observer
 {
 
+    protected function _initPiwikTracker ($storeId)
+    {
+        $siteId = Mage::helper('foomanjirafe')->getStoreConfig('site_id', $storeId);
+        $appToken = Mage::helper('foomanjirafe')->getStoreConfig('app_token');
+        $siteId = Mage::helper('foomanjirafe')->getStoreConfig('site_id', $storeId);
+
+        $jirafePiwikUrl = 'http://' . Fooman_Jirafe_Model_Api::JIRAFE_PIWIK_BASE_URL;
+        $piwikTracker = new Fooman_Jirafe_Model_JirafeTracker($siteId, $jirafePiwikUrl);
+        $piwikTracker->setTokenAuth($appToken);
+        $piwikTracker->disableCookieSupport();
+
+        return $piwikTracker;
+    }
+
+    /**
+     * save Piwik visitorId and attributionInfo to order db table
+     * for later use
+     *
+     * @param $observer
+     */
+    public function savePiwikData ($observer)
+    {
+        $order = $observer->getEvent()->getOrder();
+        $piwikTracker = $this->_initPiwikTracker($order->getStoreId());
+        if (Mage::getDesign()->getArea() == 'frontend') {
+            $order->setJirafeVisitorId($piwikTracker->getVisitorId());
+            $order->setJirafeAttributionData($piwikTracker->getAttributionInfo());
+            $order->setJirafePlacedFromFrontend(true);
+        }
+    }
+    
+    /**
+     * Track piwik goals for orders that have reached processing stage
+     * TODO: this could be made configurable based on payment method used
+     * 
+     * @param $observer 
+     */
+    public function salesOrderSaveAfter ($observer)
+    {
+        $order = $observer->getEvent()->getOrder();
+        if (!$order->getJirafeExportStatus() && $order->getState() == Mage_Sales_Model_Order::STATE_PROCESSING) {
+
+            $piwikTracker = $this->_initPiwikTracker($order->getStoreId());            
+            $piwikTracker->setCustomVariable('1', 'U', Fooman_Jirafe_Block_Js::VISITOR_CUSTOMER);
+            $piwikTracker->setCustomVariable('5', 'orderId', $order->getIncrementId());            
+            $piwikTracker->setIp($order->getRemoteIp());
+            //$piwikTracker->setUrl();
+
+            if ($order->getJirafeVisitorId()) {
+                $piwikTracker->setVisitorId($order->getJirafeVisitorId());
+            }
+
+            if ($order->getJirafeAttributionData()) {
+                $piwikTracker->setAttributionInfo($order->getJirafeAttributionData());
+            }
+
+            try {
+                $checkoutGoalId = Mage::helper('foomanjirafe')->getStoreConfig('checkoutGoalId', $order->getStoreId());
+                $piwikTracker->doTrackGoal($checkoutGoalId, $order->getBaseGrandTotal());
+                $order->setJirafeExportStatus(Fooman_Jirafe_Model_Jirafe::STATUS_ORDER_EXPORTED);
+            } catch (Exception $e) {
+                Mage::logException($e);
+                $order->setJirafeExportStatus(Fooman_Jirafe_Model_Jirafe::STATUS_ORDER_FAILED);
+            }
+        }
+    }
+
     /**
      * sync a jirafe store when adding a new store or after saving
      * an existing store

@@ -88,8 +88,13 @@ class Fooman_Jirafe_Block_Js extends Mage_Core_Block_Template
 
     public function _getPageTrackingInfo()
     {
-        return "_paq.push(['setCustomVariable','1','U','".$this->getPiwikVisitorType()."']);
+        $js = "";
+        if ($this->getIsCheckoutSuccess()) {
+            //$js .= "_paq.push(['setCustomVariable',5, 'orderId','".$this->_getLastOrderIncrementId()."']);";
+        }
+        $js .= "_paq.push(['setCustomVariable','1','U','".$this->getPiwikVisitorType()."']);
         _paq.push(['trackPageView']);";
+        return $js;
     }
 
     public function _getCartTrackingInfo()
@@ -107,7 +112,7 @@ class Fooman_Jirafe_Block_Js extends Mage_Core_Block_Template
                 foreach ($quote->getAllVisibleItems() as $quoteItem) {
                     $items[] = array('sku'=>$quoteItem->getSku(),'price'=>$quoteItem->getBasePrice());
                 }
-                  $js .= "_paq.push(['trackGoal',".Mage::helper('foomanjirafe')->getStoreConfig('checkoutGoalId', Mage::app()->getStore()->getId()).",'".$quote->getBaseGrandTotal()."']);";
+                //$js .= "_paq.push(['trackGoal',".Mage::helper('foomanjirafe')->getStoreConfig('checkoutGoalId', Mage::app()->getStore()->getId()).",'".$quote->getBaseGrandTotal()."']);";
             }
         }
         return $js;
@@ -134,6 +139,29 @@ class Fooman_Jirafe_Block_Js extends Mage_Core_Block_Template
              $quote = Mage::getModel('sales/quote')->load($quoteId);
              if ($quote->getId()) {
                  return $quote;
+             }
+        }
+        return false;
+    }
+
+    /**
+     * load the quote belonging to the last successful order
+     *
+     * @return string|bool
+     */
+    public function _getLastOrderIncrementId()
+    {
+        $orderIncrementId = Mage::getSingleton('checkout/session')->getLastRealOrderId();
+        if ($orderIncrementId) {
+            return $orderIncrementId;
+        } else {
+            $quoteId = Mage::getSingleton('checkout/session')->getLastQuoteId();
+        }
+
+        if ($quoteId) {
+             $quote = Mage::getModel('sales/quote')->load($quoteId);
+             if ($quote->getId()) {
+                 return $quote->getReservedOrderId();
              }
         }
         return false;

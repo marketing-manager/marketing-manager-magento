@@ -18,7 +18,7 @@
 <config>
     <modules>
         <Fooman_Jirafe>
-            <version>0.2.4</version>
+            <version>0.2.6</version>
         </Fooman_Jirafe>
     </modules>
 
@@ -184,13 +184,31 @@
         <events>
             <checkout_cart_product_add_after>
                 <observers>
-                    <readyToBuy>
+                    <foomanjirafe_readyToBuy>
                         <type>singleton</type>
                         <class>Fooman_Jirafe_Model_Observer</class>
                         <method>readyToBuy</method>
-                    </readyToBuy>
+                    </foomanjirafe_readyToBuy>
                 </observers>
             </checkout_cart_product_add_after>
+            <sales_convert_quote_to_order>
+                <observers>
+                    <foomanjirafe_savePiwikData>
+                        <type>singleton</type>
+                        <class>Fooman_Jirafe_Model_Observer</class>
+                        <method>savePiwikData</method>
+                    </foomanjirafe_savePiwikData>
+                </observers>
+            </sales_convert_quote_to_order>
+            <sales_order_save_after>
+                <observers>
+                    <foomanjirafe_salesOrderSaveAfter>
+                        <type>singleton</type>
+                        <class>Fooman_Jirafe_Model_Observer</class>
+                        <method>salesOrderSaveAfter</method>
+                    </foomanjirafe_salesOrderSaveAfter>
+                </observers>
+            </sales_order_save_after>
         </events>
     </frontend>
     <admin>
@@ -288,6 +306,15 @@
                     </appendToAdminBlocks>
                 </observers>
             </core_block_abstract_to_html_after>
+            <sales_order_save_after>
+                <observers>
+                    <foomanjirafe_salesOrderSaveAfter>
+                        <type>singleton</type>
+                        <class>Fooman_Jirafe_Model_Observer</class>
+                        <method>salesOrderSaveAfter</method>
+                    </foomanjirafe_salesOrderSaveAfter>
+                </observers>
+            </sales_order_save_after>   
         </events>
         <layout>
             <updates>
