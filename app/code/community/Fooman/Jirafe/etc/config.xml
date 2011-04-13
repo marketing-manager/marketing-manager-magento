@@ -161,13 +161,12 @@
                 <app_settings_hash/>
                 <app_token/>
                 <site_id/>
-                <site_settings_hash/>
                 <checkoutGoalId/>
                 <sent_initial_email>0</sent_initial_email>
                 <isActive>1</isActive>
                 <reportType>simple</reportType>
                 <emails/>
-                <isDashboardActive/>
+				<isEmailActive/>
             </settings>
             <report_email_template>foomanjirafe_report_template</report_email_template>
             <report_email_identity>jirafe</report_email_identity>
@@ -243,40 +242,94 @@
             </resources>
         </acl>
         <events>
-            <store_save_commit_after>
-                <observers>
-                    <syncJirafeStore>
-                        <type>singleton</type>
-                        <class>Fooman_Jirafe_Model_Observer</class>
-                        <method>syncJirafeStore</method>
-                    </syncJirafeStore>
-                </observers>
-            </store_save_commit_after>
-            <store_delete_after>
-                <observers>
-                    <fullSyncJirafeStore>
-                        <type>singleton</type>
-                        <class>Fooman_Jirafe_Model_Observer</class>
-                        <method>fullSyncJirafeStore</method>
-                    </fullSyncJirafeStore>
-                </observers>
-            </store_delete_after>
             <core_config_data_save_after>
                 <observers>
-                    <syncAfterSettingsSave>
+                    <configSaveAfter>
                         <type>singleton</type>
                         <class>Fooman_Jirafe_Model_Observer</class>
-                        <method>syncAfterSettingsSave</method>
-                    </syncAfterSettingsSave>
+                        <method>configSaveAfter</method>
+                    </configSaveAfter>
                 </observers>
             </core_config_data_save_after>
-            <admin_user_delete_after>
+            <store_group_save_before>
                 <observers>
-                    <fullSyncJirafeStore>
+                    <storeGroupSaveBefore>
                         <type>singleton</type>
                         <class>Fooman_Jirafe_Model_Observer</class>
-                        <method>fullSyncJirafeStore</method>
-                    </fullSyncJirafeStore>
+                        <method>storeGroupSaveBefore</method>
+                    </storeGroupSaveBefore>
+                </observers>
+            </store_group_save_before>
+            <store_group_save_after>
+                <observers>
+                    <storeGroupSaveBefore>
+                        <type>singleton</type>
+                        <class>Fooman_Jirafe_Model_Observer</class>
+                        <method>storeGroupSaveAfter</method>
+                    </storeGroupSaveBefore>
+                </observers>
+            </store_group_save_after>
+            <store_group_delete_after>
+                <observers>
+                    <storeDeleteAfter>
+                        <type>singleton</type>
+                        <class>Fooman_Jirafe_Model_Observer</class>
+                        <method>storeGroupDeleteAfter</method>
+                    </storeDeleteAfter>
+                </observers>
+            </store_group_delete_after>
+            <store_save_before>
+                <observers>
+                    <storeSaveBefore>
+                        <type>singleton</type>
+                        <class>Fooman_Jirafe_Model_Observer</class>
+                        <method>storeSaveBefore</method>
+                    </storeSaveBefore>
+                </observers>
+            </store_save_before>
+            <store_save_after>
+                <observers>
+                    <storeSaveAfter>
+                        <type>singleton</type>
+                        <class>Fooman_Jirafe_Model_Observer</class>
+                        <method>storeSaveAfter</method>
+                    </storeSaveAfter>
+                </observers>
+            </store_save_after>
+            <store_delete_after>
+                <observers>
+                    <storeDeleteAfter>
+                        <type>singleton</type>
+                        <class>Fooman_Jirafe_Model_Observer</class>
+                        <method>storeDeleteAfter</method>
+                    </storeDeleteAfter>
+                </observers>
+            </store_delete_after>
+            <admin_user_save_before>
+                <observers>
+                    <userSaveBefore>
+                        <type>singleton</type>
+                        <class>Fooman_Jirafe_Model_Observer</class>
+                        <method>adminUserSaveBefore</method>
+                    </userSaveBefore>
+                </observers>
+            </admin_user_save_before>
+            <admin_user_save_after>
+                <observers>
+                    <userSaveAfter>
+                        <type>singleton</type>
+                        <class>Fooman_Jirafe_Model_Observer</class>
+                        <method>adminUserSaveAfter</method>
+                    </userSaveAfter>
+                </observers>
+            </admin_user_save_after>
+            <admin_user_delete_after>
+                <observers>
+                    <userDeleteAfter>
+                        <type>singleton</type>
+                        <class>Fooman_Jirafe_Model_Observer</class>
+                        <method>adminUserDeleteAfter</method>
+                    </userDeleteAfter>
                 </observers>
             </admin_user_delete_after>
             <admin_user_save_after>

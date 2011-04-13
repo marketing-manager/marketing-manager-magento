@@ -23,7 +23,7 @@ $installer->startSetup();
 Mage::helper('foomanjirafe/setup')->runDbSchemaUpgrade($installer, '0.2.0');
 
 // Add defaults into config file
-$keys = array('isActive', 'isDashboardActive', 'isEmailActive');
+$keys = array('isActive', 'isEmailActive');
 foreach ($keys as $key) {
 	$value = Mage::helper('foomanjirafe')->getStoreConfig($key);
 	
@@ -35,7 +35,7 @@ foreach ($keys as $key) {
 // Get email addresses in the global jirafe settings
 $emails = explode(',', Mage::helper('foomanjirafe')->getStoreConfig('emails'));
 $reportType = Mage::helper('foomanjirafe')->getStoreConfig('reportType') == 'detail' ? 'detail' : 'simple';
-$suppress = 'no';
+$suppress = '0';
 
 if (!empty($emails)) {
     $firstUser = null;
@@ -80,19 +80,6 @@ $collection = $configModel->getCollection()->addFieldToFilter('path', Fooman_Jir
 foreach ($collection as $jirafeOldSetting) {
     $jirafeOldSetting->delete();
 }
-
-// Once complete, reinit config files
-// reloading the config on earlier Magento versions causes an infinite loop
-if (version_compare(Mage::getVersion(), '1.3.4.0') > 0) {
-    Mage::app()->getConfig()->reinit();
-}
-
-//Make sure the default (admin) store is loaded
-$defaultStoreId = Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID;
-Mage::app()->getStore($defaultStoreId)->load($defaultStoreId);
-
-// Run cron for the first time since the upgrade, so that users can see any changes right away.
-Mage::getModel('foomanjirafe/report')->cron(null, true);
 
 $installer->endSetup();
 

@@ -46,15 +46,17 @@ class Fooman_Jirafe_Adminhtml_JirafeController extends Mage_Adminhtml_Controller
     {
         $jirafe = Mage::getModel('foomanjirafe/jirafe');
         $appId = $jirafe->checkAppId();
-        $jirafe->syncUsersAndStores();
+        $jirafe->syncUsersStores();
         $this->_redirect('adminhtml/dashboard');
     }
 
     public function toggleDashboardAction()
     {
-        $jirafe = Mage::getModel('foomanjirafe/jirafe');
-        Mage::helper('foomanjirafe')->setStoreConfig('isDashboardActive', !Mage::helper('foomanjirafe')->getStoreConfig('isDashboardActive'));
-        Mage::app()->getConfig()->removeCache();
+        $user = Mage::getSingleton('admin/session')->getUser();
+        $active = $user->getJirafeDashboardActive();
+        $user
+            ->setJirafeDashboardActive(!$active)
+            ->save();
         $this->_redirect('adminhtml/dashboard');
     }
 }

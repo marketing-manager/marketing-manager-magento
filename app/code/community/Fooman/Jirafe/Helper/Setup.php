@@ -34,6 +34,17 @@ class Fooman_Jirafe_Helper_Setup extends Mage_Core_Helper_Abstract
                     break;
                 }
                 //nobreak intentionally;
+            case '0.2.5':
+                $instructions = array_merge(
+                        $instructions,
+                            array(
+                                array("type" =>"sql-column", "table" =>"admin_user", "name" =>"jirafe_dashboard_active","params" =>"tinyint(1) DEFAULT 1")
+                                )
+                        );
+                if(!$returnComplete) {
+                    break;
+                }
+                //nobreak intentionally;
             case '0.2.0':
                 $instructions = array_merge(
                         $instructions,
@@ -43,7 +54,7 @@ class Fooman_Jirafe_Helper_Setup extends Mage_Core_Helper_Abstract
                                 array("type" =>"sql-column", "table" =>"admin_user", "name" =>"jirafe_email_report_type","params" =>"varchar(255) DEFAULT 'simple'"),
                                 array("type" =>"sql-column", "table" =>"admin_user", "name" =>"jirafe_user_id","params" =>"varchar(255)"),
                                 array("type" =>"sql-column", "table" =>"admin_user", "name" =>"jirafe_user_token","params" =>"varchar(255)"),
-                                array("type" =>"sql-column", "table" =>"admin_user", "name" =>"jirafe_email_suppress","params" =>"tinyint(1)"),
+                                array("type" =>"sql-column", "table" =>"admin_user", "name" =>"jirafe_email_suppress","params" =>"tinyint(1) DEFAULT 1"),
                                 array("type" =>"sql-column", "table" =>"admin_user", "name" =>"jirafe_also_send_to","params" =>"text")
                                 )
                         );

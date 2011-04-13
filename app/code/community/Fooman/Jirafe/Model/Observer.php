@@ -48,167 +48,148 @@ class Fooman_Jirafe_Model_Observer
     }
     
     /**
-     * Track piwik goals for orders that have reached processing stage
-     * TODO: this could be made configurable based on payment method used
-     * 
-     * @param $observer 
+     * Check fields in the user object to see if we should run sync
+     * use POST data to identify update to existing users
+     * only call sync if relevant data has changed
+     *
+     * @param $observer
      */
-    public function salesOrderSaveAfter ($observer)
+    public function adminUserSaveBefore($observer)
     {
-        $order = $observer->getEvent()->getOrder();
-        if (!$order->getJirafeExportStatus() && $order->getState() == Mage_Sales_Model_Order::STATE_PROCESSING) {
-
-            $piwikTracker = $this->_initPiwikTracker($order->getStoreId());            
-            $piwikTracker->setCustomVariable('1', 'U', Fooman_Jirafe_Block_Js::VISITOR_CUSTOMER);
-            $piwikTracker->setCustomVariable('5', 'orderId', $order->getIncrementId());            
-            $piwikTracker->setIp($order->getRemoteIp());
-            //$piwikTracker->setUrl();
-
-            if ($order->getJirafeVisitorId()) {
-                $piwikTracker->setVisitorId($order->getJirafeVisitorId());
-            }
-
-            if ($order->getJirafeAttributionData()) {
-                $piwikTracker->setAttributionInfo($order->getJirafeAttributionData());
-            }
-
-            try {
-                $checkoutGoalId = Mage::helper('foomanjirafe')->getStoreConfig('checkoutGoalId', $order->getStoreId());
-                $piwikTracker->doTrackGoal($checkoutGoalId, $order->getBaseGrandTotal());
-                $order->setJirafeExportStatus(Fooman_Jirafe_Model_Jirafe::STATUS_ORDER_EXPORTED);
-            } catch (Exception $e) {
-                Mage::logException($e);
-                $order->setJirafeExportStatus(Fooman_Jirafe_Model_Jirafe::STATUS_ORDER_FAILED);
-            }
+        Mage::helper('foomanjirafe')->debug('adminUserSaveBefore');
+        $user = $observer->getEvent()->getObject();
+        
+        $jirafeUserId = $user->getJirafeUserId();
+        $jirafeToken = $user->getJirafeUserToken();
+        
+        // Check to see if some user fields have changed
+        if ($user->isObjectNew() ||
+            $user->dataHasChangedFor('firstname') ||
+            $user->dataHasChangedFor('username') ||
+            $user->dataHasChangedFor('email') ||
+            empty($jirafeUserId) ||
+            empty($jirafeToken)) {
+            Mage::register('foomanjirafe_sync', true);
         }
     }
 
     /**
-     * sync a jirafe store when adding a new store or after saving
-     * an existing store
-     * checks local settings hash for settings before sync
+     * Check to see if we need to sync.  If so, do it.
      *
      * @param $observer
      */
-    public function syncJirafeStore ($observer)
+    public function adminUserSaveAfter($observer)
     {
-        $jirafe = Mage::getModel('foomanjirafe/jirafe');
-        $appId = $jirafe->checkAppId();
-        if ($appId) {
-            $store = $observer->getEvent()->getStore();
-            $jirafe->checkSiteId($appId, $store);
+        Mage::helper('foomanjirafe')->debug('adminUserSaveAfter');
+        if (Mage::registry('foomanjirafe_sync')) {
+            Mage::getModel('foomanjirafe/jirafe')->syncUsersStores();
+        }
+    }
+
+    /**
+     * We need to sync every time after we delete a user
+     *
+     * @param $observer
+     */
+    public function adminUserDeleteAfter($observer)
+    {
+        Mage::helper('foomanjirafe')->debug('adminUserDeleteAfter');
+        Mage::getModel('foomanjirafe/jirafe')->syncUsersStores();
+    }
+
+    /**
+     * Check fields in the store object to see if we should run sync
+     * only call sync if relevant data has changed
+     *
+     * @param $observer
+     */
+    public function storeSaveBefore($observer)
+    {
+        Mage::helper('foomanjirafe')->debug('storeSaveBefore');
+        $store = $observer->getEvent()->getDataObject();
+        // If the object is new, or has any data changes, sync
+        if ($store->isObjectNew() || $store->hasDataChanges()) {
+            Mage::register('foomanjirafe_sync', true);
         }
     }
     
+    /**
+     * Check to see if we need to sync.  If so, do it.
+     *
+     * @param $observer
+     */
+    public function storeSaveAfter($observer)
+    {
+        Mage::helper('foomanjirafe')->debug('storeSaveAfter');
+        if (Mage::registry('foomanjirafe_sync')) {
+            Mage::getModel('foomanjirafe/jirafe')->syncUsersStores();
+        }
+    }
+
+    /**
+     * We need to sync every time after we delete a store
+     *
+     * @param $observer
+     */
+    public function storeDeleteAfter($observer)
+    {
+        Mage::helper('foomanjirafe')->debug('storeDeleteAfter');
+        Mage::getModel('foomanjirafe/jirafe')->syncUsersStores();
+    }
+
+    /**
+     * Check fields in the store group object to see if we should run sync
+     * only call sync if relevant data has changed
+     *
+     * @param $observer
+     */
+    public function storeGroupSaveBefore($observer)
+    {
+        Mage::helper('foomanjirafe')->debug('storeGroupSaveBefore');
+        $storeGroup = $observer->getEvent()->getDataObject();
+        // If the object is new, or has any data changes, sync
+        if ($storeGroup->isObjectNew() || $storeGroup->hasDataChanges()) {
+            Mage::register('foomanjirafe_sync', true);
+        }
+    }
+    
+    /**
+     * Check to see if we need to sync.  If so, do it.
+     *
+     * @param $observer
+     */
+    public function storeGroupSaveAfter($observer)
+    {
+        Mage::helper('foomanjirafe')->debug('storeGroupSaveAfter');
+        if (Mage::registry('foomanjirafe_sync')) {
+            Mage::getModel('foomanjirafe/jirafe')->syncUsersStores();
+        }
+    }
+
+    /**
+     * We need to sync every time after we delete a store group
+     *
+     * @param $observer
+     */
+    public function storeGroupDeleteAfter($observer)
+    {
+        Mage::helper('foomanjirafe')->debug('storeGroupDeleteAfter');
+        Mage::getModel('foomanjirafe/jirafe')->syncUsersStores();
+    }
+
     /**
      * sync a jirafe store after settings have been saved
      * checks local settings hash for settings before sync
      *
      * @param $observer
      */
-    public function syncAfterSettingsSave ($observer)
+    public function configSaveAfter($observer)
     {
         Mage::helper('foomanjirafe')->debug('syncAfterSettingsSave');
-        $settingsOfInterest = array(
-            'web/unsecure/base_url',
-            'general/locale/timezone',
-            'currency/options/base'
-        );
-        Mage::helper('foomanjirafe')->debug($observer->getEvent()->getConfigData()->getPath());
-        if (in_array($observer->getEvent()->getConfigData()->getPath(), $settingsOfInterest)) {
-            $jirafe = Mage::getModel('foomanjirafe/jirafe');
-            $appId = $jirafe->checkAppId();
-            if ($appId) {
-                $storeCollection = Mage::getModel('core/store')->getCollection();
-                foreach ($storeCollection as $store) {
-                    if (!Mage::registry('foomanjirafe_sync_has_run')) {
-                        $jirafe->checkSiteId($appId, $store);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * sync all stores and users with Jirafe
-     * called after deleting a store
-     *
-     * @param $observer
-     */
-    public function fullSyncJirafeStore ($observer)
-    {
-        $jirafe = Mage::getModel('foomanjirafe/jirafe');
-        $appId = $jirafe->checkAppId();
-        if ($appId) {
-            $jirafe->syncUsersAndStores();
-        }
-    }
-
-    /**
-     * sync all stores and users with Jirafe
-     * called after saving a user
-     *
-     * @param $observer
-     */
-    public function fullSyncNewUser ($observer)
-    {
-        Mage::helper('foomanjirafe')->debug('fullSyncNewUser');
-        if (!Mage::registry('foomanjirafe_single_user_sync_has_run')) {
-            $jirafe = Mage::getModel('foomanjirafe/jirafe');
-            $appId = $jirafe->checkAppId();
-            if ($appId) {
-                $jirafe->syncUsersAndStores();
-            }
-        }
-    }
-
-    /**
-     * sync all stores and users with Jirafe
-     * called after saving a user
-     * use POST data to identify update to existing users
-     * only call sync if Jirafe relevant data has changed
-     *
-     * @param $observer
-     */
-    public function saveJirafeStoreEmailMapping ($observer)
-    {
-        Mage::helper('foomanjirafe')->debug('saveJirafeStoreEmailMapping');
-        $user = $observer->getEvent()->getObject();
-        $jirafeEmailReportType = Mage::app()->getRequest()->getPost('jirafe_email_report_type');
-
-        if ($jirafeEmailReportType) {
-            //we have Jirafe POST data from the My Account Form = we are updating an existing user
-            $jirafeEmailSuppress = (int) Mage::app()->getRequest()->getPost('jirafe_email_suppress');
-            $jirafeAlsoSendTo = str_replace(array("\r", " "), "", str_replace("\n", ",", Mage::app()->getRequest()->getPost('jirafe_also_send_to')));
-
-            $jirafeSettingsHaveChanged = false;
-            /*
-            $jirafeStoreIds = implode(',', Mage::app()->getRequest()->getPost('jirafe_send_email_for_store'));
-            if ($jirafeStoreIds != $user->getJirafeSendEmailForStore()) {
-                $user->setJirafeSendEmailForStore($jirafeStoreIds);
-                $user->setDataChanges(true);
-                $jirafeSettingsHaveChanged = true;
-            }
-             */
-            if ($jirafeEmailReportType != $user->getJirafeEmailReportType()) {
-                $user->setJirafeEmailReportType($jirafeEmailReportType);
-                $user->setDataChanges(true);
-                $jirafeSettingsHaveChanged = true;
-            }
-            if ($jirafeEmailSuppress != $user->getJirafeEmailSuppress()) {
-                $user->setJirafeEmailSuppress($jirafeEmailSuppress);
-                $user->setDataChanges(true);
-                $jirafeSettingsHaveChanged = true;
-            }
-            if ($jirafeAlsoSendTo != $user->getJirafeAlsoSendTo()) {
-                $user->setJirafeEmails($jirafeAlsoSendTo);
-                $user->setDataChanges(true);
-                $jirafeSettingsHaveChanged = true;
-            }
-            if($jirafeSettingsHaveChanged) {
-                Mage::getModel('foomanjirafe/jirafe')->syncUsersAndStores();
-            }
-            Mage::register('foomanjirafe_single_user_sync_has_run', true);
+        $path = $observer->getEvent()->getConfigData()->getPath();
+        $keys = array('web/unsecure/base_url', 'general/locale/timezone', 'currency/options/base');
+        if (in_array($path, $keys)) {
+            Mage::getModel('foomanjirafe/jirafe')->syncUsersStores();
         }
     }
 
