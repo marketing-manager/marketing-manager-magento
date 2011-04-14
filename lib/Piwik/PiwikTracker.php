@@ -21,7 +21,7 @@
 /**
  * @package PiwikTracker
  */
-class Fooman_Jirafe_Model_PiwikTracker
+class Piwik_PiwikTracker
 {
 	/**
 	 * Piwik base URL, for example http://example.org/piwik/

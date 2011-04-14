@@ -13,7 +13,7 @@
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
-class Fooman_Jirafe_Model_JirafeTracker extends Fooman_Jirafe_Model_PiwikTracker
+class Fooman_Jirafe_Model_JirafeTracker extends Piwik_PiwikTracker
 {
     protected function sendRequest($url)
     {
