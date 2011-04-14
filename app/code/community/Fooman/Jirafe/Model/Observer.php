@@ -46,7 +46,43 @@ class Fooman_Jirafe_Model_Observer
             $order->setJirafePlacedFromFrontend(true);
         }
     }
-    
+
+    /**
+     * Track piwik goals for orders that have reached processing stage
+     * TODO: this could be made configurable based on payment method used
+     *
+     * @param $observer
+     */
+    public function salesOrderSaveAfter ($observer)
+    {
+        $order = $observer->getEvent()->getOrder();
+        if (!$order->getJirafeExportStatus() && $order->getState() == Mage_Sales_Model_Order::STATE_PROCESSING) {
+
+            $piwikTracker = $this->_initPiwikTracker($order->getStoreId());
+            $piwikTracker->setCustomVariable('1', 'U', Fooman_Jirafe_Block_Js::VISITOR_CUSTOMER);
+            $piwikTracker->setCustomVariable('5', 'orderId', $order->getIncrementId());
+            $piwikTracker->setIp($order->getRemoteIp());
+            //$piwikTracker->setUrl();
+
+            if ($order->getJirafeVisitorId()) {
+                $piwikTracker->setVisitorId($order->getJirafeVisitorId());
+            }
+
+            if ($order->getJirafeAttributionData()) {
+                $piwikTracker->setAttributionInfo($order->getJirafeAttributionData());
+            }
+
+            try {
+                $checkoutGoalId = Mage::helper('foomanjirafe')->getStoreConfig('checkoutGoalId', $order->getStoreId());
+                $piwikTracker->doTrackGoal($checkoutGoalId, $order->getBaseGrandTotal());
+                $order->setJirafeExportStatus(Fooman_Jirafe_Model_Jirafe::STATUS_ORDER_EXPORTED);
+            } catch (Exception $e) {
+                Mage::logException($e);
+                $order->setJirafeExportStatus(Fooman_Jirafe_Model_Jirafe::STATUS_ORDER_FAILED);
+            }
+        }
+    }
+
     /**
      * Check fields in the user object to see if we should run sync
      * use POST data to identify update to existing users
