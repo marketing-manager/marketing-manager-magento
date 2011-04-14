@@ -88,7 +88,7 @@ class Fooman_Jirafe_Model_Api
         if($adminToken) {
             $conn->setParameterGet('token', $adminToken);
         }
-//		$conn->setParameterGet('XDEBUG_SESSION_START', 'switzer');
+        //$conn->setParameterGet('XDEBUG_SESSION_START', 'switzer');
 
         if(!empty($httpAuth)) {
             $conn->setAuth($httpAuth['username'], $httpAuth['password']);
@@ -105,7 +105,6 @@ class Fooman_Jirafe_Model_Api
             $conn->request($method);
             $result = $this->_errorChecking($conn->getLastResponse());
         } catch (Exception $e) {
-            Mage::logException($conn->getLastResponse());
             throw new Exception($e->getMessage());
             return false;
         }
