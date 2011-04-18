@@ -16,8 +16,6 @@
 class Fooman_Jirafe_Block_Adminhtml_Status extends Mage_Adminhtml_Block_Template
 {
 
-    protected $_isConfig = false;
-
     public function __construct ()
     {
         $this->setTemplate('fooman/jirafe/status.phtml');
@@ -62,11 +60,7 @@ class Fooman_Jirafe_Block_Adminhtml_Status extends Mage_Adminhtml_Block_Template
 
     public function isConfig()
     {
-        return $this->_isConfig;
+        return Mage::app()->getRequest()->getParam('section') == 'foomanjirafe';
     }
 
-    public function setIsConfig($flag)
-    {
-        $this->_isConfig = $flag;
-    }
 }

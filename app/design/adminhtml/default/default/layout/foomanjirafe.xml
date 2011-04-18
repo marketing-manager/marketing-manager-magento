@@ -16,9 +16,7 @@
     </adminhtml_jirafe_manual>
     <adminhtml_system_config_edit>
         <reference name="content">
-            <block type="foomanjirafe/adminhtml_status" name="foomanjirafe_status" as="foomanjirafe_status" >
-                <action method="setIsConfig"><value>1</value></action>
-            </block>
+            <block type="foomanjirafe/adminhtml_status" name="foomanjirafe_status" as="foomanjirafe_status" />
         </reference>
     </adminhtml_system_config_edit>
 </layout>
