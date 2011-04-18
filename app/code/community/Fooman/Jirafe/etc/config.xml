@@ -166,7 +166,8 @@
                 <isActive>1</isActive>
                 <reportType>simple</reportType>
                 <emails/>
-				<isEmailActive/>
+                <isEmailActive/>
+                <is_debug>0</is_debug>
             </settings>
             <report_email_template>foomanjirafe_report_template</report_email_template>
             <report_email_identity>jirafe</report_email_identity>

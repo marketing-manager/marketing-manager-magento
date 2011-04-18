@@ -21,8 +21,6 @@ class Fooman_Jirafe_Helper_Data extends Mage_Core_Helper_Abstract
     const JIRAFE_STATUS_APP_TOKEN_RECEIVED = '2';
     const JIRAFE_STATUS_SYNC_COMPLETED = '3';
 
-    const DEBUG = true;
-
     /**
      * Return store config value for key
      *
@@ -190,9 +188,14 @@ class Fooman_Jirafe_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function debug ($mesg)
     {
-        if (self::DEBUG) {
+        if ($this->isDebug()) {
             Mage::log($mesg, null, 'jirafe.log');
         }
+    }
+
+    public function isDebug ()
+    {
+        return (bool) $this->getStoreConfig('is_debug');
     }
 
     public function getStoreDescription ($store)
