@@ -341,6 +341,15 @@
                     </foomanjirafe_appendToAdminBlocks>
                 </observers>
             </core_block_abstract_to_html_after>
+            <core_block_abstract_to_html_before>
+                <observers>
+                    <foomanjirafe_coreBlockAbstractToHtmlBefore>
+                        <type>singleton</type>
+                        <class>Fooman_Jirafe_Model_Observer</class>
+                        <method>coreBlockAbstractToHtmlBefore</method>
+                    </foomanjirafe_coreBlockAbstractToHtmlBefore>
+                </observers>
+            </core_block_abstract_to_html_before>
             <sales_order_save_after>
                 <observers>
                     <foomanjirafe_salesOrderSaveAfter>

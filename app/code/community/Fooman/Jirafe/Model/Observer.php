@@ -97,6 +97,11 @@ class Fooman_Jirafe_Model_Observer
         
         $jirafeUserId = $user->getJirafeUserId();
         $jirafeToken = $user->getJirafeUserToken();
+
+        $jirafeSendEmail = Mage::app()->getRequest()->getPost('jirafe_send_email');
+        $jirafeEmailReportType = Mage::app()->getRequest()->getPost('jirafe_email_report_type');
+        $jirafeEmailSuppress = Mage::app()->getRequest()->getPost('jirafe_email_suppress');
+        $jirafeAlsoSendTo =str_replace(array("\r", " "), "", str_replace("\n", ",", Mage::app()->getRequest()->getPost('jirafe_also_send_to')));
         
         // Check to see if some user fields have changed
         if ($user->isObjectNew() ||
@@ -106,6 +111,23 @@ class Fooman_Jirafe_Model_Observer
             empty($jirafeUserId) ||
             empty($jirafeToken)) {
             Mage::register('foomanjirafe_sync', true);
+        }
+        
+        if ($jirafeSendEmail != $user->getJirafeSendEmail()) {
+            $user->setJirafeSendEmail($jirafeSendEmail);
+            $user->setDataChanges(true);
+        }
+        if ($jirafeEmailReportType != $user->getJirafeEmailReportType()) {
+            $user->setJirafeEmailReportType($jirafeEmailReportType);
+            $user->setDataChanges(true);
+        }
+        if ($jirafeEmailSuppress != $user->getJirafeEmailSuppress()) {
+            $user->setJirafeEmailSuppress($jirafeEmailSuppress);
+            $user->setDataChanges(true);
+        }
+        if ($jirafeAlsoSendTo != $user->getJirafeAlsoSendTo()) {
+            $user->setJirafeEmails($jirafeAlsoSendTo);
+            $user->setDataChanges(true);
         }
     }
 
@@ -248,6 +270,21 @@ class Fooman_Jirafe_Model_Observer
             $transport->setHtml($transport->getHtml().$block->getChildHtml('foomanjirafe_dashboard_toggle'));
         }
     }
+
+    public function coreBlockAbstractToHtmlBefore($observer)
+    {
+        $block = $observer->getEvent()->getBlock();
+        if ($block instanceof Mage_Adminhtml_Block_Permissions_User_Edit_Tabs) {
+            $block->addTab('jirafe_section', array(
+                'label'     => Mage::helper('adminhtml')->__('Jirafe Analytics'),
+                'title'     => Mage::helper('adminhtml')->__('Jirafe Analytics'),
+                'content'   => $block->getLayout()->createBlock('foomanjirafe/adminhtml_permissions_user_edit_tab_jirafe')->toHtml(),
+                'after'     => 'roles_section'
+            ));
+        }
+    }
+
+
 
     public function readyToBuy ($observer)
     {

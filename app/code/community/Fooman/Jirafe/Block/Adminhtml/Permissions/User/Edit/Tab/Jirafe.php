@@ -1,19 +1,42 @@
 <?php
+/**
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ *
+ * @package     Fooman_Jirafe
+ * @copyright   Copyright (c) 2010 Jirafe Inc (http://www.jirafe.com)
+ * @copyright   Copyright (c) 2010 Fooman Limited (http://www.fooman.co.nz)
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
 
-class Fooman_Jirafe_Block_Adminhtml_System_Account_Edit_Form extends Mage_Adminhtml_Block_System_Account_Edit_Form
+class Fooman_Jirafe_Block_Adminhtml_Permissions_User_Edit_Tab_Jirafe extends Mage_Adminhtml_Block_Widget_Form
 {
 
-    protected function _prepareForm ()
+    protected function _prepareForm()
     {
-        parent::_prepareForm();
-        $adminUser = Mage::getSingleton('admin/session')->getUser();
-        $form = $this->getForm();
-        $fieldset = $form->addFieldset('jirafe', array('legend' => Mage::helper('adminhtml')->__('Jirafe Analytics')));
 
+
+        $form = new Varien_Data_Form();
+        $fieldset = $form->addFieldset('jirafe_fieldset', array('legend'=>Mage::helper('adminhtml')->__('Jirafe Analytics')));
+
+        /*if ($model->getUserId()) {
+            $fieldset->addField('user_id', 'hidden', array(
+                'name' => 'user_id',
+            ));
+        } else {
+            if (! $model->hasData('is_active')) {
+                $model->setIsActive(1);
+            }
+        }*/
+        $adminUser = Mage::registry('permissions_user');
         $yesNo = array();
         $yesNo[] = array('label' => Mage::helper('foomanjirafe')->__('Yes'), 'value' => 1);
         $yesNo[] = array('label' => Mage::helper('foomanjirafe')->__('No'), 'value' => 0);
-
+        
         $fieldset->addField('jirafe_send_email', 'select', array(
             'name' => 'jirafe_send_email',
             'label' => Mage::helper('foomanjirafe')->__('Send Jirafe Emails'),
@@ -22,19 +45,7 @@ class Fooman_Jirafe_Block_Adminhtml_System_Account_Edit_Form extends Mage_Adminh
             'values' => $yesNo,
             'value' => $adminUser->getJirafeSendEmail()
         ));
-
-        /* We don't yet individually map store to user
-        $fieldset->addField('jirafe_send_email_for_store', 'multiselect', array(
-            'name' => 'jirafe_send_email_for_store[]',
-            'label' => Mage::helper('foomanjirafe')->__('Email Daily Report for Store'),
-            'title' => Mage::helper('foomanjirafe')->__('Email Daily Report for Store'),
-            'after_element_html' => '<p class="nm"><small>' . Mage::helper('foomanjirafe')->__('Hold down the Shift key to select multiple stores') . '</small></p>',
-            'required' => false,
-            'values' => Mage::getSingleton('adminhtml/system_store')->getStoreValuesForForm(false),
-            'value' => explode(",", $adminUser->getJirafeSendEmailForStore())
-        ));
-         */
-
+        
         $reportTypes = array();
         $reportTypes[] = array('label' => Mage::helper('foomanjirafe')->__('Simple'), 'value' => 'simple');
         $reportTypes[] = array('label' => Mage::helper('foomanjirafe')->__('Detail'), 'value' => 'detail');
@@ -67,7 +78,11 @@ class Fooman_Jirafe_Block_Adminhtml_System_Account_Edit_Form extends Mage_Adminh
             'required' => false,
             'value' => str_replace(",", "\n", $adminUser->getJirafeAlsoSendTo())
         ));
-        return $this;
-    }
 
+        $form->setValues($adminUser->getData());
+
+        $this->setForm($form);
+
+        return parent::_prepareForm();
+    }
 }
