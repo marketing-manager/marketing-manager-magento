@@ -273,11 +273,11 @@ class Fooman_Jirafe_Model_Observer
 
     public function coreBlockAbstractToHtmlBefore($observer)
     {
-        $block = $observer->getEvent()->getBlock();
+        $block = $observer->getEvent()->getBlock();        
         if ($block instanceof Mage_Adminhtml_Block_Permissions_User_Edit_Tabs) {
             $block->addTab('jirafe_section', array(
-                'label'     => Mage::helper('adminhtml')->__('Jirafe Analytics'),
-                'title'     => Mage::helper('adminhtml')->__('Jirafe Analytics'),
+                'label'     => Mage::helper('foomanjirafe')->__('Jirafe Analytics'),
+                'title'     => Mage::helper('foomanjirafe')->__('Jirafe Analytics'),
                 'content'   => $block->getLayout()->createBlock('foomanjirafe/adminhtml_permissions_user_edit_tab_jirafe')->toHtml(),
                 'after'     => 'roles_section'
             ));
