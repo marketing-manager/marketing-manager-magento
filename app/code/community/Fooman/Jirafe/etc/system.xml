@@ -57,6 +57,16 @@
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
                         </isEmailActive>
+                        <also_send_emails_to translate="label">
+                            <label>Also Email Reports to</label>
+                            <comment>One email address per line</comment>
+                            <backend_model>foomanjirafe/adminhtml_system_config_backend_jirafeExtraEmails</backend_model>
+                            <frontend_type>textarea</frontend_type>
+                            <sort_order>50</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </also_send_emails_to>
                         <is_debug translate="label">
                             <label>Enable Debug</label>
                             <source_model>adminhtml/system_config_source_yesno</source_model>

@@ -18,7 +18,7 @@
 <config>
     <modules>
         <Fooman_Jirafe>
-            <version>0.2.6</version>
+            <version>0.2.7</version>
         </Fooman_Jirafe>
     </modules>
 
@@ -168,6 +168,7 @@
                 <emails/>
                 <isEmailActive/>
                 <is_debug>0</is_debug>
+                <also_send_emails_to/>
             </settings>
             <report_email_template>foomanjirafe_report_template</report_email_template>
             <report_email_identity>jirafe</report_email_identity>

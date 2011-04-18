@@ -20,6 +20,17 @@ class Fooman_Jirafe_Helper_Setup extends Mage_Core_Helper_Abstract
     {
         $instructions = array();
         switch ($version) {
+            case '0.2.7':
+                $instructions = array_merge(
+                        $instructions,
+                            array(
+                                array("type" =>"sql-column-delete", "table" =>"admin_user", "name" =>"jirafe_also_send_to","params" =>"")
+                                )
+                        );
+                if(!$returnComplete) {
+                    break;
+                }
+                //nobreak intentionally;
             case '0.2.6':
                 $instructions = array_merge(
                         $instructions,
@@ -126,6 +137,10 @@ class Fooman_Jirafe_Helper_Setup extends Mage_Core_Helper_Abstract
                 case 'sql-column':
                     $return = $installer->run("
                         ALTER TABLE `{$installer->getTable($instruction['table'])}` ADD COLUMN `{$instruction['name']}` {$instruction['params']}");
+                    break;
+                case 'sql-column-delete':
+                    $return = $installer->run("
+                        ALTER TABLE `{$installer->getTable($instruction['table'])}` DROP COLUMN `{$instruction['name']}`");
                     break;
             }
 

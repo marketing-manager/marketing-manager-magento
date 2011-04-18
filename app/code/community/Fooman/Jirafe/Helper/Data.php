@@ -162,21 +162,17 @@ class Fooman_Jirafe_Helper_Data extends Mage_Core_Helper_Abstract
                     if ($excludeSuppress && $suppress) {
                         if ($asCsv) {
                             $emails[] = $adminUser->getEmail();
-                            foreach (explode(',', $adminUser->getJirafeAlsoSendTo()) as $jirafeEmail) {
-                                if (!empty($jirafeEmail)) {
-                                    $emails[] = $jirafeEmail;
-                                }
-                            }
                         } else {
                             $emails[$adminUser->getEmail()] = $adminUser->getJirafeEmailReportType();
-                            foreach (explode(',', $adminUser->getJirafeAlsoSendTo()) as $jirafeEmail) {
-                                if (!empty($jirafeEmail)) {
-                                    $emails[$jirafeEmail] = $adminUser->getJirafeEmailReportType();
-                                }
-                            }
                         }
                     }
                 }
+            }
+        }
+        // add users added via global config
+        foreach (explode(',', Mage::helper('foomanjirafe')->getStoreConfig('also_send_emails_to')) as $jirafeEmail) {
+            if (!empty($jirafeEmail)) {
+                $emails[$jirafeEmail] = Mage::helper('foomanjirafe')->getStoreConfig('reportType');
             }
         }
         if ($asCsv) {
