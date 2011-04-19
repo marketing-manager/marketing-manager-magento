@@ -46,7 +46,6 @@ ALTER TABLE admin_user DROP COLUMN jirafe_send_email_for_store;
 ALTER TABLE admin_user DROP COLUMN jirafe_send_email;
 ALTER TABLE admin_user DROP COLUMN jirafe_email_report_type;
 ALTER TABLE admin_user DROP COLUMN jirafe_email_suppress;
-ALTER TABLE admin_user DROP COLUMN jirafe_also_send_to;
 ALTER TABLE admin_user DROP COLUMN jirafe_user_id;
 ALTER TABLE admin_user DROP COLUMN jirafe_user_token;
 ALTER TABLE admin_user DROP COLUMN jirafe_dashboard_active;
@@ -56,3 +55,5 @@ ALTER TABLE sales_flat_order DROP COLUMN jirafe_attribution_data;
 ALTER TABLE sales_flat_order DROP COLUMN jirafe_export_status;
 ALTER TABLE sales_flat_order DROP COLUMN jirafe_placed_from_frontend;
 
+#for versions pre 0.2.7
+ALTER TABLE admin_user DROP COLUMN jirafe_also_send_to;
