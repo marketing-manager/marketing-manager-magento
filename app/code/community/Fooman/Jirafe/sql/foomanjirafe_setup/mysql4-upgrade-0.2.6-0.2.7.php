@@ -22,8 +22,10 @@ $installer->startSetup();
 $adminUsers = Mage::getSingleton('admin/user')->getCollection();
 $emails = array();
 foreach ($adminUsers as $adminUser) {
-    foreach(eplode(',',$adminUser->getAlsoSendEmailsTo()) as $altEmail) {
-        $emails[] = $altEmail;
+    foreach(explode(',',$adminUser->getJirafeAlsoSendTo()) as $altEmail) {
+        if(!empty($altEmail)) {
+            $emails[trim($altEmail)] = trim($altEmail);
+        }
     }
 }
 if (!empty($emails)) {
