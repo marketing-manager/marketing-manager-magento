@@ -1,31 +1,33 @@
- <?php if (Mage::helper('foomanjirafe/data')->isDashboardActive()) : ?>
-    <link type="text/css" rel="stylesheet" href="<?php echo $this->getAssetUrl('bundles/jirafe/css/jirafe-ui.css') ?>" media="all" />
+<?php include $this->getOrigTemplate() ?>
+<?php $_block = $this->getFoomanBlock() ?>
+<?php if (Mage::helper('foomanjirafe')->isDashboardActive()) : ?>
+    <link type="text/css" rel="stylesheet" href="<?php echo $_block->getAssetUrl('bundles/jirafe/css/jirafe-ui.css') ?>" media="all" />
 
-    <script type="text/javascript" src="<?php echo $this->getAssetUrl('bundles/jirafe/js/jquery-min.js') ?>"></script>
-    <script type="text/javascript" src="<?php echo $this->getAssetUrl('bundles/jirafe/js/jquery-ui-min.js') ?>"></script>
-    <script type="text/javascript" src="<?php echo $this->getAssetUrl('bundles/jirafe/js/raphael-min.js') ?>"></script>
-    <script type="text/javascript" src="<?php echo $this->getAssetUrl('bundles/jirafe/js/chart.js') ?>"></script>
-    <script type="text/javascript" src="<?php echo $this->getAssetUrl('bundles/jirafe/js/bar-chart.js') ?>"></script>
-    <script type="text/javascript" src="<?php echo $this->getAssetUrl('bundles/jirafe/js/line-chart.js') ?>"></script>
-    <script type="text/javascript" src="<?php echo $this->getAssetUrl('bundles/jirafe/js/pie-chart.js') ?>"></script>
+    <script type="text/javascript" src="<?php echo $_block->getAssetUrl('bundles/jirafe/js/jquery-min.js') ?>"></script>
+    <script type="text/javascript" src="<?php echo $_block->getAssetUrl('bundles/jirafe/js/jquery-ui-min.js') ?>"></script>
+    <script type="text/javascript" src="<?php echo $_block->getAssetUrl('bundles/jirafe/js/raphael-min.js') ?>"></script>
+    <script type="text/javascript" src="<?php echo $_block->getAssetUrl('bundles/jirafe/js/chart.js') ?>"></script>
+    <script type="text/javascript" src="<?php echo $_block->getAssetUrl('bundles/jirafe/js/bar-chart.js') ?>"></script>
+    <script type="text/javascript" src="<?php echo $_block->getAssetUrl('bundles/jirafe/js/line-chart.js') ?>"></script>
+    <script type="text/javascript" src="<?php echo $_block->getAssetUrl('bundles/jirafe/js/pie-chart.js') ?>"></script>
 
-    <script type="text/javascript" src="<?php echo $this->getAssetUrl('bundles/jirafe/js/jirafe-api.js') ?>"></script>
-    <script type="text/javascript" src="<?php echo $this->getAssetUrl('bundles/jirafe/js/jirafe-model.js') ?>"></script>
-    <script type="text/javascript" src="<?php echo $this->getAssetUrl('bundles/jirafe/js/ui/graph-tabs.js') ?>"></script>
-    <script type="text/javascript" src="<?php echo $this->getAssetUrl('bundles/jirafe/js/ui/specific-period-selector.js') ?>"></script>
-    <script type="text/javascript" src="<?php echo $this->getAssetUrl('bundles/jirafe/js/ui/store-selector.js') ?>"></script>
-    <script type="text/javascript" src="<?php echo $this->getAssetUrl('bundles/jirafe/js/ui/funnel.js') ?>"></script>
-    <script type="text/javascript" src="<?php echo $this->getAssetUrl('bundles/jirafe/js/ui/menu.js') ?>"></script>
-    <script type="text/javascript" src="<?php echo $this->getAssetUrl('bundles/jirafe/js/ui/table.js') ?>"></script>
+    <script type="text/javascript" src="<?php echo $_block->getAssetUrl('bundles/jirafe/js/jirafe-api.js') ?>"></script>
+    <script type="text/javascript" src="<?php echo $_block->getAssetUrl('bundles/jirafe/js/jirafe-model.js') ?>"></script>
+    <script type="text/javascript" src="<?php echo $_block->getAssetUrl('bundles/jirafe/js/ui/graph-tabs.js') ?>"></script>
+    <script type="text/javascript" src="<?php echo $_block->getAssetUrl('bundles/jirafe/js/ui/specific-period-selector.js') ?>"></script>
+    <script type="text/javascript" src="<?php echo $_block->getAssetUrl('bundles/jirafe/js/ui/store-selector.js') ?>"></script>
+    <script type="text/javascript" src="<?php echo $_block->getAssetUrl('bundles/jirafe/js/ui/funnel.js') ?>"></script>
+    <script type="text/javascript" src="<?php echo $_block->getAssetUrl('bundles/jirafe/js/ui/menu.js') ?>"></script>
+    <script type="text/javascript" src="<?php echo $_block->getAssetUrl('bundles/jirafe/js/ui/table.js') ?>"></script>
 
-    <script type="text/javascript" src="<?php echo $this->getAssetUrl('bundles/jirafe/js/jirafe.js') ?>"></script>
-    <script type="text/javascript" src="<?php echo $this->getAssetUrl('bundles/jirafe/js/jirafe-controller.js') ?>"></script>
-    <script type="text/javascript" src="<?php echo $this->getAssetUrl('bundles/jirafe/js/action/visitor.js') ?>"></script>
-    <script type="text/javascript" src="<?php echo $this->getAssetUrl('bundles/jirafe/js/action/justlooking.js') ?>"></script>
-    <script type="text/javascript" src="<?php echo $this->getAssetUrl('bundles/jirafe/js/action/interested.js') ?>"></script>
-    <script type="text/javascript" src="<?php echo $this->getAssetUrl('bundles/jirafe/js/action/readytobuy.js') ?>"></script>
-    <script type="text/javascript" src="<?php echo $this->getAssetUrl('bundles/jirafe/js/action/customer.js') ?>"></script>
-    <script type="text/javascript" src="<?php echo $this->getAssetUrl('bundles/jirafe/js/action/revenue.js') ?>"></script>
+    <script type="text/javascript" src="<?php echo $_block->getAssetUrl('bundles/jirafe/js/jirafe.js') ?>"></script>
+    <script type="text/javascript" src="<?php echo $_block->getAssetUrl('bundles/jirafe/js/jirafe-controller.js') ?>"></script>
+    <script type="text/javascript" src="<?php echo $_block->getAssetUrl('bundles/jirafe/js/action/visitor.js') ?>"></script>
+    <script type="text/javascript" src="<?php echo $_block->getAssetUrl('bundles/jirafe/js/action/justlooking.js') ?>"></script>
+    <script type="text/javascript" src="<?php echo $_block->getAssetUrl('bundles/jirafe/js/action/interested.js') ?>"></script>
+    <script type="text/javascript" src="<?php echo $_block->getAssetUrl('bundles/jirafe/js/action/readytobuy.js') ?>"></script>
+    <script type="text/javascript" src="<?php echo $_block->getAssetUrl('bundles/jirafe/js/action/customer.js') ?>"></script>
+    <script type="text/javascript" src="<?php echo $_block->getAssetUrl('bundles/jirafe/js/action/revenue.js') ?>"></script>
 
     <script type="text/javascript" src="<?php echo Mage::getBaseUrl('js').'fooman/jirafe/noConflict.js'?>"></script>
 <?php endif ?>

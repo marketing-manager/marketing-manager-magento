@@ -256,24 +256,17 @@ class Fooman_Jirafe_Model_Observer
      * adding child elements to the head block or dashboard are also not automatically rendered
      * add foomanjirafe_dashboard_head via this observer
      * add foomanjirafe_dashboard_toggle via this observer
+     * add foomanjirafe_adminhtml_permissions_user_edit_tab_jirafe via this observer
      *
      * @param $observer
      */
-    public function appendToAdminBlocks($observer)
-    {
-        $block = $observer->getEvent()->getBlock();
-        $transport = $observer->getEvent()->getTransport();
-        if ($block instanceof Mage_Adminhtml_Block_Page_Head) {
-            $transport->setHtml($transport->getHtml().$block->getChildHtml('foomanjirafe_dashboard_head'));
-        }
-        if ($block instanceof Mage_Adminhtml_Block_Dashboard) {
-            $transport->setHtml($transport->getHtml().$block->getChildHtml('foomanjirafe_dashboard_toggle'));
-        }
-    }
-
     public function coreBlockAbstractToHtmlBefore($observer)
     {
-        $block = $observer->getEvent()->getBlock();        
+        $block = $observer->getEvent()->getBlock();
+        $params = array('_relative'=>true);
+        if ($area = $block->getArea()) {
+            $params['_area'] = $area;
+        }
         if ($block instanceof Mage_Adminhtml_Block_Permissions_User_Edit_Tabs) {
             $block->addTab('jirafe_section', array(
                 'label'     => Mage::helper('foomanjirafe')->__('Jirafe Analytics'),
@@ -281,6 +274,16 @@ class Fooman_Jirafe_Model_Observer
                 'content'   => $block->getLayout()->createBlock('foomanjirafe/adminhtml_permissions_user_edit_tab_jirafe')->toHtml(),
                 'after'     => 'roles_section'
             ));
+        }
+        if ($block instanceof Mage_Adminhtml_Block_Page_Head) {
+            $block->setOrigTemplate(Mage::getBaseDir('design').DS.Mage::getDesign()->getTemplateFilename($block->getTemplate(), $params));
+            $block->setTemplate('fooman/jirafe/dashboard-head.phtml');
+            $block->setFoomanBlock($block->getLayout()->createBlock('foomanjirafe/adminhtml_dashboard_js'));
+        }
+        if ($block instanceof Mage_Adminhtml_Block_Dashboard) {
+            $block->setOrigTemplate(Mage::getBaseDir('design').DS.Mage::getDesign()->getTemplateFilename($block->getTemplate(), $params));
+            $block->setTemplate('fooman/jirafe/dashboard-toggle.phtml');
+            $block->setFoomanBlock($block->getLayout()->createBlock('foomanjirafe/adminhtml_dashboard_toggle'));
         }
     }
 
