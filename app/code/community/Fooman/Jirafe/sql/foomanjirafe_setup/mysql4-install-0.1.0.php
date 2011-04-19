@@ -13,13 +13,17 @@
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
-Mage::log('Running Fooman Jirafe DB install 0.1.0');
+$version = '0.1.0';
+Mage::log('Running Fooman Jirafe DB upgrade '.$version);
 
 // Start Jirafe Setup
-$this->startSetup();
+$installer = $this;
+/* @var $installer Fooman_Jirafe_Model_Mysql4_Setup */
+
+$installer->startSetup();
 
 // Upgrade the DB version
-Mage::helper('foomanjirafe/setup')->runDbSchemaUpgrade($this, '0.1.0');
+Mage::helper('foomanjirafe/setup')->runDbSchemaUpgrade($installer, $version);
 
 // Automatically send Jirafe emails to every active admin user
 $adminUsers = Mage::getSingleton('admin/user')->getCollection();
@@ -34,4 +38,7 @@ if (!empty($emails)) {
 }
 
 // End Jirafe Setup
-$this->endSetup();
+$installer->endSetup();
+
+//Run sync when finished with install/update
+Mage::getModel('foomanjirafe/jirafe')->initialSync($version);

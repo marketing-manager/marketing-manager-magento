@@ -12,7 +12,7 @@
  * @copyright   Copyright (c) 2010 Fooman Limited (http://www.fooman.co.nz)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-$version = '0.1.2';
+$version = '0.1.4';
 Mage::log('Running Fooman Jirafe DB upgrade '.$version);
 
 //Run sync when finished with install/update

@@ -13,14 +13,16 @@
  * @copyright   Copyright (c) 2010 Fooman Limited (http://www.fooman.co.nz)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-Mage::log('Running Fooman Jirafe DB upgrade 0.2.0');
+$version = '0.2.0';
+Mage::log('Running Fooman Jirafe DB upgrade '.$version);
+
 $installer = $this;
 /* @var $installer Fooman_Jirafe_Model_Mysql4_Setup */
 
 $installer->startSetup();
 
 // Modify tables with the new DB schema
-Mage::helper('foomanjirafe/setup')->runDbSchemaUpgrade($installer, '0.2.0');
+Mage::helper('foomanjirafe/setup')->runDbSchemaUpgrade($installer, $version);
 
 // Add defaults into config file
 $keys = array('isActive', 'isEmailActive');
@@ -83,3 +85,5 @@ foreach ($collection as $jirafeOldSetting) {
 
 $installer->endSetup();
 
+//Run sync when finished with install/update
+Mage::getModel('foomanjirafe/jirafe')->initialSync($version);
