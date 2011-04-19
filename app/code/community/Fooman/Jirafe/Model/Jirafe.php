@@ -217,4 +217,29 @@ class Fooman_Jirafe_Model_Jirafe
         return Mage::getModel('foomanjirafe/api_log')->sendLog(Mage::helper('foomanjirafe')->getStoreConfig('app_token'), $data);
     }
 
+
+    /**
+     * only sync once at the end of the installation or upgrade routine
+     * @param string $upgradeVersion
+     */
+    public function initialSync ($upgradeVersion = '0.1.0')
+    {
+        if ($upgradeVersion == (string) Mage::getConfig()->getModuleConfig('Fooman_Jirafe')->version) {
+            // Once complete, reinit config files
+            // reloading the config on earlier Magento versions causes an infinite loop
+            if (version_compare(Mage::getVersion(), '1.3.4.0') > 0) {
+                Mage::app()->getConfig()->reinit();
+            }
+            //Make sure the default (admin) store is loaded
+            $defaultStoreId = Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID;
+            Mage::app()->getStore($defaultStoreId)->load($defaultStoreId);
+            
+            $this->syncUsersStores();
+            // Run cron for the first time since the upgrade, so that users can see any changes right away.
+            if(!Mage::helper('foomanjirafe')->getStoreConfig('sent_initial_email')) {
+                Mage::getModel('foomanjirafe/report')->cron(null, true);
+            }
+        }
+    }
+
 }
