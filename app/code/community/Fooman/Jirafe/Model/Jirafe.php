@@ -187,13 +187,12 @@ class Fooman_Jirafe_Model_Jirafe
         if (!Mage::registry('foomanjirafe_sync_run')) {
             Mage::register('foomanjirafe_sync_run', true);
             
-            $appId = Mage::helper('foomanjirafe')->getStoreConfig('app_id');
-            $adminToken = Mage::helper('foomanjirafe')->getStoreConfig('app_token');
-            
+            $appId = Mage::helper('foomanjirafe')->getStoreConfig('app_id');            
             if (empty($appId)) {
                 $appId = $this->checkAppId();
             }
-            
+            $adminToken = Mage::helper('foomanjirafe')->getStoreConfig('app_token');
+
             $userArray = $this->getAdminUsers();
             $storeArray = $this->getStores();
 
