@@ -61,7 +61,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
                         if (!$exists) {
                             try {
                                 // Create new report
-                                $data = $this->_compileReport($store, $timespan, $siteId, $first);
+                                $data = $this->_compileReport($store, $timespan, $first);
                                 // Save report
                                 $this->_saveReport($store, $timespan, $data);
                                 // Send out emails
@@ -123,7 +123,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         }
     }
 
-    private function _compileReport ($store, $timespan, $siteId, $first = false)
+    private function _compileReport ($store, $timespan, $first = false)
     {
         $reportData = array();
 
@@ -135,7 +135,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         // Get store information
         $storeId = $store->getId();
         $reportData['store_id'] = $storeId;
-        $reportData['site_id'] = $siteId;
+        $reportData['site_id'] = $this->_helper->getStoreConfig('site_id', $storeId);
         $reportData['store_name'] = $this->_helper->getStoreDescription($store);
         $reportData['store_url'] = $store->getConfig('web/unsecure/base_url');
 
@@ -148,10 +148,10 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         // Get version information
         $reportData['plugin_version'] = (string) Mage::getConfig()->getModuleConfig('Fooman_Jirafe')->version;
         $reportData['platform_version'] = Mage::getVersion();
-		$reportData['platform_type'] = 'magento';
+        $reportData['platform_type'] = 'magento';
 
         // Get the email addresses where the email will be sent
-        $reportData['admin_emails'] = $this->_helper->collectJirafeEmails($storeId);
+        $reportData['admin_emails'] = $this->_helper->collectJirafeEmails(true,false, true);
 
         // Get the URL to the Magento admin console, Jirafe settings
         $reportData['jirafe_settings_url'] = Mage::helper('adminhtml')->getUrl('adminhtml/system_config/edit/section/foomanjirafe', array('_nosecret' => true, '_nosid' => true));
@@ -159,8 +159,8 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         // Get the timezone for this store
         $reportData['timezone'] = $store->getConfig('general/locale/timezone');
 		
-		// Get the language for this store
-		$reportData['language'] = $store->getconfig('general/locale/code');
+        // Get the language for this store
+        $reportData['language'] = $store->getconfig('general/locale/code');
 
         // Get customer data
         $reportData['customer_num'] = Mage::getResourceModel('foomanjirafe/report')->getStoreUniqueCustomers($storeId, $from, $to);
@@ -217,44 +217,44 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         Mage::getModel('foomanjirafe/report')
                 ->setStoreId($store->getId())
                 ->setStoreReportDate($timespan['date'])
-                ->setGeneratedByJirafeVersion($data['jirafe_version'])
+                ->setGeneratedByJirafeVersion($data['plugin_version'])
                 ->setReportData(json_encode($data))
                 ->save();
     }
 
     private function _emailReport ($store, $timespan, $data)
     {
-		// Make sure email is active at a global level
-        if (Mage::helper('foomanjirafe/data')->isEmailActive()) {
-			// Get the store ID
-			$storeId = $store->getId();
-			// Get the template
-			$template = Mage::getStoreConfig(self::XML_PATH_EMAIL_TEMPLATE, $storeId);
-			// Pass in 'true' if there are no orders, so to suppress emails who do not want to be sent for stores with 0 orders
-			$excludeSuppress = ($data['order_num'] == 0);
-			// Get the list of emails to send this report
-			$emails = $this->_helper->collectJirafeEmails($storeId, false, $excludeSuppress);
-			// Translate email
-			$translate = Mage::getSingleton('core/translate');
-			/* @var $translate Mage_Core_Model_Translate */
-			$translate->setTranslateInline(false);
-	
-			$emailTemplate = Mage::getModel('core/email_template');
-			/* @var $emailTemplate Mage_Core_Model_Email_Template */
-			foreach ($emails as $emailAddress=>$reportType) {
-				$data['detail_report'] = $reportType;
-				$emailTemplate
-						->setDesignConfig(array('area' => 'backend'))
-						->sendTransactional(
-								$template,
-								Mage::getStoreConfig(self::XML_PATH_EMAIL_IDENTITY, $storeId),
-								trim($emailAddress),
-								null,
-								$data,
-								$storeId
-				);
-			}
-		}
+        // Make sure email is active at a global level
+        if (Mage::helper('foomanjirafe')->isEmailActive()) {
+            // Get the store ID
+            $storeId = $store->getId();
+            // Get the template
+            $template = Mage::getStoreConfig(self::XML_PATH_EMAIL_TEMPLATE, $storeId);
+            // Pass in 'true' if there are no orders, so to suppress emails who do not want to be sent for stores with 0 orders
+            $excludeSuppress = ($data['order_num'] == 0);
+            // Get the list of emails to send this report
+            $emails = $this->_helper->collectJirafeEmails(false, $excludeSuppress);
+            // Translate email
+            $translate = Mage::getSingleton('core/translate');
+            /* @var $translate Mage_Core_Model_Translate */
+            $translate->setTranslateInline(false);
+
+            $emailTemplate = Mage::getModel('core/email_template');
+            /* @var $emailTemplate Mage_Core_Model_Email_Template */
+            foreach ($emails as $emailAddress => $reportType) {
+                $data['detail_report'] = $reportType;
+                $emailTemplate
+                        ->setDesignConfig(array('area' => 'backend'))
+                        ->sendTransactional(
+                                $template,
+                                Mage::getStoreConfig(self::XML_PATH_EMAIL_IDENTITY, $storeId),
+                                trim($emailAddress),
+                                null,
+                                $data,
+                                $storeId
+                );
+            }
+        }
     }
 
     function _getReportTimespan ($store, $gmtTs, $span='day')

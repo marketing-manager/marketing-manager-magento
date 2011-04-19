@@ -146,33 +146,31 @@ class Fooman_Jirafe_Helper_Data extends Mage_Core_Helper_Abstract
      * @param boolean $asCsv
      * @return string|array
      */
-    public function collectJirafeEmails ($storeId, $asCsv = true,
-            $excludeSuppress = false)
+    public function collectJirafeEmails ($asCsv = true,
+            $excludeSuppress = false, $allUsers = false)
     {
         $adminUsers = Mage::getSingleton('admin/user')->getCollection();
         $emails = array();
         // loop over all admin users
         foreach ($adminUsers as $adminUser) {
-            if ($adminUser->getIsActive() && $adminUser->getJirafeSendEmail()) {
-                // Check to make sure that the user wants a report for this store
-                $storeIds = $adminUser->getJirafeSendEmailForStore();
-                if (strpos(",$storeIds,", ",$storeId,") !== false) {
-                    // If user wants to suppress emails with no revenue...
-                    $suppress = $adminUser->getJirafeEmailSuppress();
-                    if ($excludeSuppress && $suppress) {
-                        if ($asCsv) {
-                            $emails[] = $adminUser->getEmail();
-                        } else {
-                            $emails[$adminUser->getEmail()] = $adminUser->getJirafeEmailReportType();
-                        }
+            if ($adminUser->getIsActive() && ($adminUser->getJirafeSendEmail() || $allUsers)) {
+                // If user wants to suppress emails with no revenue...
+                $suppress = $adminUser->getJirafeEmailSuppress();
+                if (($excludeSuppress && $suppress) || $allUsers) {
+                    if ($asCsv) {
+                        $emails[] = $adminUser->getEmail();
+                    } else {
+                        $emails[$adminUser->getEmail()] = $adminUser->getJirafeEmailReportType();
                     }
                 }
             }
         }
         // add users added via global config
-        foreach (explode(',', Mage::helper('foomanjirafe')->getStoreConfig('also_send_emails_to')) as $jirafeEmail) {
-            if (!empty($jirafeEmail)) {
-                $emails[$jirafeEmail] = Mage::helper('foomanjirafe')->getStoreConfig('reportType');
+        if(!$allUsers){
+            foreach (explode(',', Mage::helper('foomanjirafe')->getStoreConfig('also_send_emails_to')) as $jirafeEmail) {
+                if (!empty($jirafeEmail)) {
+                    $emails[$jirafeEmail] = Mage::helper('foomanjirafe')->getStoreConfig('reportType');
+                }
             }
         }
         if ($asCsv) {
