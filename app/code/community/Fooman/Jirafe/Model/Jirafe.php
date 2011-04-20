@@ -221,7 +221,6 @@ class Fooman_Jirafe_Model_Jirafe
         return Mage::getModel('foomanjirafe/api_log')->sendLog(Mage::helper('foomanjirafe')->getStoreConfig('app_token'), $data);
     }
 
-
     /**
      * only sync once at the end of the installation or upgrade routine
      * @param string $upgradeVersion

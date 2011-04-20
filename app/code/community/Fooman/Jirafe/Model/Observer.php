@@ -108,7 +108,7 @@ class Fooman_Jirafe_Model_Observer
         $jirafeSendEmail = Mage::app()->getRequest()->getPost('jirafe_send_email');
         $jirafeEmailReportType = Mage::app()->getRequest()->getPost('jirafe_email_report_type');
         $jirafeEmailSuppress = Mage::app()->getRequest()->getPost('jirafe_email_suppress');
-        $jirafeAlsoSendTo =str_replace(array("\r", " "), "", str_replace("\n", ",", Mage::app()->getRequest()->getPost('jirafe_also_send_to')));
+        $jirafeAlsoSendTo = str_replace(array("\r", " "), "", str_replace("\n", ",", Mage::app()->getRequest()->getPost('jirafe_also_send_to')));
         
         // Check to see if some user fields have changed
         if (!$user->getId() ||
