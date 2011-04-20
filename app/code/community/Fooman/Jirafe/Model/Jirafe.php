@@ -236,9 +236,31 @@ class Fooman_Jirafe_Model_Jirafe
             
             $this->syncUsersStores();
             // Run cron for the first time since the upgrade, so that users can see any changes right away.
-            if(!Mage::helper('foomanjirafe')->getStoreConfig('sent_initial_email')) {
-                Mage::getModel('foomanjirafe/report')->cron(null, true);
+            if(!Mage::helper('foomanjirafe')->getStoreConfig('installed')) {
+                // Notify user 
+                $this->_notifyAdminUser(Mage::helper('foomanjirafe')->isOk(), (string) Mage::getConfig()->getModuleConfig('Fooman_Jirafe')->version);
             }
+        }
+    }
+
+    private function _notifyAdminUser ($success, $version)
+    {
+        if ($success) {
+            Mage::getModel('adminnotification/inbox')
+                    ->setSeverity(Mage_AdminNotification_Model_Inbox::SEVERITY_NOTICE)
+                    ->setTitle('Jirafe plugin for Magento installed successfully.')
+                    ->setDateAdded(gmdate('Y-m-d H:i:s'))
+                    ->setUrl(Mage::getModel('foomanjirafe/api')->getDocUrl('magento','user',$version))
+                    ->setDescription('We have just installed Jirafe. Please see the user guide for details.')
+                    ->save();
+        } else {
+            Mage::getModel('adminnotification/inbox')
+                    ->setSeverity(Mage_AdminNotification_Model_Inbox::SEVERITY_NOTICE)
+                    ->setTitle('Jirafe plugin for Magento installed - needs configuration')
+                    ->setDateAdded(gmdate('Y-m-d H:i:s'))
+                    ->setUrl(Mage::getModel('foomanjirafe/api')->getDocUrl('magento','troubleshooting',$version))
+                    ->setDescription('We have just installed Jirafe and but were unable to set it up automatically. Please see the troubleshooting guide.')
+                    ->save();
         }
     }
 

@@ -75,6 +75,15 @@ class Fooman_Jirafe_Model_Api
         return rtrim(self::JIRAFE_API_SERVER, '/') . '/' . ltrim($filename, '/');
     }
 
+    public function getDocUrl($platform, $type='user', $version=null)
+    {
+        if($version){
+            return rtrim(self::JIRAFE_API_SERVER, '/') . '/doc/' .$platform. '/'. $version. '/'. ltrim($type, '/');
+        } else {
+            return rtrim(self::JIRAFE_API_SERVER, '/') . '/doc/' .$platform. '/'. ltrim($type, '/');
+        }
+    }
+
     public function sendData ($entryPoint, $data, $adminToken = false,
             $method = Zend_Http_Client::POST, $httpAuth = array())
     {
