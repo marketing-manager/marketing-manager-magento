@@ -237,4 +237,16 @@ class Fooman_Jirafe_Helper_Data extends Mage_Core_Helper_Abstract
     {
         return (Mage::helper('foomanjirafe')->getStoreConfig('isEmailActive') && Mage::helper('foomanjirafe')->getStoreConfig('isActive'));
     }
+
+    public function isOk ()
+    {
+        return $this->isConfigured()
+                && $this->getStatus() != Fooman_Jirafe_Helper_Data::JIRAFE_STATUS_NOT_INSTALLED
+                && $this->getStatus() != Fooman_Jirafe_Helper_Data::JIRAFE_STATUS_ERROR;
+    }
+
+    public function getStatus ()
+    {
+        return $this->getStoreConfig('last_status');
+    }
 }
