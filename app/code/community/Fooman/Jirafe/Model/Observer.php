@@ -171,7 +171,7 @@ class Fooman_Jirafe_Model_Observer
     public function storeSaveBefore($observer)
     {
         Mage::helper('foomanjirafe')->debug('storeSaveBefore');
-        $store = $observer->getEvent()->getDataObject();
+        $store = $observer->getEvent()->getStore();
         // If the object is new, or has any data changes, sync
         if (!$store->getId() || $store->hasDataChanges()) {
             Mage::register('foomanjirafe_sync', true);
@@ -211,7 +211,7 @@ class Fooman_Jirafe_Model_Observer
     public function storeGroupSaveBefore($observer)
     {
         Mage::helper('foomanjirafe')->debug('storeGroupSaveBefore');
-        $storeGroup = $observer->getEvent()->getDataObject();
+        $storeGroup = $observer->getEvent()->getStoreGroup();
         // If the object is new, or has any data changes, sync
         if (!$storeGroup->getId() || $storeGroup->hasDataChanges()) {
             Mage::register('foomanjirafe_sync', true);
