@@ -56,7 +56,7 @@ class Fooman_Jirafe_Model_Observer
     public function salesOrderSaveAfter ($observer)
     {
         $order = $observer->getEvent()->getOrder();
-        if (!$order->getJirafeExportStatus() && $order->getState() == Mage_Sales_Model_Order::STATE_PROCESSING) {
+        if (!$order->getJirafeExportStatus()) {
 
             $piwikTracker = $this->_initPiwikTracker($order->getStoreId());
             $piwikTracker->setCustomVariable('1', 'U', Fooman_Jirafe_Block_Js::VISITOR_CUSTOMER);
@@ -104,7 +104,7 @@ class Fooman_Jirafe_Model_Observer
         $jirafeAlsoSendTo =str_replace(array("\r", " "), "", str_replace("\n", ",", Mage::app()->getRequest()->getPost('jirafe_also_send_to')));
         
         // Check to see if some user fields have changed
-        if ($user->isObjectNew() ||
+        if (!$user->getId() ||
             $user->dataHasChangedFor('firstname') ||
             $user->dataHasChangedFor('username') ||
             $user->dataHasChangedFor('email') ||
@@ -166,7 +166,7 @@ class Fooman_Jirafe_Model_Observer
         Mage::helper('foomanjirafe')->debug('storeSaveBefore');
         $store = $observer->getEvent()->getDataObject();
         // If the object is new, or has any data changes, sync
-        if ($store->isObjectNew() || $store->hasDataChanges()) {
+        if (!$store->getId() || $store->hasDataChanges()) {
             Mage::register('foomanjirafe_sync', true);
         }
     }
@@ -206,7 +206,7 @@ class Fooman_Jirafe_Model_Observer
         Mage::helper('foomanjirafe')->debug('storeGroupSaveBefore');
         $storeGroup = $observer->getEvent()->getDataObject();
         // If the object is new, or has any data changes, sync
-        if ($storeGroup->isObjectNew() || $storeGroup->hasDataChanges()) {
+        if (!$storeGroup->getId() || $storeGroup->hasDataChanges()) {
             Mage::register('foomanjirafe_sync', true);
         }
     }
