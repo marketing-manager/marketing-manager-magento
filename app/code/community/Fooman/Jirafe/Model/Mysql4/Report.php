@@ -143,7 +143,9 @@ class Fooman_Jirafe_Model_Mysql4_Report extends Mage_Core_Model_Mysql4_Abstract
                             ->where('v.first_visit_at < ?', $to)
                             ->where('v.store_id = ?', $storeId);
 
-            if ($first) {
+            // first - is this the first email sent?  Therefore, we need to filter the first day of visitors from non-filtered results.
+            // after this, they will automatically be filtered
+            if(!Mage::helper('foomanjirafe')->getStoreConfig('sent_initial_email')) {
                 if (version_compare(Mage::getVersion(), '1.4.0.0') < 0) {
                     $ignoreAgents = array();
                     $ignoreAgentsConfig = Mage::getConfig()->getNode('global/ignore_user_agents');

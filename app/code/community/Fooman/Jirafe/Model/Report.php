@@ -27,7 +27,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         $this->_jirafe = Mage::getModel('foomanjirafe/jirafe');
     }
 
-    public function cron ($cronSchedule, $first = false)
+    public function cron ($cronSchedule)
     {
         $this->_helper->debug('starting jirafe report cron');
 
@@ -50,8 +50,8 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
                 if ($store->getIsActive()) {
                     // Get the store ID
                     $storeId = $store->getId();
-                    // Only continue if this plugin is active for the store or if this is the first email
-                    if ($this->_helper->getStoreConfig('isActive', $storeId) || $first) {
+                    // Only continue if this plugin is active for the store 
+                    if ($this->_helper->getStoreConfig('isActive', $storeId)) {
                         // Set the current store
                         Mage::app()->setCurrentStore($store);
                         // Get the timespan (array ('from', 'to')) for this report
@@ -61,7 +61,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
                         if (!$exists) {
                             try {
                                 // Create new report
-                                $data = $this->_compileReport($store, $timespan, $first);
+                                $data = $this->_compileReport($store, $timespan);
                                 // Save report
                                 $this->_saveReport($store, $timespan, $data);
                                 // Send out emails
@@ -69,7 +69,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
                                 // Are we sending a simple or a detailed report?
                                 $detailReport = $this->_helper->getStoreConfig('reportType', $storeId) == 'detail';
                                 // Email the report to users
-                                $this->_emailReport($store, $timespan, $data + $data_formatted + array('first' => $first, 'detail_report' => $detailReport));
+                                $this->_emailReport($store, $timespan, $data + $data_formatted + array('detail_report' => $detailReport));
                                 // Send Jirafe heartbeat
                                 $this->_sendReport($store, $timespan, $data);
                                 //save status message
@@ -92,38 +92,10 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
             }
         }
 
-        if ($first) {
-            // Set a flag to know that the user has been notified
-            $this->_helper->setStoreConfig('sent_initial_email', true);
-            // Notify user if it is just installed
-            $this->_notifyAdminUser($success);
-        }
-
         $this->_helper->debug('finished jirafe report cron');
     }
 
-    private function _notifyAdminUser ($success)
-    {
-        if ($success) {
-            Mage::getModel('adminnotification/inbox')
-                    ->setSeverity(Mage_AdminNotification_Model_Inbox::SEVERITY_NOTICE)
-                    ->setTitle('Jirafe plugin for Magento installed successfully.')
-                    ->setDateAdded(gmdate('Y-m-d H:i:s'))
-                    ->setUrl(Mage::helper('adminhtml')->getUrl('adminhtml/jirafe/manual', array('_nosid' => true, '_nosecret' => true)))
-                    ->setDescription('We have just installed Jirafe and you have received your first report via email. You can change the settings in the admin area under System > Configuration > General > Jirafe Analytics.')
-                    ->save();
-        } else {
-            Mage::getModel('adminnotification/inbox')
-                    ->setSeverity(Mage_AdminNotification_Model_Inbox::SEVERITY_NOTICE)
-                    ->setTitle('Jirafe plugin for Magento installed - needs configuration')
-                    ->setDateAdded(gmdate('Y-m-d H:i:s'))
-                    ->setUrl(Mage::getModel('core/config_data')->load('web/secure/base_url', 'path')->getValue() . Mage::helper('adminhtml')->getUrl('adminhtml/jirafe/manual', array('_nosid' => true, '_nosecret' => true)))
-                    ->setDescription('We have just installed Jirafe and but were unable to send you your first report via email. Please change the settings in the admin area under System > Configuration > General > Jirafe Analytics.')
-                    ->save();
-        }
-    }
-
-    private function _compileReport ($store, $timespan, $first = false)
+    private function _compileReport ($store, $timespan)
     {
         $reportData = array();
 
@@ -180,7 +152,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         $reportData += Mage::getResourceModel('foomanjirafe/report')->getStoreOrders($storeId, $from, $to);
 
         // Get visitor and conversion data
-        $reportData['visitor_num'] = Mage::getResourceModel('foomanjirafe/report')->getStoreVisitors($storeId, $from, $to, $first);
+        $reportData['visitor_num'] = Mage::getResourceModel('foomanjirafe/report')->getStoreVisitors($storeId, $from, $to);
         if ($reportData['visitor_num'] > 0) {
             $reportData['visitor_conversion_rate'] = $reportData['customer_num'] / $reportData['visitor_num'];
             $reportData['sales_grand_total_per_visitor'] = $reportData['sales_grand_total'] / $reportData['visitor_num'];
@@ -234,6 +206,8 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
             $excludeSuppress = ($data['order_num'] == 0);
             // Get the list of emails to send this report
             $emails = $this->_helper->collectJirafeEmails(false, $excludeSuppress);
+            //add intro to the first email being sent (global)
+            $data['first'] = !Mage::helper('foomanjirafe')->getStoreConfig('sent_initial_email');
             // Translate email
             $translate = Mage::getSingleton('core/translate');
             /* @var $translate Mage_Core_Model_Translate */
@@ -253,6 +227,10 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
                                 $data,
                                 $storeId
                 );
+            }
+            if(!$data['first']) {
+                // Set a flag to know that the we have sent out the first email
+                $this->_helper->setStoreConfig('sent_initial_email', true);
             }
         }
     }
