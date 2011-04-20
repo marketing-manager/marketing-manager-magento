@@ -244,7 +244,7 @@
             </resources>
         </acl>
         <events>
-            <core_config_data_save_after>
+            <model_save_after>
                 <observers>
                     <foomanjirafe_configSaveAfter>
                         <type>singleton</type>
@@ -252,7 +252,16 @@
                         <method>configSaveAfter</method>
                     </foomanjirafe_configSaveAfter>
                 </observers>
-            </core_config_data_save_after>
+            </model_save_after>
+            <!--<core_config_data_save_after>
+                <observers>
+                    <foomanjirafe_configSaveAfter>
+                        <type>singleton</type>
+                        <class>Fooman_Jirafe_Model_Observer</class>
+                        <method>configSaveAfter</method>
+                    </foomanjirafe_configSaveAfter>
+                </observers>
+            </core_config_data_save_after>-->
             <store_group_save_before>
                 <observers>
                     <foomanjirafe_storeGroupSaveBefore>

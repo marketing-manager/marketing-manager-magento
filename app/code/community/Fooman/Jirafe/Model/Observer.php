@@ -251,10 +251,13 @@ class Fooman_Jirafe_Model_Observer
     public function configSaveAfter($observer)
     {
         Mage::helper('foomanjirafe')->debug('syncAfterSettingsSave');
-        $path = $observer->getEvent()->getConfigData()->getPath();
-        $keys = array('web/unsecure/base_url', 'general/locale/timezone', 'currency/options/base');
-        if (in_array($path, $keys)) {
-            Mage::getModel('foomanjirafe/jirafe')->syncUsersStores();
+        $configData = $observer->getEvent()->getObject();
+        if($configData instanceof Mage_Core_Model_Config_Data) {
+            $path = $configData->getPath();
+            $keys = array('web/unsecure/base_url', 'general/locale/timezone', 'currency/options/base');
+            if (in_array($path, $keys)) {
+                Mage::getModel('foomanjirafe/jirafe')->syncUsersStores();
+            }
         }
     }
 
