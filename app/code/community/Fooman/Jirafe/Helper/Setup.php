@@ -139,8 +139,12 @@ class Fooman_Jirafe_Helper_Setup extends Mage_Core_Helper_Abstract
                         ALTER TABLE `{$installer->getTable($instruction['table'])}` ADD COLUMN `{$instruction['name']}` {$instruction['params']}");
                     break;
                 case 'sql-column-delete':
+                    try{
                     $return = $installer->run("
                         ALTER TABLE `{$installer->getTable($instruction['table'])}` DROP COLUMN `{$instruction['name']}`");
+                    } catch (Exception $e) {
+                        Mage::logException($e);
+                    }
                     break;
             }
 
