@@ -41,9 +41,13 @@ class Fooman_Jirafe_Helper_Data extends Mage_Core_Helper_Abstract
      * @return  string
      */
     public function getStoreConfigDirect ($key,
-            $storeId = Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID)
+            $storeId = Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID, $foomanjirafe=true, $websiteId=false)
     {
-        $path = self::XML_PATH_FOOMANJIRAFE_SETTINGS . $key;
+        if($foomanjirafe) {
+            $path = self::XML_PATH_FOOMANJIRAFE_SETTINGS . $key;
+        } else {
+            $path = $key;
+        }
         $collection = Mage::getModel('core/config_data')->getCollection()
                         ->addFieldToFilter('path', $path)
                         ->addFieldToFilter('scope_id', $storeId);
@@ -54,6 +58,28 @@ class Fooman_Jirafe_Helper_Data extends Mage_Core_Helper_Abstract
             //value exists /-> update/ should only be one
             foreach ($collection as $existingConfigData) {
                 return $existingConfigData->getValue();
+            }
+        }
+        //fall back on website and default for non-jirafe settings
+        if(!$foomanjirafe) {
+            $collection = Mage::getModel('core/config_data')->getCollection()
+                            ->addFieldToFilter('path', $path)
+                            ->addFieldToFilter('scope_id',  $websiteId)
+                            ->addFieldToFilter('scope', Mage_Adminhtml_Block_System_Config_Form::SCOPE_WEBSITES);
+            if ($collection->load()->getSize() == 1) {
+                //value exists /-> update/ should only be one
+                foreach ($collection as $existingConfigData) {
+                    return $existingConfigData->getValue();
+                }
+            }
+            $collection = Mage::getModel('core/config_data')->getCollection()
+                            ->addFieldToFilter('path', $path)
+                            ->addFieldToFilter('scope_id',  Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID);
+            if ($collection->load()->getSize() == 1) {
+                //value exists /-> update/ should only be one
+                foreach ($collection as $existingConfigData) {
+                    return $existingConfigData->getValue();
+                }
             }
         }
     }

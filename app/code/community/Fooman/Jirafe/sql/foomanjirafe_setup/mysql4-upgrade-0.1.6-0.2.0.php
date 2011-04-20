@@ -84,6 +84,7 @@ foreach ($collection as $jirafeOldSetting) {
 }
 
 $installer->endSetup();
+Mage::unregister('foomanjirafe_upgrade');
 
 //Run sync when finished with install/update
 Mage::getModel('foomanjirafe/jirafe')->initialSync($version);

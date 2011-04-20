@@ -51,7 +51,7 @@ class Fooman_Jirafe_Model_Jirafe
         } else {
             //retrieve new application id from jirafe server
             try {
-                $baseUrl = Mage::helper('foomanjirafe')->getUnifiedStoreBaseUrl(Mage::getStoreConfig('web/unsecure/base_url', $defaultStoreId));
+                $baseUrl = Mage::helper('foomanjirafe')->getUnifiedStoreBaseUrl(Mage::helper('foomanjirafe')->getStoreConfigDirect('web/unsecure/base_url', $defaultStoreId,false));
                 $return = Mage::getModel('foomanjirafe/api_application')->create(Mage::helper('foomanjirafe')->getStoreDescription(Mage::app()->getStore($defaultStoreId)), $baseUrl);
                 if(empty($return['app_id']) || empty($return['token'])) {
                     throw new Exception ('Jirafe did not return a valid application Id or token.');
@@ -113,19 +113,19 @@ class Fooman_Jirafe_Model_Jirafe
     
     public function getStores()
     {
-        Mage::app()->getConfig()->removeCache();
         $storeArray = array();
         $stores = Mage::helper('foomanjirafe')->getStores();
         foreach ($stores as $storeId => $store) {
+            $websiteId = $store->getWebsiteId();
             $tmpStore = array();
-            $tmpStore['site_id'] = Mage::helper('foomanjirafe')->getStoreConfig('site_id', $store->getId());
+            $tmpStore['site_id'] = Mage::helper('foomanjirafe')->getStoreConfigDirect('site_id', $storeId);
             $tmpStore['external_id'] = $storeId;
             $tmpStore['description'] = Mage::helper('foomanjirafe')->getStoreDescription($store);
             //newly created stores don't fall back on global config values
-            $tmpStore['url'] = Mage::helper('foomanjirafe')->getUnifiedStoreBaseUrl($store->getConfig('web/unsecure/base_url') ? $store->getConfig('web/unsecure/base_url') : Mage::getStoreConfig('web/unsecure/base_url'));
-            $tmpStore['timezone'] = $store->getConfig('general/locale/timezone') ? $store->getConfig('general/locale/timezone') : Mage::getStoreConfig('general/locale/timezone');
-            $tmpStore['currency'] = $store->getConfig('currency/options/base') ? $store->getConfig('currency/options/base') : Mage::getStoreConfig('currency/options/base');
-            $tmpStore['checkout_goal_id'] = Mage::helper('foomanjirafe')->getStoreConfig('checkoutGoalId', $store->getId());
+            $tmpStore['url'] = Mage::helper('foomanjirafe')->getUnifiedStoreBaseUrl(Mage::helper('foomanjirafe')->getStoreConfigDirect('web/unsecure/base_url', $storeId, false, $websiteId));
+            $tmpStore['timezone'] = Mage::helper('foomanjirafe')->getStoreConfigDirect('general/locale/timezone', $storeId, false, $websiteId);
+            $tmpStore['currency'] = Mage::helper('foomanjirafe')->getStoreConfigDirect('currency/options/base', $storeId, false, $websiteId);
+            $tmpStore['checkout_goal_id'] = Mage::helper('foomanjirafe')->getStoreConfigDirect('checkout_goal_id', $storeId);
             $storeArray[] = $tmpStore;
         }
         
