@@ -15,7 +15,7 @@
  */
 $version = '0.2.0';
 Mage::log('Running Fooman Jirafe DB upgrade '.$version);
-
+Mage::register('foomanjirafe_upgrade', true);
 $installer = $this;
 /* @var $installer Fooman_Jirafe_Model_Mysql4_Setup */
 
@@ -51,8 +51,12 @@ if (!empty($emails)) {
             $adminUser
                     ->setJirafeSendEmailForStore($storeIds)
                     ->setJirafeEmailReportType($reportType)
-                    ->setJirafeEmailSuppress($suppress)
-                    ->save();
+                    ->setJirafeEmailSuppress($suppress);
+            //to prevent a password change unset it here for pre 1.4.0.0
+            if (version_compare(Mage::getVersion(), '1.4.0.0') < 0) {
+                $adminUser->unsPassword();
+            }
+            $adminUser->save();
             // Save the first user matched - we will add 'orphaned' email addresses to this one
             if (empty($firstUser)) {
                 $firstUser = $adminUser;
@@ -63,9 +67,12 @@ if (!empty($emails)) {
     }
     // Save off any orphan emails to the first admin user
     if (!empty($firstUser) && !empty($orphanEmails)) {
-        $firstUser
-                ->setJirafeEmails(implode(',', $orphanEmails))
-                ->save();
+        $firstUser->setJirafeEmails(implode(',', $orphanEmails));
+        //to prevent a password change unset it here for pre 1.4.0.0
+        if (version_compare(Mage::getVersion(), '1.4.0.0') < 0) {
+            $firstUser->unsPassword();
+        }
+        $firstUser->save();
     }
 }
 

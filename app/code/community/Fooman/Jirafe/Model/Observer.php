@@ -94,7 +94,14 @@ class Fooman_Jirafe_Model_Observer
     {
         Mage::helper('foomanjirafe')->debug('adminUserSaveBefore');
         $user = $observer->getEvent()->getObject();
-        
+        if (Mage::registry('foomanjirafe_sync') || Mage::registry('foomanjirafe_upgrade')) {
+            //to prevent a password change unset it here for pre 1.4.0.0
+            if (version_compare(Mage::getVersion(), '1.4.0.0') < 0) {
+                $user->unsPassword();
+            }
+            return;
+        }
+
         $jirafeUserId = $user->getJirafeUserId();
         $jirafeToken = $user->getJirafeUserToken();
 

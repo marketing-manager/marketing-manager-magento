@@ -128,9 +128,7 @@ class Fooman_Jirafe_Model_Mysql4_Report extends Mage_Core_Model_Mysql4_Abstract
         return $res;
     }
 
-    // first - is this the first email sent?  Therefore, we need to filter the first day of visitors from non-filtered results.
-    // after this, they will automatically be filtered
-    public function getStoreVisitors ($storeId, $from, $to, $first=false)
+    public function getStoreVisitors ($storeId, $from, $to)
     {
         $numVisitors = 0;
 

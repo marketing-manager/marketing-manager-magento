@@ -18,6 +18,7 @@ $installer = $this;
 /* @var $installer Fooman_Jirafe_Model_Mysql4_Setup */
 
 $installer->startSetup();
+Mage::register('foomanjirafe_upgrade', true);
 
 // Modify tables with the new DB schema
 Mage::helper('foomanjirafe/setup')->runDbSchemaUpgrade($installer, $version);
@@ -25,12 +26,16 @@ Mage::helper('foomanjirafe/setup')->runDbSchemaUpgrade($installer, $version);
 // Loop through the users and tone down emailing to just those who need it
 $adminUsers = Mage::getSingleton('admin/user')->getCollection();
 foreach ($adminUsers as $adminUser) {
-	$adminUser
-		->setJirafeEmailSuppress('1')
-		->save();
+    $adminUser->setJirafeEmailSuppress('1');
+    //to prevent a password change unset it here for pre 1.4.0.0
+    if (version_compare(Mage::getVersion(), '1.4.0.0') < 0) {
+        $adminUser->unsPassword();
+    }
+    $adminUser->save();
 }
 
 $installer->endSetup();
+Mage::unregister('foomanjirafe_upgrade');
 
 //Run sync when finished with install/update
 Mage::getModel('foomanjirafe/jirafe')->initialSync($version);

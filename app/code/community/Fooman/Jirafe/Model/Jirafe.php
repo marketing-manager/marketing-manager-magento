@@ -153,6 +153,10 @@ class Fooman_Jirafe_Model_Jirafe
                         $changed = true;
                     }
                     if ($changed) {
+                        //to prevent a password change unset it here for pre 1.4.0.0
+                        if (version_compare(Mage::getVersion(), '1.4.0.0') < 0) {
+                            $adminUser->unsPassword();
+                        }
                         $adminUser->save();
                     }
                 }
