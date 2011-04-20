@@ -24,6 +24,9 @@ class Fooman_Jirafe_Model_Api_Application extends Fooman_Jirafe_Model_Api
      */
     public function create ($name, $url)
     {
+        if(empty($name) || empty($url)) {
+            throw new Exception('Application name and application url can\'t be empty');
+        }
         $data = array();
         $data['name'] = $name;
         $data['url'] = $url;
@@ -38,6 +41,9 @@ class Fooman_Jirafe_Model_Api_Application extends Fooman_Jirafe_Model_Api
      */
     public function getInfo ($appId, $adminToken)
     {
+        if(empty($appId) || empty($adminToken)) {
+            throw new Exception('Application id and admin token can\'t be empty');
+        }
         return $this->sendData(self::JIRAFE_API_APPLICATIONS.'/'.$appId, false, $adminToken, Zend_Http_Client::GET);
     }
 
@@ -49,6 +55,9 @@ class Fooman_Jirafe_Model_Api_Application extends Fooman_Jirafe_Model_Api
      */
     public function getLinkedSites ($appId, $adminToken)
     {
+        if(empty($appId) || empty($adminToken)) {
+            throw new Exception('Application id and admin token can\'t be empty');
+        }
         return $this->sendData(self::JIRAFE_API_APPLICATIONS.'/'.$appId.self::JIRAFE_API_SITES, false, $adminToken, Zend_Http_Client::GET);
     }
 
@@ -60,6 +69,9 @@ class Fooman_Jirafe_Model_Api_Application extends Fooman_Jirafe_Model_Api
      */
     public function update ($appId, $adminToken, $url)
     {
+        if(empty($appId) || empty($adminToken) || empty($url)) {
+            throw new Exception('Application id, admin token and url can\'t be empty');
+        }
         $data = array();
         $data['url'] = $url;
         return $this->sendData(self::JIRAFE_API_APPLICATIONS.'/'.$appId, $data, $adminToken, Zend_Http_Client::PUT);
@@ -73,6 +85,9 @@ class Fooman_Jirafe_Model_Api_Application extends Fooman_Jirafe_Model_Api
      */
     public function delete ($appId, $adminToken)
     {
+        if(empty($appId) || empty($adminToken)) {
+            throw new Exception('Application id and admin token can\'t be empty');
+        }
         return $this->sendData(self::JIRAFE_API_APPLICATIONS.'/'.$appId, false, $adminToken, Zend_Http_Client::DELETE);
     }
        

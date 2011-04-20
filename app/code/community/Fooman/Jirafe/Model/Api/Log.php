@@ -23,8 +23,11 @@ class Fooman_Jirafe_Model_Api_Log extends Fooman_Jirafe_Model_Api
      * @param $adminToken
      * @param $data
      */
-    public function sendLog ($adminToken, $data)
+    public function sendLog ($adminToken, $data=array())
     {
+        if(empty($adminToken)) {
+            throw new Exception('Admin token can\'t be empty');
+        }
         return $this->sendData(self::JIRAFE_API_LOGS, $data, $adminToken, Zend_Http_Client::POST);
     }
 

@@ -24,6 +24,9 @@ class Fooman_Jirafe_Model_Api_Site extends Fooman_Jirafe_Model_Api
      */
     public function getInfo ($siteId, $adminToken)
     {
+        if(empty($siteId) || empty($adminToken)) {
+            throw new Exception('Site id and admin token can\'t be empty');
+        }
         return $this->sendData(self::JIRAFE_API_SITES.'/'.$siteId, false, $adminToken, Zend_Http_Client::GET);
     }
 
@@ -35,6 +38,9 @@ class Fooman_Jirafe_Model_Api_Site extends Fooman_Jirafe_Model_Api
      */
     public function getLinkedUsers ($siteId, $adminToken)
     {
+        if(empty($siteId) || empty($adminToken)) {
+            throw new Exception('Site id and admin token can\'t be empty');
+        }
         return $this->sendData(self::JIRAFE_API_SITES.'/'.$siteId.self::JIRAFE_API_USERS, false, $adminToken, Zend_Http_Client::GET);
     }
 
@@ -47,6 +53,9 @@ class Fooman_Jirafe_Model_Api_Site extends Fooman_Jirafe_Model_Api
      */
     public function update ($siteId, $adminToken, $timezone)
     {
+        if(empty($siteId) || empty($adminToken)) {
+            throw new Exception('Site id and admin token can\'t be empty');
+        }
         $data = array();
         $data['timezone'] = $timezone;
         return $this->sendData(self::JIRAFE_API_SITES.'/'.$siteId, $data, $adminToken, Zend_Http_Client::PUT);
@@ -60,6 +69,9 @@ class Fooman_Jirafe_Model_Api_Site extends Fooman_Jirafe_Model_Api
      */
     public function delete ($siteId, $adminToken)
     {
+        if(empty($siteId) || empty($adminToken)) {
+            throw new Exception('Site id and admin token can\'t be empty');
+        }
         return $this->sendData(self::JIRAFE_API_SITES.'/'.$siteId, false, $adminToken, Zend_Http_Client::DELETE);
     }
 }
