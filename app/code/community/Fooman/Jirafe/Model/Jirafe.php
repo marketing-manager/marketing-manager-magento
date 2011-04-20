@@ -178,9 +178,9 @@ class Fooman_Jirafe_Model_Jirafe
                     Mage::helper('foomanjirafe')->setStoreConfig('site_id', $jirafeSite['site_id'], $store->getId());
                 }
                 // Checkout Goal ID
-                $goalId = Mage::helper('foomanjirafe')->getStoreConfig('checkoutGoalId', $store->getId());
+                $goalId = Mage::helper('foomanjirafe')->getStoreConfig('checkout_goal_id', $store->getId());
                 if ($goalId != $jirafeSite['checkout_goal_id']) {
-                    Mage::helper('foomanjirafe')->setStoreConfig('checkoutGoalId', $jirafeSite['checkout_goal_id'], $store->getId());
+                    Mage::helper('foomanjirafe')->setStoreConfig('checkout_goal_id', $jirafeSite['checkout_goal_id'], $store->getId());
                 }
             }
         }
