@@ -75,7 +75,7 @@ class Fooman_Jirafe_Model_Observer
             }
 
             try {
-                $checkoutGoalId = Mage::helper('foomanjirafe')->getStoreConfig('checkoutGoalId', $order->getStoreId());
+                $checkoutGoalId = Mage::helper('foomanjirafe')->getStoreConfig('checkout_goal_id', $order->getStoreId());
                 $piwikTracker->doTrackGoal($checkoutGoalId, $order->getBaseGrandTotal());
                 $order->setJirafeExportStatus(Fooman_Jirafe_Model_Jirafe::STATUS_ORDER_EXPORTED);
                 $order->setDataChanges(true);
