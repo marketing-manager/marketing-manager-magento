@@ -128,7 +128,7 @@ class Fooman_Jirafe_Block_Js extends Mage_Core_Block_Template
     {
         $orderIncrementId = Mage::getSingleton('checkout/session')->getLastRealOrderId();
         if ($orderIncrementId) {
-            $order = Mage::getModel('sales/order')->load($orderIncrementId, 'increment_id');
+            $order = Mage::getModel('sales/order')->loadByIncrementId($orderIncrementId);
             if ($order->getId()) {
                 $quoteId = $order->getQuoteId();
             }
