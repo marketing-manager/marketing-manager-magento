@@ -13,6 +13,7 @@
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
-class Fooman_Jirafe_Model_Mysql4_Setup extends Mage_Core_Model_Resource_Setup
+class Fooman_Jirafe_Model_Mysql4_Setup extends Mage_Eav_Model_Entity_Setup
 {
+    
 }

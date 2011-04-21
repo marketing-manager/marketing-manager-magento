@@ -32,15 +32,27 @@ class Fooman_Jirafe_Helper_Setup extends Mage_Core_Helper_Abstract
                 }
                 //nobreak intentionally;
             case '0.2.6':
-                $instructions = array_merge(
-                        $instructions,
-                            array(
-                                array("type" =>"sql-column", "table" =>"sales/order", "name" =>"jirafe_visitor_id","params" =>"varchar(255) DEFAULT NULL"),
-                                array("type" =>"sql-column", "table" =>"sales/order", "name" =>"jirafe_attribution_data","params" =>"text DEFAULT NULL"),
-                                array("type" =>"sql-column", "table" =>"sales/order", "name" =>"jirafe_export_status","params" =>"int(5) DEFAULT 0"),
-                                array("type" =>"sql-column", "table" =>"sales/order", "name" =>"jirafe_placed_from_frontend","params" =>"tinyint(1) DEFAULT 0"),
-                                )
-                        );
+                if(version_compare(Mage::getVersion(),'1.4.1.0') >= 0){
+                    $instructions = array_merge(
+                            $instructions,
+                                array(
+                                    array("type" =>"sql-column", "table" =>"sales/order", "name" =>"jirafe_visitor_id","params" =>"varchar(255) DEFAULT NULL"),
+                                    array("type" =>"sql-column", "table" =>"sales/order", "name" =>"jirafe_attribution_data","params" =>"text DEFAULT NULL"),
+                                    array("type" =>"sql-column", "table" =>"sales/order", "name" =>"jirafe_export_status","params" =>"int(5) DEFAULT 0"),
+                                    array("type" =>"sql-column", "table" =>"sales/order", "name" =>"jirafe_placed_from_frontend","params" =>"tinyint(1) DEFAULT 0"),
+                                    )
+                            );
+                } else {
+                    $instructions = array_merge(
+                            $instructions,
+                                array(
+                                    array("type" =>"eav-attribute", "entity" =>"order", "name" =>"jirafe_visitor_id","params" =>array('type' => 'varchar','label' => 'Jirafe Visitor Id','required'=>0,'global'=>1,'visible'=>0)),
+                                    array("type" =>"eav-attribute", "entity" =>"order", "name" =>"jirafe_attribution_data","params" =>array('type' => 'text','label' => 'Jirafe Attribution Data','required'=>0,'global'=>1,'visible'=>0)),
+                                    array("type" =>"eav-attribute", "entity" =>"order", "name" =>"jirafe_export_status","params" =>array('type' => 'int','label' => 'Jirafe Export Status','required'=>0,'global'=>1,'visible'=>0,'default'=>0)),
+                                    array("type" =>"eav-attribute", "entity" =>"order", "name" =>"jirafe_placed_from_frontend","params" =>array('type' => 'int','label' => 'Placed from Frontend','required'=>0,'global'=>1,'visible'=>0,'default'=>0)),
+                                    )
+                            );
+                }
                 if(!$returnComplete) {
                     break;
                 }
@@ -142,6 +154,13 @@ class Fooman_Jirafe_Helper_Setup extends Mage_Core_Helper_Abstract
                     try{
                     $return = $installer->run("
                         ALTER TABLE `{$installer->getTable($instruction['table'])}` DROP COLUMN `{$instruction['name']}`");
+                    } catch (Exception $e) {
+                        Mage::logException($e);
+                    }
+                    break;
+                case 'eav-attribute':
+                    try {
+                        $installer->addAttribute($instruction['entity'], $instruction['name'], $instruction['params']);
                     } catch (Exception $e) {
                         Mage::logException($e);
                     }
