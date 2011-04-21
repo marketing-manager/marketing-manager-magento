@@ -15,18 +15,26 @@
 
 class Fooman_Jirafe_Model_Api
 {
+    // PRODUCTION environment
     const JIRAFE_API_SERVER = 'https://api.jirafe.com';
-//    const JIRAFE_API_SERVER = 'http://api.jirafe.local';
-
     const JIRAFE_API_BASE = '';
+    const JIRAFE_PIWIK_BASE_URL = 'data.jirafe.com';
+    
+    // DEV environment
+//    const JIRAFE_API_SERVER = 'http://api.jirafe.local';
 //    const JIRAFE_API_BASE = 'app_dev.php';
+//    const JIRAFE_PIWIK_BASE_URL = 'piwik.local';
+    
+    // TEST environment
+//    const JIRAFE_API_SERVER = 'https://test-api.jirafe.com';
+//    const JIRAFE_API_BASE = '';
+//    const JIRAFE_PIWIK_BASE_URL = 'test-data.jirafe.com';
+    
+
 
 	// Don't put http/s on this URL because it is added later
-    const JIRAFE_PIWIK_BASE_URL = 'data.jirafe.com';
-//    const JIRAFE_PIWIK_BASE_URL = 'piwik.local';
 
     const JIRAFE_API_VERSION = 'v1';
-
     const JIRAFE_API_LOGS = '/logs';
     const JIRAFE_API_APPLICATIONS = '/applications';
     const JIRAFE_API_RESOURCES =  '/resources';
