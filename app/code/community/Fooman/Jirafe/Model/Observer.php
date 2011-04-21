@@ -38,13 +38,15 @@ class Fooman_Jirafe_Model_Observer
      */
     public function salesConvertQuoteToOrder ($observer)
     {
-        $order = $observer->getEvent()->getOrder();
+        Mage::helper('foomanjirafe')->debug('salesConvertQuoteToOrder');
+        $order = $observer->getOrder();
+        /* @var $order Mage_Sales_Model_Order */
         $piwikTracker = $this->_initPiwikTracker($order->getStoreId());
         if (Mage::getDesign()->getArea() == 'frontend') {
             $order->setJirafeVisitorId($piwikTracker->getVisitorId());
             $order->setJirafeAttributionData($piwikTracker->getAttributionInfo());
             $order->setJirafePlacedFromFrontend(true);
-        }
+        }      
     }
 
     /**
@@ -55,9 +57,9 @@ class Fooman_Jirafe_Model_Observer
      */
     public function salesOrderSaveBefore ($observer)
     {
-        $order = $observer->getEvent()->getOrder();
+        Mage::helper('foomanjirafe')->debug('salesOrderSaveBefore');
+        $order = $observer->getOrder();    
         if (!$order->getJirafeExportStatus()) {
-
             $piwikTracker = $this->_initPiwikTracker($order->getStoreId());
             $piwikTracker->setCustomVariable('1', 'U', Fooman_Jirafe_Block_Js::VISITOR_CUSTOMER);
             $piwikTracker->setCustomVariable('5', 'orderId', $order->getIncrementId());
@@ -76,11 +78,13 @@ class Fooman_Jirafe_Model_Observer
                 $checkoutGoalId = Mage::helper('foomanjirafe')->getStoreConfig('checkoutGoalId', $order->getStoreId());
                 $piwikTracker->doTrackGoal($checkoutGoalId, $order->getBaseGrandTotal());
                 $order->setJirafeExportStatus(Fooman_Jirafe_Model_Jirafe::STATUS_ORDER_EXPORTED);
+                $order->setDataChanges(true);
             } catch (Exception $e) {
                 Mage::logException($e);
                 $order->setJirafeExportStatus(Fooman_Jirafe_Model_Jirafe::STATUS_ORDER_FAILED);
+                $order->setDataChanges(true);                
             }
-        }
+        }       
     }
 
     /**
