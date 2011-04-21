@@ -9,11 +9,6 @@
             <block type="foomanjirafe/adminhtml_dashboard_toggle" name="foomanjirafe_dashboard_toggle" as="foomanjirafe_dashboard_toggle" />
         </reference>
     </adminhtml_dashboard_index>
-    <adminhtml_jirafe_manual>
-        <reference name="content">
-            <block type="foomanjirafe/adminhtml_status" name="foomanjirafe_status" as="foomanjirafe_status" />
-        </reference>
-    </adminhtml_jirafe_manual>
     <adminhtml_system_config_edit>
         <reference name="content">
             <block type="foomanjirafe/adminhtml_status" name="foomanjirafe_status" as="foomanjirafe_status" />

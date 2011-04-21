@@ -15,21 +15,8 @@
 
 class Fooman_Jirafe_Adminhtml_JirafeController extends Mage_Adminhtml_Controller_Action {
 
-    protected $_publicActions = array('manual');
-
     protected function _construct() {
         $this->setUsedModuleName('Fooman_Jirafe');
-    }
-
-    public function manualAction()
-    {
-        $this->loadLayout();
-
-        $this->_addContent(
-                $this->getLayout()->createBlock('foomanjirafe/adminhtml_manual', 'jirafemanual')
-        );
-
-        $this->renderLayout();
     }
 
     public function reportAction ()
