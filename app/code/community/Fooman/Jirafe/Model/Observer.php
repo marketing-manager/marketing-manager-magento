@@ -36,7 +36,7 @@ class Fooman_Jirafe_Model_Observer
      *
      * @param $observer
      */
-    public function savePiwikData ($observer)
+    public function salesConvertQuoteToOrder ($observer)
     {
         $order = $observer->getEvent()->getOrder();
         $piwikTracker = $this->_initPiwikTracker($order->getStoreId());
@@ -53,7 +53,7 @@ class Fooman_Jirafe_Model_Observer
      *
      * @param $observer
      */
-    public function salesOrderSaveAfter ($observer)
+    public function salesOrderSaveBefore ($observer)
     {
         $order = $observer->getEvent()->getOrder();
         if (!$order->getJirafeExportStatus()) {

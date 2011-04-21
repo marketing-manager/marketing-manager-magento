@@ -194,22 +194,22 @@
             </checkout_cart_product_add_after>
             <sales_convert_quote_to_order>
                 <observers>
-                    <foomanjirafe_savePiwikData>
+                    <foomanjirafe_salesConvertQuoteToOrder>
                         <type>singleton</type>
                         <class>Fooman_Jirafe_Model_Observer</class>
-                        <method>savePiwikData</method>
-                    </foomanjirafe_savePiwikData>
+                        <method>salesConvertQuoteToOrder</method>
+                    </foomanjirafe_salesConvertQuoteToOrder>
                 </observers>
             </sales_convert_quote_to_order>
-            <sales_order_save_after>
+            <sales_order_save_before>
                 <observers>
-                    <foomanjirafe_salesOrderSaveAfter>
+                    <foomanjirafe_salesOrderSaveBefore>
                         <type>singleton</type>
                         <class>Fooman_Jirafe_Model_Observer</class>
-                        <method>salesOrderSaveAfter</method>
-                    </foomanjirafe_salesOrderSaveAfter>
+                        <method>salesOrderSaveBefore</method>
+                    </foomanjirafe_salesOrderSaveBefore>
                 </observers>
-            </sales_order_save_after>
+            </sales_order_save_before>
         </events>
     </frontend>
     <admin>
