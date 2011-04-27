@@ -2,17 +2,17 @@
 cd app/code/community/
 ln -s ~/code/jirafe-magento-plugin/app/code/community/Fooman
 cd ../../..
+cd app/design/adminhtml/default/default/layout
+ln -s ~/code/jirafe-magento-plugin/app/design/adminhtml/default/default/layout/foomanjirafe.xml
+cd ../../../../../..
 cd app/design/adminhtml/default/default/template/
 ln -s ~/code/jirafe-magento-plugin/app/design/adminhtml/default/default/template/fooman
-cd ../../../../../..
-cd app/design/frontend/base/default/template/
-ln -s ~/code/jirafe-magento-plugin/app/design/frontend/base/default/template/fooman
 cd ../../../../../..
 cd app/design/frontend/base/default/layout/
 ln -s ~/code/jirafe-magento-plugin/app/design/frontend/base/default/layout/foomanjirafe.xml
 cd ../../../../../..
-cd app/design/adminhtml/default/default/layout
-ln -s ~/code/jirafe-magento-plugin/app/design/adminhtml/default/default/layout/foomanjirafe.xml
+cd app/design/frontend/base/default/template/
+ln -s ~/code/jirafe-magento-plugin/app/design/frontend/base/default/template/fooman
 cd ../../../../../..
 cd app/etc/modules/
 ln -s ~/code/jirafe-magento-plugin/app/etc/modules/Fooman_Jirafe.xml
@@ -23,20 +23,20 @@ cd ../../../../..
 cd js/
 ln -s ~/code/jirafe-magento-plugin/js/fooman
 cd ..
-cd skin/adminhtml/default/default/images
-ln -s ~/code/jirafe-magento-plugin/skin/adminhtml/default/default/images/jirafe
-cd ../../../../..
+cd lib/
+ln -s ~/code/jirafe-magento-plugin/lib/Piwik
+cd ..
 
 ## Run this to remove a linked Jirafe from a Magento instance
 rm app/code/community/Fooman
+rm app/design/adminhtml/default/default/layout/foomanjirafe.xml
 rm app/design/adminhtml/default/default/template/fooman
+rm app/design/frontend/base/default/layout/foomanjirafe.xml
+rm app/design/frontend/base/default/template/fooman
 rm app/etc/modules/Fooman_Jirafe.xml
 rm app/locale/en_US/template/email/jirafe
 rm js/fooman
-rm skin/adminhtml/default/default/images/jirafe
-rm app/design/frontend/base/default/layout/foomanjirafe.xml
-rm app/design/frontend/base/default/template/fooman
-cd app/design/adminhtml/default/default/layout/foomanjirafe.xml
+rm lib/Piwik
 
 ## Run this in the MySQL DB to remove Jirafe (assumes no table prefix)
 DROP TABLE foomanjirafe_report;
