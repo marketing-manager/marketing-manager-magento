@@ -2,5 +2,6 @@
 <?php $_block = $this->getFoomanBlock() ?>
 <?php if (Mage::helper('foomanjirafe')->isDashboardActive()) : ?>
     <link type="text/css" rel="stylesheet" href="<?php echo $_block->getAssetUrl('bundles/jirafe/css/magento_ui.css') ?>" media="all" />
-    <script type="text/javascript" src="<?php echo $_block->getAssetUrl('bundles/jirafe/js/magento_ui.js') ?>"><script>
+    <script type="text/javascript" src="<?php echo $_block->getAssetUrl('bundles/jirafe/js/magento_ui.js') ?>"></script>
+    <script type="text/javascript" src="<?php echo Mage::getBaseUrl('js').'fooman/jirafe/noConflict.js'?>"></script>
 <?php endif ?>
