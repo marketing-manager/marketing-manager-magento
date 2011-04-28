@@ -41,9 +41,12 @@ class Fooman_Jirafe_Adminhtml_JirafeController extends Mage_Adminhtml_Controller
     {
         $user = Mage::getSingleton('admin/session')->getUser();
         $active = $user->getJirafeDashboardActive();
-        $user
-            ->setJirafeDashboardActive(!$active)
-            ->save();
+        $user->setJirafeDashboardActive(!$active);
+        //to prevent a password change unset it here for pre 1.4.0.0
+        if (version_compare(Mage::getVersion(), '1.4.0.0') < 0) {
+            $user->unsPassword();
+        }        
+        $user->save();
         $this->_redirect('adminhtml/dashboard');
     }
 }
