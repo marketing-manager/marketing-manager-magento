@@ -40,6 +40,7 @@ class Fooman_Jirafe_Model_Api
     const JIRAFE_API_RESOURCES =  '/resources';
     const JIRAFE_API_SITES = '/sites';
     const JIRAFE_API_USERS = '/users';
+    const JIRAFE_DOC_URL = 'http://jirafe.com/doc';
 
     /**
      * Returns the URL of the API
@@ -85,10 +86,10 @@ class Fooman_Jirafe_Model_Api
 
     public function getDocUrl($platform, $type='user', $version=null)
     {
-        if($version){
-            return rtrim(self::JIRAFE_API_SERVER, '/') . '/doc/' .$platform. '/'. $version. '/'. ltrim($type, '/');
+        if ($version) {
+            return rtrim(self::JIRAFE_DOC_URL, '/') . "/{$platform}/{$version}/" . ltrim($type, '/');
         } else {
-            return rtrim(self::JIRAFE_API_SERVER, '/') . '/doc/' .$platform. '/'. ltrim($type, '/');
+            return rtrim(self::JIRAFE_DOC_URL, '/') . "/{$platform}/" . ltrim($type, '/');
         }
     }
 
