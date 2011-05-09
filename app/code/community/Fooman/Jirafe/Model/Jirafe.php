@@ -195,6 +195,9 @@ class Fooman_Jirafe_Model_Jirafe
             if (empty($appId)) {
                 $appId = $this->checkAppId();
             }
+            if(!$appId) {
+                return false;
+            }
             $adminToken = Mage::helper('foomanjirafe')->getStoreConfig('app_token');
 
             $userArray = $this->getAdminUsers();
