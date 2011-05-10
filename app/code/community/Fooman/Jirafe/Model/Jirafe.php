@@ -245,6 +245,7 @@ class Fooman_Jirafe_Model_Jirafe
             if(!Mage::helper('foomanjirafe')->getStoreConfig('installed')) {
                 // Notify user 
                 $this->_notifyAdminUser(Mage::helper('foomanjirafe')->isOk(), (string) Mage::getConfig()->getModuleConfig('Fooman_Jirafe')->version);
+                Mage::helper('foomanjirafe')->setStoreConfig('installed', true);
             }
         }
     }
