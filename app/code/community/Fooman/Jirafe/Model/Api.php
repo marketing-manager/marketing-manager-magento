@@ -97,6 +97,10 @@ class Fooman_Jirafe_Model_Api
             $method = Zend_Http_Client::POST, $httpAuth = array())
     {
 
+        if(!in_array('ssl', stream_get_transports())) {
+            throw new Exception("The Jirafe plugin requires outgoing connectivity via ssl to communicate securely with our server to function. Please enable ssl support for php or get your webhosting company to do it for you.");
+        }
+        
         //set up connection
         $conn = new Zend_Http_Client($this->getApiUrl($entryPoint));
         $conn->setConfig(array(
