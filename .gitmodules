@@ -1,0 +1,3 @@
+[submodule "lib/Jirafe"]
+	path = lib/Jirafe
+	url = git@github.com:jirafe/php-client.git
