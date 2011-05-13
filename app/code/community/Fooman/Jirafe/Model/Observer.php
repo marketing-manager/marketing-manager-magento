@@ -289,7 +289,7 @@ class Fooman_Jirafe_Model_Observer
                 'after'     => 'roles_section'
             ));
         }
-        if ($block instanceof Mage_Adminhtml_Block_Page_Head) {
+        if ($block instanceof Mage_Adminhtml_Block_Page_Head || $block instanceof Fooman_Speedster_Block_Adminhtml_Page_Head) {
             $block->setOrigTemplate(Mage::getBaseDir('design').DS.Mage::getDesign()->getTemplateFilename($block->getTemplate(), $params));
             $block->setTemplate('fooman/jirafe/dashboard-head.phtml');
             $block->setFoomanBlock($block->getLayout()->createBlock('foomanjirafe/adminhtml_dashboard_js'));
