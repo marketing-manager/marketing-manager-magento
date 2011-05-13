@@ -352,6 +352,15 @@
                     </foomanjirafe_coreBlockAbstractToHtmlBefore>
                 </observers>
             </core_block_abstract_to_html_before>
+            <sales_convert_quote_to_order>
+                <observers>
+                    <foomanjirafe_salesConvertQuoteToOrder>
+                        <type>singleton</type>
+                        <class>Fooman_Jirafe_Model_Observer</class>
+                        <method>salesConvertQuoteToOrder</method>
+                    </foomanjirafe_salesConvertQuoteToOrder>
+                </observers>
+            </sales_convert_quote_to_order>             
             <sales_order_save_before>
                 <observers>
                     <foomanjirafe_salesOrderSaveBefore>

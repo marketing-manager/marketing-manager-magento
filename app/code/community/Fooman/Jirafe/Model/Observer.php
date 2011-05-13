@@ -43,10 +43,11 @@ class Fooman_Jirafe_Model_Observer
         /* @var $order Mage_Sales_Model_Order */
         $piwikTracker = $this->_initPiwikTracker($order->getStoreId());
         if (Mage::getDesign()->getArea() == 'frontend') {
-            $order->setJirafeVisitorId($piwikTracker->getVisitorId());
-            $order->setJirafeAttributionData($piwikTracker->getAttributionInfo());
+            Mage::helper('foomanjirafe')->debug('salesConvertQuoteToOrder Frontend');
             $order->setJirafePlacedFromFrontend(true);
-        }      
+        }
+        $order->setJirafeVisitorId($piwikTracker->getVisitorId());
+        $order->setJirafeAttributionData($piwikTracker->getAttributionInfo());        
     }
 
     /**
@@ -75,6 +76,7 @@ class Fooman_Jirafe_Model_Observer
             }
 
             try {
+                Mage::helper('foomanjirafe')->debug($order->getIncrementId().': '.$order->getJirafeVisitorId().' '.$order->getBaseGrandTotal());
                 $checkoutGoalId = Mage::helper('foomanjirafe')->getStoreConfig('checkout_goal_id', $order->getStoreId());
                 $piwikTracker->doTrackGoal($checkoutGoalId, $order->getBaseGrandTotal());
                 $order->setJirafeExportStatus(Fooman_Jirafe_Model_Jirafe::STATUS_ORDER_EXPORTED);
