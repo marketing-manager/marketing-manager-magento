@@ -22,7 +22,7 @@ class Fooman_Jirafe_Model_Observer
         $appToken = Mage::helper('foomanjirafe')->getStoreConfig('app_token');
         $siteId = Mage::helper('foomanjirafe')->getStoreConfig('site_id', $storeId);
 
-        $jirafePiwikUrl = 'http://' . Fooman_Jirafe_Model_Api::JIRAFE_PIWIK_BASE_URL;
+        $jirafePiwikUrl = 'http://' . Mage::getModel('foomanjirafe/jirafe')->getPiwikBaseUrl();
         $piwikTracker = new Fooman_Jirafe_Model_JirafeTracker($siteId, $jirafePiwikUrl);
         $piwikTracker->setTokenAuth($appToken);
         $piwikTracker->disableCookieSupport();

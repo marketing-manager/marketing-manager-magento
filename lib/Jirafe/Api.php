@@ -13,7 +13,7 @@
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
-class Fooman_Jirafe_Model_Api
+class Jirafe_Api
 {
     // PRODUCTION environment
     const JIRAFE_API_SERVER = 'https://api.jirafe.com';
@@ -42,6 +42,52 @@ class Fooman_Jirafe_Model_Api
     const JIRAFE_API_USERS = '/users';
     const JIRAFE_DOC_URL = 'http://jirafe.com/doc';
 
+    private $_application = null;
+    private $_log = null;
+    private $_resource = null;
+    private $_site = null;
+    private $_user = null;
+    
+    public function getApplication()
+    {
+        if($this->_application == null) {
+            $this->_application = new Jirafe_Api_Application;
+        }
+        return $this->_application;
+    }
+    
+    public function getLog()
+    {
+        if($this->_log == null) {
+            $this->_log = new Jirafe_Api_Log;
+        }
+        return $this->_log;
+    }
+    
+    public function getResource()
+    {
+        if($this->_resource == null) {
+            $this->_resource = new Jirafe_Api_Resource;
+        }
+        return $this->_resource;
+    }
+    
+    public function getSite()
+    {
+        if($this->_site == null) {
+            $this->_site = new Jirafe_Api_Site;
+        }
+        return $this->_site;
+    }
+    
+    public function getUser()
+    {
+        if($this->_user == null) {
+            $this->_user = new Jirafe_Api_User;
+        }
+        return $this->_user;
+    }    
+    
     /**
      * Returns the URL of the API
      *
@@ -82,6 +128,11 @@ class Fooman_Jirafe_Model_Api
     public function getAssetUrl($filename)
     {
         return rtrim(self::JIRAFE_API_SERVER, '/') . '/' . ltrim($filename, '/');
+    }
+    
+    public function getPiwikBaseUrl()
+    {
+        return rtrim(self::JIRAFE_PIWIK_BASE_URL, '/') . '/' ;
     }
 
     public function getDocUrl($platform, $type='user', $version=null)

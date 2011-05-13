@@ -36,6 +36,6 @@ class Fooman_Jirafe_Block_Adminhtml_Dashboard_Js extends Mage_Adminhtml_Block_Te
      */
     public function getAssetUrl($filename)
     {
-        return Mage::getModel('foomanjirafe/api')->getAssetUrl($filename);
+        return Mage::getModel('foomanjirafe/jirafe')->getAssetUrl($filename);
     }
 }

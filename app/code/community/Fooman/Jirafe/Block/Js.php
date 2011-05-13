@@ -176,7 +176,7 @@ class Fooman_Jirafe_Block_Js extends Mage_Core_Block_Template
     public function getPiwikBaseURL ($secure = false)
     {
         $protocol = $secure ? "https://" : "http://";
-        return $protocol . Fooman_Jirafe_Model_Api::JIRAFE_PIWIK_BASE_URL;
+        return $protocol . Mage::getModel('foomanjirafe/jirafe')->getPiwikBaseUrl();
     }
 
 }

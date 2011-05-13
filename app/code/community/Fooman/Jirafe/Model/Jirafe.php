@@ -20,6 +20,34 @@ class Fooman_Jirafe_Model_Jirafe
     const STATUS_ORDER_EXPORTED = 1;
     const STATUS_ORDER_FAILED = 2;
 
+    private $_jirafeApi = null;
+    
+    public function __construct()
+    {
+        $this->_jirafeApi = new Jirafe_Api();
+    }
+
+    public function getJirafeApi()
+    {
+        return $this->_jirafeApi;
+    }
+    
+    public function getApiUrl($entryPoint = null)
+    {
+        return $this->getJirafeApi()->getApiUrl($entryPoint);
+    }
+
+    public function getAssetUrl($filename)
+    {
+        return $this->getJirafeApi()->getAssetUrl($filename);
+    }    
+    
+    public function getPiwikBaseUrl()
+    {
+        return $this->getJirafeApi()->getPiwikBaseUrl();
+    }     
+    
+
     /**
      * check if Magento instance has a jirafe application id, create one if none exists
      * update jirafe server if any parameters have changed
@@ -39,7 +67,7 @@ class Fooman_Jirafe_Model_Jirafe
             if ($currentHash != Mage::helper('foomanjirafe')->getStoreConfig('app_settings_hash')) {
                 try {
                     $baseUrl = Mage::helper('foomanjirafe')->getUnifiedStoreBaseUrl(Mage::getStoreConfig('web/unsecure/base_url', $defaultStoreId));
-                    $return = Mage::getModel('foomanjirafe/api_application')->update($appId, $baseUrl);
+                    $return = $this->getJirafeApi()->getApplication()->update($appId, $baseUrl);
                     $changeHash = true;
                 } catch (Exception $e) {
                     Mage::logException($e);
@@ -52,7 +80,7 @@ class Fooman_Jirafe_Model_Jirafe
             //retrieve new application id from jirafe server
             try {
                 $baseUrl = Mage::helper('foomanjirafe')->getUnifiedStoreBaseUrl(Mage::helper('foomanjirafe')->getStoreConfigDirect('web/unsecure/base_url', $defaultStoreId,false));
-                $return = Mage::getModel('foomanjirafe/api_application')->create(Mage::helper('foomanjirafe')->getStoreDescription(Mage::app()->getStore($defaultStoreId)), $baseUrl);
+                $return = $this->getJirafeApi()->getApplication()->create(Mage::helper('foomanjirafe')->getStoreDescription(Mage::app()->getStore($defaultStoreId)), $baseUrl);
                 if(empty($return['app_id']) || empty($return['token'])) {
                     throw new Exception ('Jirafe did not return a valid application Id or token.');
                 }
@@ -204,7 +232,7 @@ class Fooman_Jirafe_Model_Jirafe
             $storeArray = $this->getStores();
 
             try {
-                $return = Mage::getModel('foomanjirafe/api_resource')->sync($appId, $adminToken, $userArray, $storeArray);
+                $return = $this->getJirafeApi()->getResource()->sync($appId, $adminToken, $userArray, $storeArray);
                 $this->saveUserInfo($return['users']);
                 $this->saveStoreInfo($return['sites']);
             } catch (Exception $e) {
@@ -221,7 +249,7 @@ class Fooman_Jirafe_Model_Jirafe
 
     public function sendLogUpdate ($data)
     {
-        return Mage::getModel('foomanjirafe/api_log')->sendLog(Mage::helper('foomanjirafe')->getStoreConfig('app_token'), $data);
+        return $this->getJirafeApi()->getLog()->sendLog(Mage::helper('foomanjirafe')->getStoreConfig('app_token'), $data);
     }
 
     /**
@@ -257,7 +285,7 @@ class Fooman_Jirafe_Model_Jirafe
                     ->setSeverity(Mage_AdminNotification_Model_Inbox::SEVERITY_NOTICE)
                     ->setTitle('Jirafe plugin for Magento installed successfully.')
                     ->setDateAdded(gmdate('Y-m-d H:i:s'))
-                    ->setUrl(Mage::getModel('foomanjirafe/api')->getDocUrl('magento','user',$version))
+                    ->setUrl($this->getJirafeApi()->getDocUrl('magento','user',$version))
                     ->setDescription('We have just installed Jirafe. Please see the user guide for details.')
                     ->save();
         } else {
@@ -265,7 +293,7 @@ class Fooman_Jirafe_Model_Jirafe
                     ->setSeverity(Mage_AdminNotification_Model_Inbox::SEVERITY_NOTICE)
                     ->setTitle('Jirafe plugin for Magento installed - needs configuration')
                     ->setDateAdded(gmdate('Y-m-d H:i:s'))
-                    ->setUrl(Mage::getModel('foomanjirafe/api')->getDocUrl('magento','troubleshooting',$version))
+                    ->setUrl($this->getJirafeApi()->getDocUrl('magento','troubleshooting',$version))
                     ->setDescription('We have just installed Jirafe and but were unable to set it up automatically. Please see the troubleshooting guide.')
                     ->save();
         }
