@@ -95,7 +95,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         $this->_helper->debug('finished jirafe report cron');
     }
 
-    private function _compileReport ($store, $timespan)
+    protected function _compileReport ($store, $timespan)
     {
         $reportData = array();
 
@@ -182,7 +182,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         return $reportData;
     }
 
-    private function _saveReport ($store, $timespan, $data)
+    protected function _saveReport ($store, $timespan, $data)
     {
         //save report for transmission
 //		$this->_helper->debug($storeData);
@@ -194,7 +194,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
                 ->save();
     }
 
-    private function _emailReport ($store, $timespan, $data)
+    protected function _emailReport ($store, $timespan, $data)
     {
         // Make sure email is active at a global level
         if (Mage::helper('foomanjirafe')->isEmailActive()) {
@@ -235,7 +235,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         }
     }
 
-    function _getReportTimespan ($store, $gmtTs, $span='day')
+    protected function _getReportTimespan ($store, $gmtTs, $span='day')
     {
         // Get the current timestamp (local time) for this store
         $ts = Mage::getSingleton('core/date')->timestamp($gmtTs);
@@ -249,12 +249,12 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         return array('from' => $from, 'to' => $to, 'date' => $date);
     }
 
-    function _sendReport ($store, $timespan, $data)
+    protected function _sendReport ($store, $timespan, $data)
     {
         return Mage::getModel('foomanjirafe/jirafe')->sendLogUpdate($data);
     }
 
-    function _getReportDataFormatted ($data)
+    protected function _getReportDataFormatted ($data)
     {
         $fdata = array();
 
