@@ -22,9 +22,16 @@ class Fooman_Jirafe_Model_Jirafe
 
     private $_jirafeApi = null;
     
-    public function __construct()
+    function __construct ($httpClient = null)
     {
-        $this->_jirafeApi = new Jirafe_Api();
+        if (empty($httpClient)) {
+            $httpClient = new Zend_Http_Client();
+            $httpClient->setConfig(array(
+                'timeout' => 30,
+                'keepalive' => true
+            ));
+        }
+        $this->_jirafeApi = new Jirafe_Api($httpClient);
     }
 
     public function getJirafeApi()
