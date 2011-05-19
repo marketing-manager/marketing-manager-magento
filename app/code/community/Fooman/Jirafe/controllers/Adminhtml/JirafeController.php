@@ -22,9 +22,9 @@ class Fooman_Jirafe_Adminhtml_JirafeController extends Mage_Adminhtml_Controller
     public function reportAction ()
     {
         if (Mage::helper('foomanjirafe')->isConfigured()) {
-            Mage::getModel('foomanjirafe/report')->cron(null, false);
+            Mage::getModel('foomanjirafe/report')->cron();
         } else {
-            Mage::getModel('foomanjirafe/report')->cron(null, true);
+            Mage::getModel('foomanjirafe/report')->cron();
         }
         $this->_redirect('adminhtml/dashboard');
     }

@@ -27,7 +27,7 @@ class Fooman_Jirafe_Model_Report extends Mage_Core_Model_Abstract
         $this->_jirafe = Mage::getModel('foomanjirafe/jirafe');
     }
 
-    public function cron ($cronSchedule)
+    public function cron ()
     {
         $this->_helper->debug('starting jirafe report cron');
 
